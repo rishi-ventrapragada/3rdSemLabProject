@@ -1,0 +1,64 @@
+# ---------- Secrets ----------
+# Real credentials live in .env (copied from .env.example). Never commit them.
+.env
+.env.*
+!.env.example
+
+# ---------- Python / Django ----------
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+db.sqlite3
+db.sqlite3-journal
+local_settings.py
+campus_portal/staticfiles/
+campus_portal/media/
+
+# ---------- Java / Maven ----------
+target/
+*.class
+dependency-reduced-pom.xml
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
+hs_err_pid*
+replay_pid*
+
+# ---------- IDEs / editors ----------
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+.vscode/
+.classpath
+.project
+.settings/
+.factorypath
+nbproject/
+nbbuild/
+*.swp
+*~
+
+# ---------- OS ----------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------- Logs ----------
+*.log
+
+# ---------- Claude Code (personal settings only) ----------
+.claude/settings.local.json

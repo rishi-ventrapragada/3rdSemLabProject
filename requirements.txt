@@ -1,0 +1,15 @@
+# Python dependencies for campus_portal (Django Lab).
+# Install from the repo root: pip install -r requirements.txt
+
+# Django 5.2 LTS (security support until April 2028). Do not move to 6.x while the project
+# targets MySQL 8.0: Django 6.1 requires MySQL 8.4 or newer.
+Django~=5.2.0
+
+# Pure-Python MySQL driver; registered as MySQLdb in campus_portal/campus_portal/__init__.py.
+PyMySQL~=1.2
+
+# Loads the shared repo-root .env into os.environ.
+python-dotenv~=1.2
+
+# Required by PyMySQL for MySQL 8's default caching_sha2_password authentication.
+cryptography>=44
