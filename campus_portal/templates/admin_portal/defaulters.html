@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Defaulters{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Defaulters</h1>
+  <form method="post" class="inline-form">
+    {% csrf_token %}
+    <button type="submit" class="button">Declare defaulter list now</button>
+  </form>
+</div>
+<p class="muted">The table is live (<code>v_defaulter_list</code>: below 75% in a course). "Declare" runs <code>sp_refresh_defaulter_flags()</code>, which updates each student's official flag.
+Currently declared: {% for s in declared %}{{ s.roll_number }} {{ s.full_name }}{% if not forloop.last %}, {% endif %}{% empty %}none{% endfor %}.</p>
+
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Roll No</th><th>Name</th><th>Sec</th><th>Course</th><th class="num">Classes</th><th class="num">Present</th><th class="num">Attendance</th></tr></thead>
+    <tbody>
+      {% for row in rows %}
+        <tr><td>{{ row.roll_number }}</td><td>{{ row.full_name }}</td><td>{{ row.section }}</td><td>{{ row.course_code }} {{ row.course_name }}</td>
+            <td class="num">{{ row.total_classes }}</td><td class="num">{{ row.classes_attended }}</td><td class="num">{{ row.attendance_percentage }}%</td></tr>
+      {% empty %}
+        <tr><td colspan="7" class="muted">Nobody is below 75%.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

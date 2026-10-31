@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Admin dashboard{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Admin dashboard</h1></div>
+
+<div class="stats">
+  <a class="stat" href="{% url 'admin_portal:students' %}"><span class="stat-value">{{ student_count }}</span><span class="stat-label">Students</span></a>
+  <a class="stat" href="{% url 'admin_portal:faculty_list' %}"><span class="stat-value">{{ faculty_count }}</span><span class="stat-label">Faculty</span></a>
+  <a class="stat" href="{% url 'admin_portal:courses' %}"><span class="stat-value">{{ course_count }}</span><span class="stat-label">Courses</span></a>
+  <a class="stat" href="{% url 'admin_portal:enrollments' %}"><span class="stat-value">{{ enrollment_count }}</span><span class="stat-label">Enrollments</span></a>
+  <div class="stat"><span class="stat-value">{% if average_attendance != None %}{{ average_attendance|floatformat:2 }}%{% else %}-{% endif %}</span><span class="stat-label">Average attendance</span></div>
+  <a class="stat" href="{% url 'admin_portal:defaulters' %}"><span class="stat-value">{{ live_defaulters }}</span><span class="stat-label">Students below 75% now ({{ declared_defaulters }} declared)</span></a>
+</div>
+
+<div class="grid-2">
+  <section>
+    <h2>Top weighted GPA</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Roll No</th><th>Name</th><th class="num">Weighted GPA</th><th class="num">CGPA</th></tr></thead>
+        <tbody>
+          {% for row in top_students %}
+            <tr><td>{{ row.roll_number }}</td><td>{{ row.full_name }}</td><td class="num">{{ row.weighted_gpa|default:"-" }}</td><td class="num">{{ row.cgpa }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section>
+    <h2>Quick links</h2>
+    <ul>
+      <li><a href="{% url 'admin_portal:student_add' %}">Add a student</a></li>
+      <li><a href="{% url 'admin_portal:enrollments' %}">Enroll a student in a course</a></li>
+      <li><a href="{% url 'admin_portal:timetable' %}">Add a timetable entry</a></li>
+      <li><a href="{% url 'admin_portal:gpa_report' %}">Full GPA report</a></li>
+      <li><a href="{% url 'core:engine' %}">Run reports through the Java engine</a></li>
+    </ul>
+  </section>
+</div>
+{% endblock %}

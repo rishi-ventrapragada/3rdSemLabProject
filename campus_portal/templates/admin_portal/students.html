@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Students{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Students</h1>
+  <a class="button" href="{% url 'admin_portal:student_add' %}">Add student</a>
+</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Roll No</th><th>Name</th><th>Username</th><th>Email</th><th>Dept</th><th class="num">Sem</th><th>Sec</th><th class="num">CGPA</th><th>Attendance</th><th></th></tr></thead>
+    <tbody>
+      {% for s in students %}
+        <tr>
+          <td>{{ s.roll_number }}</td><td>{{ s.full_name }}</td><td><code>{{ s.username }}</code></td><td>{{ s.email }}</td>
+          <td>{{ s.dept.dept_code }}</td><td class="num">{{ s.semester }}</td><td>{{ s.section }}</td><td class="num">{{ s.cgpa }}</td>
+          <td>
+            {% if s.student_id in live_ids %}<span class="badge badge-danger">Below 75%</span>{% else %}<span class="badge badge-ok">OK</span>{% endif %}
+            {% if s.is_defaulter %}<span class="badge badge-warn">Declared</span>{% endif %}
+          </td>
+          <td><a href="{% url 'admin_portal:student_edit' s.pk %}">Edit</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}GPA report{% endblock %}
+{% block content %}
+<div class="page-head"><h1>GPA report</h1></div>
+<p class="muted">From <code>v_student_cgpa_report</code>: credit-weighted GPA of graded courses, highest first, next to the official CGPA.</p>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Roll No</th><th>Name</th><th>Dept</th><th>Sec</th><th class="num">Courses graded</th><th class="num">Credits graded</th><th class="num">Credits earned</th><th class="num">Weighted GPA</th><th class="num">Official CGPA</th></tr></thead>
+    <tbody>
+      {% for row in rows %}
+        <tr><td>{{ row.roll_number }}</td><td>{{ row.full_name }}</td><td>{{ row.dept_code }}</td><td>{{ row.section }}</td>
+            <td class="num">{{ row.courses_graded }}</td><td class="num">{{ row.credits_graded }}</td><td class="num">{{ row.credits_earned }}</td>
+            <td class="num">{{ row.weighted_gpa|default:"-" }}</td><td class="num">{{ row.cgpa }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

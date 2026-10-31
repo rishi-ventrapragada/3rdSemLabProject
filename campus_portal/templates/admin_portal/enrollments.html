@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Enrollments{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Enrollments</h1></div>
+
+<form method="post" class="card">
+  {% csrf_token %}
+  <h2>Enroll a student</h2>
+  <p class="help">A student can only be enrolled in courses of their current semester.</p>
+  {% include "includes/form_fields.html" %}
+  <p><button type="submit" class="button">Enroll</button></p>
+</form>
+
+<form method="get" class="form-grid">
+  <div class="field">
+    <label for="{{ filter_form.course.id_for_label }}">Show</label>
+    {{ filter_form.course }}
+  </div>
+  <div><button type="submit" class="button button-secondary">Filter</button></div>
+</form>
+
+<h2>{{ enrollments|length }} enrollment{{ enrollments|length|pluralize }}</h2>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th class="num">ID</th><th>Roll No</th><th>Student</th><th>Course</th><th>Academic year</th></tr></thead>
+    <tbody>
+      {% for e in enrollments %}
+        <tr><td class="num">{{ e.enrollment_id }}</td><td>{{ e.student.roll_number }}</td><td>{{ e.student.full_name }}</td><td>{{ e.course.course_code }} {{ e.course.course_name }}</td><td>{{ e.academic_year }}</td></tr>
+      {% empty %}
+        <tr><td colspan="5" class="muted">No enrollments.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

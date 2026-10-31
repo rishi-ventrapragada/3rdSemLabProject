@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Courses{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Courses</h1>
+  <a class="button" href="{% url 'admin_portal:course_add' %}">Add course</a>
+</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Code</th><th>Name</th><th>Type</th><th class="num">Credits</th><th class="num">Hours/wk</th><th class="num">Sem</th><th>Dept</th><th>Teacher</th><th class="num">Students</th><th></th></tr></thead>
+    <tbody>
+      {% for c in courses %}
+        <tr>
+          <td>{{ c.course_code }}</td><td>{{ c.course_name }}</td><td>{{ c.get_course_type_display }}</td>
+          <td class="num">{{ c.credits }}</td><td class="num">{{ c.hours_per_week }}</td><td class="num">{{ c.semester }}</td>
+          <td>{{ c.dept.dept_code }}</td><td>{{ c.faculty.full_name|default:"-" }}</td><td class="num">{{ c.student_count }}</td>
+          <td><a href="{% url 'admin_portal:course_edit' c.pk %}">Edit</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
