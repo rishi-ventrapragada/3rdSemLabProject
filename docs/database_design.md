@@ -143,6 +143,14 @@ How the design avoids the usual 3NF violations:
 | Attendance below 75% makes a student a defaulter | `v_defaulter_list`, declared by `sp_refresh_defaulter_flags()` |
 | Deleting a student removes their enrollments, attendance and marks; a course with enrollments cannot be deleted | FK `ON DELETE CASCADE` / `RESTRICT` |
 
+### App-level rules (not enforced by the database)
+
+These rules are checked in application code only. A direct SQL `INSERT` bypasses them, so every application that writes the affected table must apply them too.
+
+| Rule | Enforced in | Why it is not in the database |
+|---|---|---|
+| A student may enroll only in courses offered in their current semester (`courses.semester = students.semester`) | Java `StudentService.enroll` (`ValidationException`); the Django portal must apply the same check | Enforcing it would need a trigger reading two tables. It is also a policy that admins may want to override, e.g. a repeat course from an earlier semester, while the seed data and DBMS Lab exercises still insert freely. |
+
 ### Known limitations
 
 - **Sections are single letters with no department or semester qualifier.** `UNIQUE (slot_id, section)` therefore means two different semesters or departments cannot both have a section "A" class in the same slot. That is fine for the current single-batch data. Before adding a second batch, qualify the section, for example with a `sections` table.
