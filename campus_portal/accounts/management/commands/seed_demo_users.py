@@ -39,10 +39,11 @@ class Command(BaseCommand):
             self._upsert(admin_username, "admin@smartcampus.example", "Campus Admin", password, counts,
                          superuser=True)
 
-        self.stdout.write(self.style.SUCCESS(
-            f"Demo users ready: {counts['created']} created, {counts['updated']} updated "
-            f"({Student.objects.count()} students, {Faculty.objects.count()} faculty, admin '{admin_username}'). "
-            "All share the DEMO password documented in CLAUDE.md."))
+        if options["verbosity"] > 0:
+            self.stdout.write(self.style.SUCCESS(
+                f"Demo users ready: {counts['created']} created, {counts['updated']} updated "
+                f"({Student.objects.count()} students, {Faculty.objects.count()} faculty, admin '{admin_username}'). "
+                "All share the DEMO password documented in CLAUDE.md."))
 
     @staticmethod
     def _upsert(username, email, full_name, password, counts, superuser=False):
