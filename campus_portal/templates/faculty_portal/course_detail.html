@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}{{ course.course_code }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>{{ course.course_code }} {{ course.course_name }}</h1>
+  <div class="actions">
+    <a class="button button-small" href="{% url 'faculty_portal:attendance' course.course_code %}">Mark attendance</a>
+    <a class="button button-small" href="{% url 'faculty_portal:marks' course.course_code %}">Enter marks</a>
+  </div>
+</div>
+<p class="muted">{{ course.get_course_type_display }} &middot; {{ course.credits }} credits &middot; Semester {{ course.semester }} &middot; {{ rows|length }} students. Highlighted rows are below 75% attendance (v_defaulter_list).</p>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>Roll No</th><th>Name</th><th>Section</th>
+          <th class="num">Classes</th><th class="num">Present</th><th class="num">Attendance</th>
+          <th class="num">Internal</th><th class="num">External</th><th class="num">Total</th><th>Grade</th></tr>
+    </thead>
+    <tbody>
+      {% for enrollment, att, marks in rows %}
+        <tr {% if enrollment.pk in below_ids %}class="row-warning"{% endif %}>
+          <td>{{ enrollment.student.roll_number }}</td>
+          <td>{{ enrollment.student.full_name }}</td>
+          <td>{{ enrollment.student.section }}</td>
+          <td class="num">{{ att.total_classes|default:0 }}</td>
+          <td class="num">{{ att.classes_attended|default:0 }}</td>
+          <td class="num">{% if att.attendance_percentage != None %}{{ att.attendance_percentage }}%{% else %}-{% endif %}</td>
+          <td class="num">{{ marks.internal_marks|default:"-" }}</td>
+          <td class="num">{{ marks.external_marks|default:"-" }}</td>
+          <td class="num">{{ marks.total_marks|default:"-" }}</td>
+          <td>{{ marks.letter_grade|default:"-" }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="10" class="muted">No students are enrolled.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

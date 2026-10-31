@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Marks {{ course.course_code }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Marks: {{ course.course_code }} {{ course.course_name }}</h1>
+  <a href="{% url 'faculty_portal:course' course.course_code %}">Back to course</a>
+</div>
+<p class="muted">Enter internal marks (out of 40) and, once the exam is graded, external marks (out of 60). The total, grade points and letter grade are calculated by the database when you save.</p>
+
+<form method="post">
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="alert alert-error">{{ form.non_field_errors|join:" " }}</div>{% endif %}
+  {% if form.errors and not form.non_field_errors %}<div class="alert alert-error">Some rows need attention; see the messages below.</div>{% endif %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Roll No</th><th>Name</th><th>Internal /40</th><th>External /60</th>
+            <th class="num">Total</th><th>Grade</th></tr>
+      </thead>
+      <tbody>
+        {% for enrollment, internal, external, saved in rows %}
+          <tr>
+            <td>{{ enrollment.student.roll_number }}</td>
+            <td>{{ enrollment.student.full_name }}</td>
+            <td>{{ internal }}{{ internal.errors }}</td>
+            <td>{{ external }}{{ external.errors }}</td>
+            <td class="num">{{ saved.total_marks|default:"-" }}</td>
+            <td>{% if saved.letter_grade %}{{ saved.letter_grade }} ({{ saved.grade_points }}){% else %}-{% endif %}</td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="6" class="muted">No students are enrolled.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <button type="submit" class="button">Save marks</button>
+</form>
+{% endblock %}

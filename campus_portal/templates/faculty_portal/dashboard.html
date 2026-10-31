@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}My courses{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>{{ teacher.full_name }}</h1>
+  <span class="muted">{{ teacher.designation }} &middot; {{ teacher.dept.dept_name }} &middot; {{ teacher.employee_code }}</span>
+</div>
+
+<h2>My courses</h2>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Course</th><th>Name</th><th>Type</th><th class="num">Credits</th><th class="num">Students</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for course in courses %}
+        <tr>
+          <td><a href="{% url 'faculty_portal:course' course.course_code %}">{{ course.course_code }}</a></td>
+          <td>{{ course.course_name }}</td>
+          <td>{{ course.get_course_type_display }}</td>
+          <td class="num">{{ course.credits }}</td>
+          <td class="num">{{ course.student_count }}</td>
+          <td class="actions">
+            <a class="button button-small button-secondary" href="{% url 'faculty_portal:attendance' course.course_code %}">Attendance</a>
+            <a class="button button-small button-secondary" href="{% url 'faculty_portal:marks' course.course_code %}">Marks</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6" class="muted">No courses are assigned to you.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<h2>My timetable</h2>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Day</th><th>Time</th><th>Course</th><th>Section</th><th>Room</th></tr></thead>
+    <tbody>
+      {% for entry in timetable %}
+        <tr>
+          <td>{{ entry.slot.get_day_of_week_display }}</td>
+          <td>{{ entry.slot.start_time|time:"H:i" }}-{{ entry.slot.end_time|time:"H:i" }}</td>
+          <td>{{ entry.course.course_code }} {{ entry.course.course_name }}</td>
+          <td>{{ entry.section }}</td>
+          <td>{{ entry.room.room_number }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="5" class="muted">Nothing scheduled.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Attendance {{ course.course_code }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Attendance: {{ course.course_code }} {{ course.course_name }}</h1>
+  <a href="{% url 'faculty_portal:course' course.course_code %}">Back to course</a>
+</div>
+
+<form method="get" class="card form-grid">
+  <div class="field">
+    <label for="load-date">Load an existing session</label>
+    <input id="load-date" type="date" name="date" value="{{ form.session_date.value|date:'Y-m-d'|default:form.session_date.value }}">
+  </div>
+  <div><button type="submit" class="button button-secondary">Load</button></div>
+</form>
+
+<form method="post">
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="alert alert-error">{{ form.non_field_errors|join:" " }}</div>{% endif %}
+  <div class="card form-grid">
+    <div class="field">
+      <label for="{{ form.session_date.id_for_label }}">Session date</label>
+      {{ form.session_date }}
+      {{ form.session_date.errors }}
+      <span class="help">Classes run Monday to Friday. Saving a date again updates it.</span>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Roll No</th><th>Name</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for enrollment, field in form.rows %}
+          <tr>
+            <td>{{ enrollment.student.roll_number }}</td>
+            <td>{{ enrollment.student.full_name }}</td>
+            <td>
+              <fieldset class="radio-row">
+                <legend class="muted small" hidden>{{ field.label }}</legend>
+                {% for choice in field %}<label>{{ choice.tag }} {{ choice.choice_label }}</label>{% endfor %}
+              </fieldset>
+              {{ field.errors }}
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="3" class="muted">No students are enrolled.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <button type="submit" class="button">Save attendance</button>
+</form>
+{% endblock %}

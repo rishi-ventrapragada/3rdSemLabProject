@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}My dashboard{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>{{ student.full_name }}</h1>
+  <span class="muted">{{ student.roll_number }} &middot; {{ student.dept.dept_code }} &middot; Semester {{ student.semester }}, section {{ student.section }}</span>
+</div>
+
+{% if below_threshold %}
+  <div class="alert alert-error" role="alert">
+    <strong>Attendance warning: below 75% in {{ below_threshold|length }} course{{ below_threshold|length|pluralize }}.</strong>
+    {% for row in below_threshold %}{{ row.course_code }} ({{ row.attendance_percentage }}%){% if not forloop.last %}, {% endif %}{% endfor %}.
+    Students below 75% may be detained from the end-semester exam.
+    {% if student.is_defaulter %}You are currently on the declared defaulter list.{% endif %}
+  </div>
+{% endif %}
+
+<div class="stats">
+  <div class="stat"><span class="stat-value">{{ student.cgpa }}</span><span class="stat-label">Official CGPA (semesters 1-2)</span></div>
+  <div class="stat"><span class="stat-value">{{ gpa.weighted_gpa|default:"-" }}</span><span class="stat-label">GPA this semester (credit-weighted)</span></div>
+  <div class="stat"><span class="stat-value">{{ gpa.credits_earned|default:0 }}/{{ gpa.credits_graded|default:0 }}</span><span class="stat-label">Credits earned / graded</span></div>
+  <div class="stat"><span class="stat-value">{% if below_threshold %}<span class="badge badge-danger">Below 75%</span>{% else %}<span class="badge badge-ok">OK</span>{% endif %}</span><span class="stat-label">Attendance status</span></div>
+</div>
+
+<h2>Courses</h2>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Course</th><th>Name</th>
+        <th class="num">Classes</th><th class="num">Present</th><th class="num">Attendance</th>
+        <th class="num">Internal /40</th><th class="num">External /60</th><th class="num">Total</th><th>Grade</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row, marks in courses %}
+        <tr {% if row.enrollment_id in below_ids %}class="row-warning"{% endif %}>
+          <td>{{ row.course_code }}</td>
+          <td>{{ row.course_name }}</td>
+          <td class="num">{{ row.total_classes }}</td>
+          <td class="num">{{ row.classes_attended }}</td>
+          <td class="num">{% if row.attendance_percentage != None %}{{ row.attendance_percentage }}%{% else %}-{% endif %}</td>
+          <td class="num">{{ marks.internal_marks|default:"-" }}</td>
+          <td class="num">{{ marks.external_marks|default:"-" }}</td>
+          <td class="num">{{ marks.total_marks|default:"-" }}</td>
+          <td>{% if marks.letter_grade %}<strong>{{ marks.letter_grade }}</strong> ({{ marks.grade_points }}){% else %}-{% endif %}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="9" class="muted">You are not enrolled in any courses yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<h2>Weekly timetable (section {{ student.section }})</h2>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Day</th><th>Time</th><th>Course</th><th>Room</th><th>Teacher</th></tr></thead>
+    <tbody>
+      {% for entry in timetable %}
+        <tr>
+          <td>{{ entry.slot.get_day_of_week_display }}</td>
+          <td>{{ entry.slot.start_time|time:"H:i" }}-{{ entry.slot.end_time|time:"H:i" }}</td>
+          <td>{{ entry.course.course_code }} {{ entry.course.course_name }}</td>
+          <td>{{ entry.room.room_number }}</td>
+          <td>{{ entry.course.faculty.full_name|default:"-" }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="5" class="muted">No classes scheduled.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
