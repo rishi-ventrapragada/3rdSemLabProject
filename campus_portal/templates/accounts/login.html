@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Log in{% endblock %}
+{% block content %}
+<section class="card narrow">
+  <h1>Log in</h1>
+  <p class="muted">Students use their roll number in lower case (e.g. <code>25cse001</code>); faculty use <code>first.last</code>.</p>
+
+  {% if form.non_field_errors %}
+    <div class="alert alert-error">{{ form.non_field_errors|join:" " }}</div>
+  {% endif %}
+
+  <form method="post" class="stack">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ next }}">
+    <label for="id_username">Username</label>
+    <input id="id_username" type="text" name="username" autocomplete="username" required autofocus
+           value="{{ form.username.value|default:'' }}">
+    <label for="id_password">Password</label>
+    <input id="id_password" type="password" name="password" autocomplete="current-password" required>
+    <button type="submit" class="button">Log in</button>
+  </form>
+</section>
+{% endblock %}

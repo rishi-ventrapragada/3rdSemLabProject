@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Access denied{% endblock %}
+{% block content %}
+<section class="card narrow">
+  <h1>Access denied</h1>
+  <p>{{ exception|default:"You do not have permission to view this page." }}</p>
+  {% if user.is_authenticated %}
+    <p class="muted">You are signed in as <strong>{{ user.username }}</strong>{% if campus_role_label %} ({{ campus_role_label }}){% endif %}.</p>
+    <p><a class="button" href="{% url 'accounts:home' %}">Go to my dashboard</a></p>
+  {% else %}
+    <p><a class="button" href="{% url 'accounts:login' %}">Log in</a></p>
+  {% endif %}
+</section>
+{% endblock %}

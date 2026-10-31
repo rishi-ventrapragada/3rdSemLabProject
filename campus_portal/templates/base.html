@@ -1,0 +1,59 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Smart Campus{% endblock %} &middot; Smart Campus</title>
+  <link rel="stylesheet" href="{% static 'css/campus.css' %}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-row">
+      <a class="brand" href="{% url 'accounts:home' %}">Smart Campus</a>
+      {% if user.is_authenticated %}
+        <nav class="main-nav" aria-label="Main">
+          {% if campus_role == "student" %}
+            <a href="{% url 'student_portal:dashboard' %}">My dashboard</a>
+          {% elif campus_role == "faculty" %}
+            <a href="{% url 'faculty_portal:dashboard' %}">My courses</a>
+          {% elif campus_role == "admin" %}
+            <a href="{% url 'admin_portal:dashboard' %}">Dashboard</a>
+            <a href="{% url 'admin_portal:students' %}">Students</a>
+            <a href="{% url 'admin_portal:faculty_list' %}">Faculty</a>
+            <a href="{% url 'admin_portal:courses' %}">Courses</a>
+            <a href="{% url 'admin_portal:enrollments' %}">Enrollments</a>
+            <a href="{% url 'admin_portal:timetable' %}">Timetable</a>
+            <a href="{% url 'admin_portal:defaulters' %}">Defaulters</a>
+            <a href="{% url 'admin_portal:gpa_report' %}">GPA report</a>
+            <a href="{% url 'core:engine' %}">Java engine</a>
+          {% endif %}
+        </nav>
+        <div class="user-box">
+          <span class="user-name">{{ campus_person.full_name|default:user.get_full_name|default:user.username }}</span>
+          {% if campus_role_label %}<span class="badge badge-role">{{ campus_role_label }}</span>{% endif %}
+          <form method="post" action="{% url 'accounts:logout' %}" class="inline-form">
+            {% csrf_token %}
+            <button type="submit" class="button button-small button-ghost">Log out</button>
+          </form>
+        </div>
+      {% endif %}
+    </div>
+  </header>
+
+  <main class="container main">
+    {% if messages %}
+      <ul class="messages" role="status">
+        {% for message in messages %}
+          <li class="alert alert-{{ message.tags|default:'info' }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">Smart Campus &amp; Academic Suite &middot; Django Lab</div>
+  </footer>
+</body>
+</html>
