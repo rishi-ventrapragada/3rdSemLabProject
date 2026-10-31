@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}Java engine{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Java engine</h1>
+  <span class="muted small">Runs <code>smart-campus-engine.jar --json</code>; about 0.5 s per call, one call per page.</span>
+</div>
+
+{% if not jar_present %}
+  <div class="alert alert-warning" role="alert">
+    <strong>The engine JAR has not been built yet.</strong>
+    Expected at <code>{{ jar_path }}</code>. {{ build_hint }}
+  </div>
+{% endif %}
+
+<div class="engine-actions">
+  <form method="get">
+    <h3>Reports</h3>
+    <div class="actions">
+      <button class="button button-small" name="command" value="defaulters">Defaulters</button>
+      <button class="button button-small" name="command" value="gpa-report">GPA report</button>
+      <button class="button button-small" name="command" value="dashboard">Dashboard</button>
+    </div>
+  </form>
+
+  <form method="post">
+    {% csrf_token %}
+    <h3>Declare defaulters</h3>
+    <p class="help">Runs <code>refresh-defaulters</code> (calls sp_refresh_defaulter_flags).</p>
+    <button class="button button-small" name="command" value="refresh-defaulters">Refresh defaulter flags</button>
+  </form>
+
+  <form method="get" class="stack">
+    <h3>Student lookup</h3>
+    <input type="hidden" name="command" value="student">
+    <label for="{{ student_form.roll_number.id_for_label }}">{{ student_form.roll_number.label }}</label>
+    {{ student_form.roll_number }}{{ student_form.roll_number.errors }}
+    <button class="button button-small">Look up</button>
+  </form>
+
+  <form method="post" class="stack">
+    {% csrf_token %}
+    <h3>Enroll</h3>
+    <input type="hidden" name="command" value="enroll">
+    {% for field in enroll_form %}
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{{ field.errors }}
+    {% endfor %}
+    <button class="button button-small">Enroll via engine</button>
+  </form>
+</div>
+
+{% if error %}
+  <div class="alert alert-error spaced" role="alert">
+    <strong>Engine error: <span class="badge badge-danger">{{ error.error_type }}</span>{% if error.exit_code != None %} (exit code {{ error.exit_code }}){% endif %}</strong>
+    {{ error.message }}
+    {% if error.hint %}<br><span class="small">{{ error.hint }}</span>{% endif %}
+  </div>
+{% endif %}
+
+{% if result %}
+  <h2>Result: <code>{{ result.command }}</code> <span class="muted small">({{ result.elapsed_ms }} ms)</span></h2>
+
+  {% if result.command == "defaulters" %}
+    <p>{{ result.data.student_count }} student(s) below 75% in {{ result.data.course_count }} course(s).</p>
+    {% for s in result.data.students %}
+      <h3>{{ s.roll_number }} {{ s.full_name }} <span class="muted small">section {{ s.section }}</span></h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Course</th><th>Name</th><th class="num">Classes</th><th class="num">Present</th><th class="num">Attendance</th></tr></thead>
+        <tbody>{% for c in s.courses %}<tr><td>{{ c.course_code }}</td><td>{{ c.course_name }}</td><td class="num">{{ c.total_classes }}</td><td class="num">{{ c.classes_attended }}</td><td class="num">{{ c.attendance_percentage }}%</td></tr>{% endfor %}</tbody>
+      </table></div>
+    {% endfor %}
+
+  {% elif result.command == "gpa-report" %}
+    <div class="table-wrap"><table>
+      <thead><tr><th>Roll No</th><th>Name</th><th>Sec</th><th class="num">Graded</th><th class="num">Credits</th><th class="num">Earned</th><th class="num">Weighted GPA</th><th class="num">CGPA</th></tr></thead>
+      <tbody>{% for r in result.data %}<tr><td>{{ r.roll_number }}</td><td>{{ r.full_name }}</td><td>{{ r.section }}</td><td class="num">{{ r.courses_graded }}</td><td class="num">{{ r.credits_graded }}</td><td class="num">{{ r.credits_earned }}</td><td class="num">{{ r.weighted_gpa|default:"-" }}</td><td class="num">{{ r.cgpa }}</td></tr>{% endfor %}</tbody>
+    </table></div>
+
+  {% elif result.command == "dashboard" %}
+    <div class="stats">
+      <div class="stat"><span class="stat-value">{{ result.data.student_count }}</span><span class="stat-label">Students</span></div>
+      <div class="stat"><span class="stat-value">{{ result.data.enrollment_count }}</span><span class="stat-label">Enrollments</span></div>
+      <div class="stat"><span class="stat-value">{{ result.data.average_attendance }}%</span><span class="stat-label">Average attendance</span></div>
+      <div class="stat"><span class="stat-value">{{ result.data.defaulter_students }}</span><span class="stat-label">Defaulter students</span></div>
+    </div>
+    <div class="grid-2">
+      <div class="table-wrap"><table>
+        <thead><tr><th>Course</th><th class="num">Average attendance</th></tr></thead>
+        <tbody>{% for code, pct in result.data.average_attendance_by_course.items %}<tr><td>{{ code }}</td><td class="num">{{ pct }}%</td></tr>{% endfor %}</tbody>
+      </table></div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>View</th><th class="num">Rows</th><th>Thread</th><th class="num">ms</th></tr></thead>
+        <tbody>{% for view, task in result.data.tasks.items %}<tr><td><code>{{ view }}</code></td><td class="num">{{ task.rows }}</td><td>{{ task.thread }}</td><td class="num">{{ task.elapsed_ms }}</td></tr>{% endfor %}</tbody>
+      </table></div>
+    </div>
+
+  {% elif result.command == "refresh-defaulters" %}
+    <div class="alert alert-success">Defaulter flags refreshed: {{ result.data.flagged_students }} student(s) flagged.</div>
+
+  {% elif result.command == "student" %}
+    <dl class="details card">
+      <dt>Student</dt><dd>{{ result.data.roll_number }} {{ result.data.full_name }}</dd>
+      <dt>Username</dt><dd><code>{{ result.data.username }}</code></dd>
+      <dt>Semester / section</dt><dd>{{ result.data.semester }} / {{ result.data.section }}</dd>
+      <dt>CGPA</dt><dd>{{ result.data.cgpa }}{% if result.data.is_defaulter %} <span class="badge badge-danger">Declared defaulter</span>{% endif %}</dd>
+    </dl>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Course</th><th>Name</th><th class="num">Attendance</th><th class="num">Total</th><th>Grade</th></tr></thead>
+      <tbody>{% for c in result.data.courses %}<tr><td>{{ c.course_code }}</td><td>{{ c.course_name }}</td><td class="num">{{ c.attendance_percentage|default:"-" }}{% if c.attendance_percentage != None %}%{% endif %}</td><td class="num">{{ c.marks.total_marks|default:"-" }}</td><td>{{ c.marks.letter_grade|default:"-" }}</td></tr>{% endfor %}</tbody>
+    </table></div>
+
+  {% elif result.command == "enroll" %}
+    <div class="alert alert-success">Enrolled {{ result.data.roll_number }} ({{ result.data.full_name }}) in {{ result.data.course_code }} {{ result.data.course_name }} for {{ result.data.academic_year }} (enrollment_id {{ result.data.enrollment_id }}).</div>
+  {% endif %}
+
+  <details>
+    <summary>Raw JSON</summary>
+    <pre class="raw">{{ raw_json }}</pre>
+  </details>
+{% endif %}
+{% endblock %}
