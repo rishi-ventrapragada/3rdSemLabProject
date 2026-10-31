@@ -9,11 +9,12 @@ One codebase that satisfies four 3rd-semester lab courses. Each lab owns a top-l
 | Django Lab | `campus_portal/` | Django 5.2 LTS, PyMySQL, vanilla HTML5/CSS3 | Role-based web portal for Admin, Faculty and Student |
 | SE Lab | `docs/` | Markdown + Mermaid diagrams | SRS, UML/ER diagrams, test plans |
 
-**Status: Phase 2 (DBMS Lab) is complete.**
+**Status: Phase 3 (Java Lab) is complete.**
 - Phase 1: scaffolding and build config.
 - Phase 2: the MySQL schema, views, triggers, seed data, `init_db.py`, and the ER/FD write-up in `docs/database_design.md`.
+- Phase 3: the Java engine (config, models, DAOs, services, exceptions, CLI with `--json`) and its tests.
 
-The Java models/DAOs and the Django project don't exist yet. Items marked *(planned)* below show where code goes as later phases build it. Update this file when a phase lands.
+The Django project doesn't exist yet. Items marked *(planned)* below show where code goes as later phases build it. Update this file when a phase lands.
 
 ## Repository layout
 
@@ -29,13 +30,16 @@ The Java models/DAOs and the Django project don't exist yet. Items marked *(plan
 ├── java_engine/            # Java Lab: Maven project
 │   ├── pom.xml             #   builds target/smart-campus-engine.jar (fat JAR, driver bundled)
 │   ├── mvnw, mvnw.cmd      #   Maven Wrapper; downloads Maven 3.9.16 on first run (.mvn/wrapper/)
-│   └── src/main/java/com/smartcampus/
-│       ├── Main.java       #   CLI entry point (stub: prints usage)
-│       ├── config/         #   DB settings loader + JDBC connection factory
-│       ├── models/         #   domain entities (abstract bases + subclasses)
-│       ├── dao/            #   DAO interfaces + JDBC implementations
-│       ├── services/       #   business logic over DAO interfaces
-│       └── exceptions/     #   custom exception hierarchy
+│   ├── src/main/java/com/smartcampus/
+│   │   ├── Main.java       #   entry point: delegates to cli.Cli, then System.exit(code)
+│   │   ├── config/         #   DatabaseConfig (env vars, then .env), ConnectionFactory
+│   │   ├── models/         #   Person -> Student/Faculty, Course, Enrollment, AttendanceRecord,
+│   │   │                   #   Marks; records for view rows (AttendanceSummary, GpaReportRow, ...)
+│   │   ├── dao/            #   CrudDao<T,ID> + entity DAO interfaces, Jdbc*Dao, ReportDao (views/procedure)
+│   │   ├── services/       #   StudentService, ReportService (incl. concurrent dashboard)
+│   │   ├── exceptions/     #   SmartCampusException hierarchy (all checked)
+│   │   └── cli/            #   command registry, arg parsing, text tables, JsonWriter
+│   └── src/test/java/      #   JUnit 6 tests; no database needed
 ├── campus_portal/          # Django Lab: empty until `django-admin startproject` runs
 │   ├── manage.py           #   (planned)
 │   ├── campus_portal/      #   (planned) settings, urls, wsgi; PyMySQL shim in __init__.py
@@ -101,6 +105,30 @@ subprocess.run(
 - The child process inherits Django's `os.environ`, which python-dotenv has already filled with the `DB_*` variables. The JAR therefore connects with the same credentials and needs no extra configuration.
 - The same JAR runs standalone: `java -jar java_engine/target/smart-campus-engine.jar <command> [args]`.
 - **CLI contract:** the result goes to stdout and error messages go to stderr. Exit codes are `0` for success, `1` for a runtime or database error and `2` for bad usage. Commands that Django calls must never prompt on stdin.
+- **Django always passes `--json`.** Each call prints exactly one line of JSON:
+  - Success, on stdout: `{"ok":true,"command":"<name>","data":...}`.
+  - Failure, on stderr: `{"ok":false,"command":"<name>","error":{"type":"<Type>","message":"..."}}`.
+  - Parse stdout when `returncode == 0`, otherwise parse stderr.
+  - Keys are snake_case, matching the database columns.
+  - Branch on `error.type`, never on the message: `Usage`, `StudentNotFound`, `CourseNotFound`, `EntityNotFound`, `DuplicateEnrollment`, `Validation`, `Database` or `Internal`.
+
+#### Engine commands
+
+`java -jar smart-campus-engine.jar <command> [args] [--json]`. Lookups are case-insensitive, because of the column collation.
+
+| Command | Data source | `--json` `data` |
+|---|---|---|
+| `student <rollNo>` | `students` + `v_attendance_summary` + `marks` | student object with a `courses` list (attendance + `marks` or null) |
+| `whois <username>` | `students`, then `faculty` | person object; `role` is `Student` or `Faculty` |
+| `attendance <rollNo>` | `v_attendance_summary` | list of per-course rows |
+| `attendance <rollNo> <courseCode>` | `attendance_records` | `{..., "sessions": [{"session_date","status"}]}` |
+| `defaulters` | `v_defaulter_list` | `{"student_count","course_count","students":[{..., "courses":[...]}]}` |
+| `gpa-report` | `v_student_cgpa_report` | list, sorted by `weighted_gpa` desc (nulls last), then roll number |
+| `courses` | `courses` | list |
+| `enroll <rollNo> <courseCode> [--year YYYY-YY]` | inserts into `enrollments` | `{"enrollment_id",...}`. Default year is the current academic year (it rolls over in July). |
+| `refresh-defaulters` | `CALL sp_refresh_defaulter_flags()` | `{"flagged_students": n}` |
+| `dashboard` | the three views, loaded concurrently | counts, averages, top 3, per-view `tasks` with thread names and timings |
+| `help` | — | list of `{name, usage, summary}`. `<command> --help` shows one command. |
 
 ## Coding standards
 
@@ -147,25 +175,45 @@ subprocess.run(
 
 - **Toolchain:** Java 17 (`maven.compiler.release`) and Maven. Use no frameworks: no Spring, Hibernate/JPA or connection pools. The lab assesses raw JDBC and core OOP.
 - **Package responsibilities:**
-  - `config`: loads DB settings (environment variables, then `.env`) and hands out `Connection`s via `DriverManager`.
-  - `models`: plain domain classes. No SQL.
-  - `dao`: one interface per entity plus a JDBC implementation (e.g. `StudentDao` / `JdbcStudentDao`). Only `dao` and `config` import `java.sql`.
+  - `config`: loads DB settings (environment variables, then `.env`) and hands out `Connection`s via `DriverManager`, one new connection per call.
+  - `models`: plain domain classes, plus Java `record`s for read-only view rows. No SQL.
+  - `dao`: one interface per entity plus a JDBC implementation (e.g. `StudentDao` / `JdbcStudentDao`). Only `dao` and `config` import `java.sql`. `JdbcDaoSupport` holds the shared `queryList` / `queryOne` plumbing.
   - `services`: business rules and orchestration. They depend on DAO *interfaces*, never on implementations.
   - `exceptions`: the project's exception hierarchy.
+  - `cli`: argument parsing, the command registry, text tables and JSON output. `cli.Engine` is the only class that names the `Jdbc*Dao` implementations.
+- **Don't re-implement database logic in Java.** Attendance %, the 75% threshold, grades and GPA come from the views and triggers. Java reads them, then filters, groups and sorts. The one Java-only rule is the semester match when enrolling; see the app-level rules in `docs/database_design.md`.
 - **OOP requirements** (each must be visibly present):
   - *Abstraction:* abstract base classes hold shared state and declare abstract behaviour (e.g. `Person` → `Student`, `Faculty`).
   - *Inheritance and polymorphism:* subclasses override base behaviour, and services work with base types and interfaces.
   - *Interfaces:* a generic `CrudDao<T, ID>` is extended by entity DAOs, and services are coded against the interfaces.
   - *Encapsulation:* private fields, with validation in constructors and setters. Override `equals`/`hashCode`/`toString` on models.
-  - *Custom exceptions:* a root `SmartCampusException` with specific subclasses (`DataAccessException`, `EntityNotFoundException`, `ValidationException`). DAOs catch `SQLException` and rethrow it wrapped, keeping the cause. Never swallow an exception or `printStackTrace()` and carry on.
+  - *Custom exceptions:* every exception is checked and extends the root `SmartCampusException`:
+    - `DatabaseException` wraps `SQLException` and exposes the MySQL error code.
+    - `EntityNotFoundException` is the parent of `StudentNotFoundException` and `CourseNotFoundException`.
+    - `DuplicateEnrollmentException` covers MySQL error 1062.
+    - `ValidationException` covers CHECK error 3819 and app-level rules.
+    - `getType()` (the class name minus "Exception") becomes `error.type` in JSON.
+
+    DAOs catch `SQLException` and rethrow it wrapped, keeping the cause. Never swallow an exception or `printStackTrace()` and carry on.
   - *Collections:* use `List`/`Set`/`Map` (and streams) for in-memory processing. Declare variables by interface type (`List<Student> s = new ArrayList<>()`). Return empty collections, never `null`.
+  - *Where each lab requirement is shown:*
+    - Abstract class and polymorphism: `Person.describe()`, overridden by `Student` and `Faculty`; `whois` returns a `Person`.
+    - Interface with default methods: `CrudDao.getById` / `existsById`, `StudentDao.getByRollNumber`.
+    - Generics: `CrudDao<T, ID>`, `RowMapper<T>`, `TableFormatter<T>`, `TaskResult<T>`.
+    - Multithreading: `ReportService.dashboard()` uses `CompletableFuture` on a 3-thread pool, with one connection per task.
+    - Streams: `groupingBy`, `toMap`, and comparators.
+    - Transactions: `JdbcReportDao.refreshDefaulterFlags`.
 - **JDBC rules:**
   - Always use `PreparedStatement` with `?` placeholders. Never concatenate values into SQL.
   - Open `Connection`, `PreparedStatement` and `ResultSet` in try-with-resources.
   - For multi-statement writes, call `setAutoCommit(false)`, then `commit()`, and `rollback()` in the `catch`.
   - Map rows to objects in one private `mapRow(ResultSet)` helper per DAO.
   - Column names must match `database/schema.sql` exactly.
-- **CLI:** `Main` parses `<command> [args]` and dispatches to services, following the stdout/stderr/exit-code contract above. An interactive menu is fine for standalone demos, but only behind an explicit command such as `menu`.
+- **CLI:** `Main` delegates to `cli.Cli`, which parses `<command> [args]` and dispatches to services, following the stdout/stderr/exit-code contract above.
+  - To add a command, register a `Command` in `cli/Commands.java` with its argument range and allowed options, and add a `TextRenderer` method and a `JsonMapper` method.
+  - Never hand-build JSON strings; always go through `JsonWriter`, which handles the escaping.
+  - An interactive menu is fine for standalone demos, but only behind an explicit command such as `menu`.
+- **Tests:** `src/test/java` runs on every `mvnw package` and must not need a database. To check against real data, run the commands against MySQL. If you insert demo rows to do so, restore the seed afterwards with `python database/init_db.py --yes`.
 
 ### Django Lab (`campus_portal/`)
 
@@ -223,6 +271,8 @@ Copy-Item .env.example .env          # bash: cp .env.example .env — then set D
 python -m venv .venv
 .venv\Scripts\Activate.ps1           # bash: source .venv/bin/activate
 pip install -r requirements.txt
+#    If Activate.ps1 is blocked by the execution policy, skip activation and call the venv
+#    directly, e.g. .venv\Scripts\python.exe database\init_db.py  (no system settings needed)
 
 # 3. Database: creates smart_campus_db, runs the 3 scripts, prints row counts.
 #    WARNING: drops and recreates all domain tables (asks first unless --yes).
@@ -232,9 +282,10 @@ python database/init_db.py           # --yes to skip the prompt, --no-seed for e
 
 # 4. Java engine
 cd java_engine
-.\mvnw.cmd clean package             # bash: ./mvnw clean package  -> target/smart-campus-engine.jar
-java -jar target/smart-campus-engine.jar <command> [args]
+.\mvnw.cmd clean package             # bash: ./mvnw clean package  -> runs tests, builds target/smart-campus-engine.jar
 cd ..
+java -jar java_engine/target/smart-campus-engine.jar help
+java -jar java_engine/target/smart-campus-engine.jar defaulters --json
 
 # 5. Django portal (virtualenv from step 2 active)
 cd campus_portal
@@ -260,3 +311,7 @@ python manage.py runserver           # http://127.0.0.1:8000/
 - **Django runs the last *built* JAR.** Re-run `.\mvnw.cmd clean package` (or `./mvnw clean package`) after any Java change.
 - **Keep `mvnw` on LF line endings.** `.gitattributes` enforces this. A CRLF `mvnw` fails on macOS/Linux with `/bin/sh^M: bad interpreter`.
 - **Trigger and procedure scripts need `DELIMITER $$`** when run through the `mysql` client.
+- **The JAR finds `.env` by walking up from the working directory.** Running it from the repo root or from `java_engine/` both work. Real `DB_*` environment variables win over `.env`, so a stale variable in your shell silently points the JAR at the wrong database.
+- **Each JAR call costs about half a second,** for JVM start-up plus a new MySQL connection. Django should make one call per page, never one per table row.
+- **Don't hard-code `enrollment_id` (or any id) in tests or code.** InnoDB leaves gaps in AUTO_INCREMENT after `INSERT … SELECT` and after failed inserts; the first new enrollment after the seed is 64, not 61. Look rows up by natural key (roll number + course code).
+- **Committing from Windows PowerShell 5.1:** piping a message into `git commit -F -` adds a UTF-8 BOM to the subject, and `-m` with embedded `"…"` gets split into extra arguments. Write the message to a file (UTF-8 without BOM) and use `git commit -F <file>`.
