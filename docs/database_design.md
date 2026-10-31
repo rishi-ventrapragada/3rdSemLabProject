@@ -153,6 +153,7 @@ These rules are checked in application code only. A direct SQL `INSERT` bypasses
 
 ### Known limitations
 
+- **Known bug, fix pending: the `REGEXP` CHECKs are case-insensitive.** The `REGEXP` in `chk_students_section`, `chk_timetable_entries_section` and `chk_departments_dept_code` follows the column collation (`utf8mb4_unicode_ci`), so `'a'` passes `'^[A-Z]$'`. The Phase 4 Django tests found it. The proposed fix is `REGEXP_LIKE(col, '^[A-Z]$', 'c')`, which forces a case-sensitive match.
 - **Sections are single letters with no department or semester qualifier.** `UNIQUE (slot_id, section)` therefore means two different semesters or departments cannot both have a section "A" class in the same slot. That is fine for the current single-batch data. Before adding a second batch, qualify the section, for example with a `sections` table.
 - **`UNIQUE (student_id, course_id)` on `enrollments`** means a student cannot re-register for a course they failed in a later academic year.
 - **One attendance record per enrollment per day,** so two sessions of the same course on one day cannot both be recorded.

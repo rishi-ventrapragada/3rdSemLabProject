@@ -9,12 +9,15 @@ One codebase that satisfies four 3rd-semester lab courses. Each lab owns a top-l
 | Django Lab | `campus_portal/` | Django 5.2 LTS, PyMySQL, vanilla HTML5/CSS3 | Role-based web portal for Admin, Faculty and Student |
 | SE Lab | `docs/` | Markdown + Mermaid diagrams | SRS, UML/ER diagrams, test plans |
 
-**Status: Phase 3 (Java Lab) is complete.**
+**Status: Phase 4 (Django Lab) is complete.**
 - Phase 1: scaffolding and build config.
 - Phase 2: the MySQL schema, views, triggers, seed data, `init_db.py`, and the ER/FD write-up in `docs/database_design.md`.
 - Phase 3: the Java engine (config, models, DAOs, services, exceptions, CLI with `--json`) and its tests.
+- Phase 4: the Django portal (unmanaged models, role-based Student/Faculty/Admin portals, the Java bridge page, `seed_demo_users`) and its tests. See `docs/django_portal.md`.
 
-The Django project doesn't exist yet. Items marked *(planned)* below show where code goes as later phases build it. Update this file when a phase lands.
+**Open item:** a known database bug, case-insensitive `REGEXP` CHECKs; see Gotchas. The fix in `database/` is waiting for approval.
+
+The SE Lab documents (SRS, UML, test plan) are still to come. Update this file when a phase lands.
 
 ## Repository layout
 
@@ -40,21 +43,22 @@ The Django project doesn't exist yet. Items marked *(planned)* below show where 
 │   │   ├── exceptions/     #   SmartCampusException hierarchy (all checked)
 │   │   └── cli/            #   command registry, arg parsing, text tables, JsonWriter
 │   └── src/test/java/      #   JUnit 6 tests; no database needed
-├── campus_portal/          # Django Lab: empty until `django-admin startproject` runs
-│   ├── manage.py           #   (planned)
-│   ├── campus_portal/      #   (planned) settings, urls, wsgi; PyMySQL shim in __init__.py
-│   ├── accounts/           #   (planned) login/logout, role-based redirect
-│   ├── core/               #   (planned) shared helpers, role decorator, Java bridge view
-│   ├── admin_portal/       #   (planned) Admin role
-│   ├── faculty_portal/     #   (planned) Faculty role
-│   ├── student_portal/     #   (planned) Student role
-│   ├── templates/          #   (planned) base.html + per-role templates
-│   └── static/css/         #   (planned) hand-written CSS
+├── campus_portal/          # Django Lab (run manage.py from inside this folder)
+│   ├── manage.py
+│   ├── campus_portal/      #   settings (reads ../.env), urls; __init__.py installs PyMySQL as MySQLdb
+│   ├── core/               #   unmanaged models, roles.py (role_required / RoleRequiredMixin),
+│   │                       #   services.py (all writes), db_errors.py (friendly DB errors),
+│   │                       #   java_bridge.py + /engine/ view, test_runner.py, tests/
+│   ├── accounts/           #   login/logout, "/" role redirect, seed_demo_users command
+│   ├── student_portal/     #   /student/        own profile, attendance, marks, CGPA, warning
+│   ├── faculty_portal/     #   /faculty/        own courses, timetable, roster, attendance, marks
+│   ├── admin_portal/       #   /admin-portal/   dashboards, CRUD, enrollments, timetable, reports
+│   ├── templates/          #   base.html, 403/404, per-app folders, includes/form_fields.html
+│   └── static/css/         #   campus.css (hand-written)
 └── docs/                   # SE Lab documentation
-    └── database_design.md  #   ER diagram, functional dependencies, business-rule map
+    ├── database_design.md  #   ER diagram, functional dependencies, business-rule map
+    └── django_portal.md    #   URL map, role matrix, bridge sequence diagram
 ```
-
-Create the Django project from the repo root with `django-admin startproject campus_portal campus_portal`. That command puts `manage.py` directly inside `campus_portal/`.
 
 ## How Django and Java share `smart_campus_db`
 
@@ -81,8 +85,9 @@ Both stacks read `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` and `DB_PASSWORD`. N
 `students` and `faculty` each carry `username VARCHAR(150) NOT NULL UNIQUE` and `email VARCHAR(254) NOT NULL UNIQUE`.
 - **The link:** a Django login belongs to the person whose `username` equals `auth_user.username`.
 - **No foreign key to `auth_user`,** so `schema.sql` and `seed_data.sql` stay self-contained for the DBMS Lab and the Java engine, and the SQL scripts never depend on `migrate` having run.
-- **Creating or syncing `auth_user` rows** (a later Django phase) must use the same username and email, and put the user in the matching Group.
-- **To find the logged-in person,** look the user up with `Student.objects.get(username=request.user.username)` (or the `Faculty` equivalent).
+- **The role is derived, never stored** (`core/roles.py`): a superuser is **Admin**; a username found in `students` is **Student**; one found in `faculty` is **Faculty**. There are no Django Groups. A login matching none of these gets a 403 page.
+- **Creating or syncing `auth_user` rows** must use the same username; `manage.py seed_demo_users` does this for the demo data.
+- **To find the logged-in person,** use `core.roles.get_person(request.user)`, which returns the `Student` or `Faculty` row and is cached per request. Never take a person id from the URL.
 - **Usernames are unique across both tables.** The `trg_students_before_*` / `trg_faculty_before_*` triggers reject a username that already exists in the other table, so a login can never map to two people.
 - **Seed conventions:** student usernames are the lower-case roll number (`25cse001`), and faculty usernames are `first.last` (`ananya.rao`).
 
@@ -101,7 +106,12 @@ subprocess.run(
 )
 ```
 
-- `JAVA_ENGINE_JAR` defaults to `REPO_ROOT / "java_engine" / "target" / "smart-campus-engine.jar"`, and `JAVA_BIN` defaults to `"java"`.
+- **Implemented in `core/java_bridge.py`;** nothing else in Django may run a subprocess. The admin-only page `/engine/` uses it.
+  - An allow-list covers `defaulters`, `gpa-report`, `dashboard`, `refresh-defaulters`, `student` and `enroll`, and every argument is matched against a strict regex.
+  - `run_engine()` returns `EngineResult(command, data, elapsed_ms)` or raises `EngineError(error_type, message, hint, exit_code)`.
+  - Bridge-side error types are `JarMissing`, `JavaMissing`, `Timeout`, `BadOutput`, `NotAllowed` and `BadArgument`. All other types come from the engine's stderr JSON.
+- The actual argv is `java -Dfile.encoding=UTF-8 -jar <jar> <command> [args] [--year Y] --json`. The `-D` flag makes Java 17 write UTF-8 to a pipe; without it, Windows uses Cp1252.
+- `JAVA_ENGINE_JAR` defaults to `REPO_ROOT / "java_engine" / "target" / "smart-campus-engine.jar"`, `JAVA_BIN` to `"java"` and `JAVA_ENGINE_TIMEOUT` to 30 s. Override them with `DJANGO_JAVA_ENGINE_JAR`, `DJANGO_JAVA_BIN` and `DJANGO_JAVA_ENGINE_TIMEOUT` in `.env`.
 - The child process inherits Django's `os.environ`, which python-dotenv has already filled with the `DB_*` variables. The JAR therefore connects with the same credentials and needs no extra configuration.
 - The same JAR runs standalone: `java -jar java_engine/target/smart-campus-engine.jar <command> [args]`.
 - **CLI contract:** the result goes to stdout and error messages go to stderr. Exit codes are `0` for success, `1` for a runtime or database error and `2` for bad usage. Commands that Django calls must never prompt on stdin.
@@ -218,8 +228,13 @@ subprocess.run(
 ### Django Lab (`campus_portal/`)
 
 - **MVT, kept clean:**
-  - *Models:* unmanaged mirrors of the SQL tables and views (see Schema ownership).
+  - *Models:* all live in `core/models.py`, as unmanaged mirrors of the SQL tables and views (see Schema ownership).
+    - Foreign keys use `DO_NOTHING`, so MySQL's `ON DELETE` rules apply.
+    - Trigger-computed columns (`marks.total_marks/grade_points/letter_grade`) and `students.is_defaulter` are `editable=False`.
+    - **Never add a managed model with a ForeignKey to one of them.** `migrate` would create a real FK constraint, and `init_db.py`'s `DROP TABLE` would then fail.
   - *Views:* thin. They handle requests, call an app-level `services.py` for non-trivial logic, and render templates.
+  - *Writes:* every write goes through `core/services.py`, which wraps it in `transaction.atomic()` and turns a database rejection (trigger SIGNAL, UNIQUE, CHECK, FK) into a `ServiceError` with a friendly message from `core/db_errors.py`. For a new named constraint, add its message to `CONSTRAINT_MESSAGES` there. ModelForms save through `services.save_form(form)`, which puts the message on the form.
+  - *No duplicated business logic:* reports read the views (`AttendanceSummary`, `DefaulterRow`, `GpaReportRow`), and "declare defaulters" calls the procedure. Marks writes set only `internal_marks` / `external_marks`. Never compare against 75 or compute grades in Python or templates. To highlight defaulter rows, check membership in `DefaulterRow`.
   - *Templates:* presentation only.
   - All user input goes through Django Forms. Give each app's URLs a namespace (`app_name = "faculty"`) and always use `{% url %}` / `reverse()`, never hard-coded paths.
 - **Templates and static files:**
@@ -229,16 +244,19 @@ subprocess.run(
   - Put CSS in `static/css/`, with colours and spacing as custom properties in one place. Lay out with Flexbox/Grid and make it responsive with media queries.
   - Include `{% csrf_token %}` in every POST form.
 - **Role-based portals:**
-  - Admin, Faculty and Student are Django Groups with exactly those names. After login, `accounts` redirects users to their role's dashboard.
-  - Prefixes: `/admin-portal/`, `/faculty/`, `/student/`. Django's built-in admin is a developer tool, not the Admin portal; mount it at `/django-admin/`.
-  - Enforce access in **every** view with `@login_required` plus a role decorator from `core` (e.g. `@role_required("Faculty")`). Hiding links in a template is not access control.
-  - Students and faculty see only their own records. Filter querysets by the logged-in user; never trust an ID from the URL or form on its own.
-  - An `auth_user` maps to its `students`/`faculty` row by `username`. See "Linking Django logins to people" above.
-- **Java bridge view** (`core`):
+  - The role comes from `core.roles.get_role(user)`: superuser, else `students.username`, else `faculty.username`; see "Linking Django logins to people". After login, `/` redirects to the role's dashboard.
+  - Prefixes: `/student/`, `/faculty/`, `/admin-portal/`, `/engine/` (admin-only Java bridge), `/accounts/login/` and `/accounts/logout/` (POST only). Django's built-in admin is a developer tool, not the Admin portal, and lives at `/django-admin/`.
+  - Enforce access in **every** view with `@role_required(STUDENT|FACULTY|ADMIN)`, or `RoleRequiredMixin` with `allowed_roles` on class-based views, both from `core.roles`. Anonymous users are sent to login; a wrong role raises `PermissionDenied`, which renders the friendly `templates/403.html`. Hiding links in a template is not access control.
+  - Students and faculty see only their own records. Filter querysets by `get_person(request.user)`; never trust an ID from the URL or form on its own. Faculty course pages check that `course.faculty` is the logged-in teacher and return 403 otherwise.
+- **Java bridge** (`core/java_bridge.py`, `core/views.py`):
   - Pass arguments as a list and **never use `shell=True`**.
-  - Accept only commands from an allow-list, and validate their arguments with a Form.
+  - Accept only commands from the allow-list, and validate arguments with a Form (`core/forms.py`) and again in `build_command`.
   - Always set a `timeout`.
-  - Handle `FileNotFoundError` (Java missing or JAR not built), `subprocess.TimeoutExpired` and a non-zero `returncode` by showing stderr as a user-facing error. The page must never return a 500 because the JAR is absent.
+  - Handle a missing JAR (checked before starting Java), `FileNotFoundError`, `TimeoutExpired`, a non-zero `returncode` and non-JSON output by showing the error type and message. The page must never return a 500 because the JAR is absent.
+  - **One engine call per request, never one per row.** Writes (`refresh-defaulters`, `enroll`) are POST + CSRF only.
+- **Tests** live in `campus_portal/core/tests/`.
+  - `core.test_runner.SmartCampusTestRunner` creates `test_<DB_NAME>`, runs Django's migrations, then loads the real `database/*.sql` (seed included) using `init_db.py`'s splitter, so tests never touch the development database.
+  - Real-database tests subclass `core.tests.base.CampusTestCase`, which seeds the demo users. Mock `core.java_bridge.subprocess.run` (or `core.views.java_bridge.run_engine`) rather than calling Java.
 
 ### SE Lab (`docs/`)
 
@@ -249,7 +267,7 @@ subprocess.run(
   - ER diagram and functional dependencies (`database_design.md`, must match `schema.sql`)
   - Class diagram (must match `java_engine` models/dao)
   - DFD level 0/1
-  - Sequence diagram for the Django → Java bridge
+  - Sequence diagram for the Django → Java bridge (`django_portal.md`)
   - Test plan and test cases
 - Update a diagram in the same commit as the code change that affects it.
 
@@ -287,16 +305,40 @@ cd ..
 java -jar java_engine/target/smart-campus-engine.jar help
 java -jar java_engine/target/smart-campus-engine.jar defaulters --json
 
-# 5. Django portal (virtualenv from step 2 active)
+# 5. Django portal (virtualenv from step 2 active; without it use ..\.venv\Scripts\python.exe)
 cd campus_portal
-python manage.py migrate             # Django's own tables only
-python manage.py createsuperuser
+python manage.py migrate             # Django's own tables only (core's migration is all no-ops)
+python manage.py seed_demo_users     # DEMO logins for every student/faculty row + "admin" (re-runnable)
+python manage.py check
+python manage.py test --noinput      # builds test_smart_campus_db from database/*.sql
 python manage.py runserver           # http://127.0.0.1:8000/
 ```
+
+Order between steps 3 and 5 doesn't matter, and both can be re-run. `init_db.py` never touches Django's tables, so logins survive a database rebuild, and `migrate` never touches the domain tables.
+
+## Demo logins (DEMO ONLY)
+
+`manage.py seed_demo_users` gives **every** demo account the same password: **`campus-demo-2026`**. It comes from `DJANGO_DEMO_PASSWORD` and defaults to that value.
+- It exists only for local demos and lab evaluation.
+- Never use it on a reachable server or for real people.
+- The command refuses to run with `DJANGO_DEBUG` off unless you pass `--force`.
+
+| Role | Usernames | Lands on |
+|---|---|---|
+| Admin (superuser) | `admin` | `/admin-portal/` |
+| Faculty | `ananya.rao` (CS301), `kiran.kumar` (CS351, CS354), `meera.iyer` (CS352), `arjun.reddy` (CS353), `suresh.babu` (MA301) | `/faculty/` |
+| Student | `25cse001` … `25cse010`. `25cse004` and `25cse009` are below 75% attendance and see the warning. | `/student/` |
 
 ## Gotchas
 
 - **Stay on Django 5.2 LTS.** Django 6.1 requires MySQL 8.4+, and this project targets MySQL 8.0. 5.2 LTS is supported until April 2028.
+- **Known DB bug, fix pending approval: the `REGEXP` CHECKs are case-insensitive.** Under `utf8mb4_unicode_ci`, `section REGEXP '^[A-Z]$'` also accepts `a`. The same applies to `chk_timetable_entries_section` and `chk_departments_dept_code`. The proposed fix is `REGEXP_LIKE(section, '^[A-Z]$', 'c')`. Until then, the Django test `test_check_constraint_message_for_bad_section` is marked as an expected failure.
+- **Don't run `startproject` from the repo root.** There, the existing `campus_portal/` folder is importable as a package, and Django refuses the name. The project was created from inside the folder with `django-admin startproject campus_portal .`.
+- **Django tests need a MySQL user that can `CREATE DATABASE`** and create functions/triggers (root locally). They build and drop `test_smart_campus_db`. Pass `--noinput`, or Django asks before deleting a leftover test database.
+- **The test runner sets `DEBUG=False`,** so calling `seed_demo_users` from tests needs `force=True`. `CampusTestCase` already does this, and uses the MD5 password hasher so tests stay fast.
+- **A bridge call takes about 0.7-1.1 s through the web server** (JVM start-up plus a fresh MySQL connection, measured on the dev server). That's fine for one call per page; never loop over rows calling the engine.
+- **PowerShell 5.1 breaks multi-line `-c` arguments** (`manage.py shell -c "..."`) at embedded quotes. Put the code in a `.py` file instead.
+- **Stopping `runserver` started from the venv needs two PIDs killed:** the venv launcher and its child Python process. Match them by command line, never by name alone.
 - **PowerShell has no `<` redirection,** so `mysql -u root -p < database\schema.sql` fails there. Use `python database/init_db.py`, `source` inside the client, or wrap the command in `cmd /c "…"`.
 - **Keep `cryptography` in requirements.txt.** PyMySQL needs it to authenticate against MySQL 8's default `caching_sha2_password`.
 - **The JDBC URL needs `allowPublicKeyRetrieval=true`** when `useSSL=false`. Without it, Connector/J fails with "Public Key Retrieval is not allowed". This setting is for local development only.
