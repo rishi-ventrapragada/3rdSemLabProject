@@ -22,6 +22,7 @@
 
         <main.class>com.smartcampus.Main</main.class>
         <mysql.connector.version>9.7.0</mysql.connector.version>
+        <junit.version>6.1.3</junit.version>
     </properties>
 
     <dependencies>
@@ -29,6 +30,14 @@
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <version>${mysql.connector.version}</version>
+        </dependency>
+
+        <!-- Test scope only: never bundled into the JAR. The tests need no database. -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -41,6 +50,12 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.1</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.6.1</version>
             </plugin>
 
             <!-- Bundles the JDBC driver into a single runnable JAR so `java -jar` needs no classpath setup. -->
