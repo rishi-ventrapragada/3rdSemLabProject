@@ -246,6 +246,31 @@ class DefaulterRow(AttendanceSummaryBase):
         db_table = "v_defaulter_list"
 
 
+class MarksAuditRow(models.Model):
+    """v_marks_audit: marks history written by trg_marks_after_update; grades derived by the view."""
+
+    audit_id = models.IntegerField(primary_key=True)
+    mark_id = models.IntegerField()
+    roll_number = models.CharField(max_length=20, null=True)
+    full_name = models.CharField(max_length=100, null=True)
+    course_code = models.CharField(max_length=10, null=True)
+    course_name = models.CharField(max_length=100, null=True)
+    old_internal = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    old_external = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    old_total = models.DecimalField(max_digits=6, decimal_places=2, null=True)
+    old_letter_grade = models.CharField(max_length=2, null=True)
+    new_internal = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    new_external = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    new_total = models.DecimalField(max_digits=6, decimal_places=2, null=True)
+    new_letter_grade = models.CharField(max_length=2, null=True)
+    changed_at = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = "v_marks_audit"
+        ordering = ["-audit_id"]
+
+
 class GpaReportRow(models.Model):
     """v_student_cgpa_report: credit-weighted GPA from graded marks next to the official CGPA."""
 

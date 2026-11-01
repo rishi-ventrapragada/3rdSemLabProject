@@ -41,9 +41,9 @@ SQL_FILES = ("schema.sql", "views_triggers.sql", "seed_data.sql")
 
 TABLES = (
     "departments", "rooms", "time_slots", "faculty", "students", "courses",
-    "enrollments", "attendance_records", "marks", "timetable_entries",
+    "enrollments", "attendance_records", "marks", "timetable_entries", "marks_audit",
 )
-VIEWS = ("v_attendance_summary", "v_defaulter_list", "v_student_cgpa_report")
+VIEWS = ("v_attendance_summary", "v_defaulter_list", "v_student_cgpa_report", "v_marks_audit")
 
 # init_db.py creates and selects the database itself (honouring DB_NAME), so these
 # statements, which exist for manual `source` runs, are skipped.

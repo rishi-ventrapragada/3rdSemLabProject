@@ -21,6 +21,7 @@ CREATE DATABASE IF NOT EXISTS smart_campus_db
 USE smart_campus_db;
 
 -- Children before parents, so foreign keys never block a drop.
+DROP TABLE IF EXISTS marks_audit;
 DROP TABLE IF EXISTS timetable_entries;
 DROP TABLE IF EXISTS marks;
 DROP TABLE IF EXISTS attendance_records;
@@ -233,4 +234,26 @@ CREATE TABLE timetable_entries (
     CONSTRAINT fk_timetable_entries_time_slots FOREIGN KEY (slot_id)
         REFERENCES time_slots (slot_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT chk_timetable_entries_section CHECK (REGEXP_LIKE(section, '^[A-Z]$', 'c'))  -- 'c' = case-sensitive
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+
+-- -----------------------------------------------------------------------------
+-- Audit trail
+-- -----------------------------------------------------------------------------
+
+-- One row per change to a student's marks, written only by trg_marks_after_update
+-- (views_triggers.sql). It deliberately has NO foreign key to marks, because the history
+-- must outlive a deleted marks row. Only the raw marks are kept: the grades are derived
+-- from them in v_marks_audit through fn_grade_points / fn_letter_grade, which keeps this
+-- table in 3NF. changed_at is UTC (UTC_TIMESTAMP()), like every timestamp in this project.
+CREATE TABLE marks_audit (
+    audit_id      INT            NOT NULL AUTO_INCREMENT,
+    mark_id       INT            NOT NULL,
+    old_internal  DECIMAL(5, 2)  NULL,
+    new_internal  DECIMAL(5, 2)  NULL,
+    old_external  DECIMAL(5, 2)  NULL,
+    new_external  DECIMAL(5, 2)  NULL,
+    changed_at    DATETIME       NOT NULL,
+    CONSTRAINT pk_marks_audit PRIMARY KEY (audit_id),
+    INDEX idx_marks_audit_mark (mark_id)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;

@@ -145,6 +145,32 @@ FROM students s
     LEFT JOIN marks m ON m.enrollment_id = e.enrollment_id AND m.grade_points IS NOT NULL
 GROUP BY s.student_id, s.roll_number, s.full_name, d.dept_code, s.semester, s.section, s.cgpa;
 
+-- Readable marks history. Grades are derived from the stored raw marks with the same
+-- functions the marks triggers use, so the scale lives in one place. LEFT JOINs keep audit
+-- rows whose marks/enrollment were deleted later; their student and course show as NULL.
+CREATE OR REPLACE VIEW v_marks_audit AS
+SELECT
+    a.audit_id,
+    a.mark_id,
+    s.roll_number,
+    s.full_name,
+    c.course_code,
+    c.course_name,
+    a.old_internal,
+    a.old_external,
+    a.old_internal + a.old_external                                        AS old_total,
+    fn_letter_grade(fn_grade_points(a.old_internal + a.old_external))      AS old_letter_grade,
+    a.new_internal,
+    a.new_external,
+    a.new_internal + a.new_external                                        AS new_total,
+    fn_letter_grade(fn_grade_points(a.new_internal + a.new_external))      AS new_letter_grade,
+    a.changed_at
+FROM marks_audit a
+    LEFT JOIN marks m ON m.mark_id = a.mark_id
+    LEFT JOIN enrollments e ON e.enrollment_id = m.enrollment_id
+    LEFT JOIN students s ON s.student_id = e.student_id
+    LEFT JOIN courses c ON c.course_id = e.course_id;
+
 
 -- -----------------------------------------------------------------------------
 -- Triggers
@@ -152,6 +178,7 @@ GROUP BY s.student_id, s.roll_number, s.full_name, d.dept_code, s.semester, s.se
 
 DROP TRIGGER IF EXISTS trg_marks_before_insert;
 DROP TRIGGER IF EXISTS trg_marks_before_update;
+DROP TRIGGER IF EXISTS trg_marks_after_update;
 DROP TRIGGER IF EXISTS trg_prevent_timetable_faculty_clash;
 DROP TRIGGER IF EXISTS trg_prevent_timetable_faculty_clash_update;
 DROP TRIGGER IF EXISTS trg_students_before_insert;
@@ -181,6 +208,20 @@ BEGIN
     SET NEW.total_marks = NEW.internal_marks + NEW.external_marks;
     SET NEW.grade_points = fn_grade_points(NEW.total_marks);
     SET NEW.letter_grade = fn_letter_grade(NEW.grade_points);
+END$$
+
+-- Audit trail: an AFTER trigger, because it records a change that has already been
+-- accepted (the BEFORE triggers and CHECKs ran first). Re-saving identical marks writes
+-- nothing; <=> is MySQL's NULL-safe equality, needed because external_marks may be NULL.
+CREATE TRIGGER trg_marks_after_update
+    AFTER UPDATE ON marks
+    FOR EACH ROW
+BEGIN
+    IF NOT (OLD.internal_marks <=> NEW.internal_marks AND OLD.external_marks <=> NEW.external_marks) THEN
+        INSERT INTO marks_audit (mark_id, old_internal, new_internal, old_external, new_external, changed_at)
+        VALUES (NEW.mark_id, OLD.internal_marks, NEW.internal_marks, OLD.external_marks, NEW.external_marks,
+                UTC_TIMESTAMP());
+    END IF;
 END$$
 
 -- A faculty member cannot teach two classes in the same time slot. The course's

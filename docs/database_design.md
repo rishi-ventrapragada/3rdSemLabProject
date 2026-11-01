@@ -17,6 +17,7 @@ erDiagram
     courses ||--o{ timetable_entries : "scheduled as"
     rooms ||--o{ timetable_entries : hosts
     time_slots ||--o{ timetable_entries : "occupied by"
+    marks ||..o{ marks_audit : "history of (no FK)"
 
     departments {
         int dept_id PK
@@ -96,6 +97,15 @@ erDiagram
         int slot_id FK "UK with section"
         char section
     }
+    marks_audit {
+        int audit_id PK
+        int mark_id "indexed, no FK"
+        decimal old_internal
+        decimal new_internal
+        decimal old_external
+        decimal new_external
+        datetime changed_at "UTC"
+    }
 ```
 
 ## Functional dependencies and normal form
@@ -114,6 +124,7 @@ Every table has a single-column surrogate key. The candidate keys are listed so 
 | `attendance_records` | `attendance_id`, `(enrollment_id, session_date)` | `attendance_id → enrollment_id, session_date, status` |
 | `marks` | `mark_id`, `enrollment_id` | `mark_id → enrollment_id, internal_marks, external_marks`; `internal_marks, external_marks → total_marks → grade_points → letter_grade` (see below) |
 | `timetable_entries` | `entry_id`, `(room_id, slot_id)`, `(slot_id, section)` | `entry_id → course_id, room_id, slot_id, section` |
+| `marks_audit` | `audit_id` | `audit_id → mark_id, old_internal, new_internal, old_external, new_external, changed_at`. Totals and grades are not stored; `v_marks_audit` derives them, avoiding the transitive marks → total → grade dependency. |
 
 How the design avoids the usual 3NF violations:
 - **Department names** are stored only in `departments`. Everyone else stores `dept_id`.
@@ -140,6 +151,7 @@ How the design avoids the usual 3NF violations:
 | A student enrolls in a course at most once; a mark exists at most once per enrollment; attendance is recorded once per enrollment per day | `uq_enrollments_student_course`, `uq_marks_enrollment`, `uq_attendance_records_enrollment_date` |
 | Classes (and attendance) run Monday to Friday | `day_of_week` ENUM, `chk_attendance_records_weekday` |
 | A username belongs to exactly one person across `students` and `faculty` | per-table UNIQUE plus `trg_students_before_*` / `trg_faculty_before_*` |
+| Every change to a student's marks is recorded (what changed, and when) | `trg_marks_after_update` (AFTER trigger) → `marks_audit`, read through `v_marks_audit` |
 | Attendance below 75% makes a student a defaulter | `v_defaulter_list`, declared by `sp_refresh_defaulter_flags()` |
 | Deleting a student removes their enrollments, attendance and marks; a course with enrollments cannot be deleted | FK `ON DELETE CASCADE` / `RESTRICT` |
 
