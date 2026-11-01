@@ -1,0 +1,900 @@
+{
+ "unit": [
+  {
+   "id": "UT01",
+   "technique": "Unit",
+   "module": "core.services",
+   "objective": "Academic year rolls over in July",
+   "input": "current_academic_year(2026-10-31) and (2026-06-30)",
+   "expected": "2026-27 and 2025-26",
+   "actual": "2026-27 and 2025-26",
+   "status": "Pass",
+   "ms": 0
+  },
+  {
+   "id": "UT02",
+   "technique": "Unit",
+   "module": "core.db_errors",
+   "objective": "Duplicate-enrollment error becomes a sentence",
+   "input": "MySQL error 1062 on uq_enrollments_student_course",
+   "expected": "This student is already enrolled in that course.",
+   "actual": "This student is already enrolled in that course.",
+   "status": "Pass",
+   "ms": 0
+  },
+  {
+   "id": "UT03",
+   "technique": "Unit",
+   "module": "core.java_bridge",
+   "objective": "Allowed command builds a safe argument list",
+   "input": "build_command('student', ['25CSE001'])",
+   "expected": "List ending student, 25CSE001, --json with -Dfile.encoding",
+   "actual": "['student', '25CSE001', '--json'] (list)",
+   "status": "Pass",
+   "ms": 0
+  },
+  {
+   "id": "UT04",
+   "technique": "Unit",
+   "module": "core.java_bridge",
+   "objective": "Command outside the allow-list is refused",
+   "input": "build_command('rm')",
+   "expected": "EngineError NotAllowed",
+   "actual": "EngineError NotAllowed: 'rm' is not an allowed engine command.",
+   "status": "Pass",
+   "ms": 0
+  },
+  {
+   "id": "UT05",
+   "technique": "Unit",
+   "module": "core.roles",
+   "objective": "Role is derived from the login",
+   "input": "admin, ananya.rao, 25cse001",
+   "expected": "admin, faculty, student",
+   "actual": "admin, faculty, student",
+   "status": "Pass",
+   "ms": 73
+  },
+  {
+   "id": "UT06",
+   "technique": "Unit",
+   "module": "fn_grade_points / fn_letter_grade",
+   "objective": "Grading function maps 85 marks",
+   "input": "SELECT fn_grade_points(85), fn_letter_grade(...)",
+   "expected": "9, A+",
+   "actual": "9, A+",
+   "status": "Pass",
+   "ms": 1
+  }
+ ],
+ "integration": [
+  {
+   "id": "IT01",
+   "technique": "Integration",
+   "module": "accounts + core.roles",
+   "objective": "Login lands each role on its own portal",
+   "input": "POST /accounts/login/ for admin, ananya.rao, 25cse001",
+   "expected": "/admin-portal/, /faculty/, /student/",
+   "actual": "admin -> /admin-portal/; ananya.rao -> /faculty/; 25cse001 -> /student/",
+   "status": "Pass",
+   "ms": 2756
+  },
+  {
+   "id": "IT02",
+   "technique": "Integration",
+   "module": "faculty_portal -> trg_marks_before_update -> student_portal",
+   "objective": "Marks entered by faculty are graded by the trigger and shown to the student",
+   "input": "Faculty saves 38 + 57 for 25CSE001 in CS301",
+   "expected": "95.00, 10, O stored and visible on /student/",
+   "actual": "DB: 95.00, 10, O; student page shows grade: True",
+   "status": "Pass",
+   "ms": 82
+  },
+  {
+   "id": "IT03",
+   "technique": "Integration",
+   "module": "faculty_portal -> attendance_records -> v_attendance_summary",
+   "objective": "A saved session updates the attendance view",
+   "input": "Mark all CS301 students PRESENT on Mon 2026-10-12",
+   "expected": "total_classes increases by 1",
+   "actual": "total_classes 12 -> 13; attendance 92.31%",
+   "status": "Pass",
+   "ms": 94
+  },
+  {
+   "id": "IT04",
+   "technique": "Integration",
+   "module": "admin_portal -> core.services -> enrollments",
+   "objective": "Admin enroll form creates an enrollment",
+   "input": "New semester-3 student 25CSE061 + CS301, 2026-27",
+   "expected": "Success message and new enrollments row",
+   "actual": "message shown: True; row exists: True",
+   "status": "Pass",
+   "ms": 102
+  },
+  {
+   "id": "IT05",
+   "technique": "Integration",
+   "module": "admin_portal -> trg_prevent_timetable_faculty_clash -> core.db_errors",
+   "objective": "A teacher double-booking is refused with a readable message",
+   "input": "CS301 (Ananya Rao) in MON 09:00 slot for section C",
+   "expected": "Clash message naming the teacher; no new row",
+   "actual": "Timetable clash: Ananya Rao already teaches CS301 at MON 09:00-10:00 (slot 1). Choose another slot.; entries 20 -> 20",
+   "status": "Pass",
+   "ms": 109
+  },
+  {
+   "id": "IT06",
+   "technique": "Integration",
+   "module": "faculty_portal -> trg_marks_after_update -> v_marks_audit -> admin_portal",
+   "objective": "A marks change is audited and visible to the admin",
+   "input": "Change 25CSE002 CS301 marks to 40 + 60",
+   "expected": "One audit row with old and new grade, listed on /admin-portal/marks-audit/",
+   "actual": "1 audit row: 82.00 (A+) -> 100.00 (O); on admin page: True",
+   "status": "Pass",
+   "ms": 178
+  },
+  {
+   "id": "IT07",
+   "technique": "Integration",
+   "module": "admin_portal -> sp_refresh_defaulter_flags()",
+   "objective": "Declaring defaulters re-computes every flag",
+   "input": "Stale flag on 25CSE001, then 'Declare defaulter list now'",
+   "expected": "Only 25CSE004 and 25CSE009 flagged",
+   "actual": "flagged after CALL: 25CSE004, 25CSE009; message: True",
+   "status": "Pass",
+   "ms": 70
+  },
+  {
+   "id": "IT08",
+   "technique": "Integration",
+   "module": "core.java_bridge -> Java JAR -> v_defaulter_list",
+   "objective": "Django runs the real JAR and parses its JSON",
+   "input": "run_engine('defaulters')",
+   "expected": "25CSE004 and 25CSE009 in the parsed data",
+   "actual": "2 students (25CSE004, 25CSE009), 8 course rows, 844 ms",
+   "status": "Pass",
+   "ms": 845
+  },
+  {
+   "id": "IT09",
+   "technique": "Integration",
+   "module": "Java CLI -> JDBC -> v_student_cgpa_report",
+   "objective": "Engine reads the GPA view and sorts it",
+   "input": "java -jar smart-campus-engine.jar gpa-report --json",
+   "expected": "Exit 0, 10 rows, 25CSE010 first",
+   "actual": "exit 0, 10 rows, first 25CSE010 (8.0), 741 ms",
+   "status": "Pass",
+   "ms": 741
+  },
+  {
+   "id": "IT10",
+   "technique": "Integration",
+   "module": "Java CLI -> enrollments UNIQUE constraint",
+   "objective": "Duplicate enrollment is reported by the database through the engine",
+   "input": "enroll 25CSE001 CS301 --json",
+   "expected": "Exit 1, error type DuplicateEnrollment",
+   "actual": "exit 1, type DuplicateEnrollment: 25CSE001 is already enrolled in CS301",
+   "status": "Pass",
+   "ms": 681
+  }
+ ],
+ "white_box": [
+  {
+   "id": "WB01",
+   "technique": "Statement / branch coverage",
+   "module": "fn_grade_points (CASE)",
+   "objective": "Execute every CASE branch once",
+   "input": "total = 95",
+   "expected": "10, O",
+   "actual": "10, O",
+   "status": "Pass",
+   "ms": 1
+  },
+  {
+   "id": "WB02",
+   "technique": "Statement / branch coverage",
+   "module": "fn_grade_points (CASE)",
+   "objective": "Execute every CASE branch once",
+   "input": "total = 85",
+   "expected": "9, A+",
+   "actual": "9, A+",
+   "status": "Pass",
+   "ms": 1
+  },
+  {
+   "id": "WB03",
+   "technique": "Statement / branch coverage",
+   "module": "fn_grade_points (CASE)",
+   "objective": "Execute every CASE branch once",
+   "input": "total = 75",
+   "expected": "8, A",
+   "actual": "8, A",
+   "status": "Pass",
+   "ms": 1
+  },
+  {
+   "id": "WB04",
+   "technique": "Statement / branch coverage",
+   "module": "fn_grade_points (CASE)",
+   "objective": "Execute every CASE branch once",
+   "input": "total = 65",
+   "expected": "7, B+",
+   "actual": "7, B+",
+   "status": "Pass",
+   "ms": 1
+  },
+  {
+   "id": "WB05",
+   "technique": "Statement / branch coverage",
+   "module": "fn_grade_points (CASE)",
+   "objective": "Execute every CASE branch once",
+   "input": "total = 55",
+   "expected": "6, B",
+   "actual": "6, B",
+   "status": "Pass",
+   "ms": 1
+  },
+  {
+   "id": "WB06",
+   "technique": "Statement / branch coverage",
+   "module": "fn_grade_points (CASE)",
+   "objective": "Execute every CASE branch once",
+   "input": "total = 45",
+   "expected": "5, P",
+   "actual": "5, P",
+   "status": "Pass",
+   "ms": 1
+  },
+  {
+   "id": "WB07",
+   "technique": "Statement / branch coverage",
+   "module": "fn_grade_points (CASE)",
+   "objective": "Execute every CASE branch once",
+   "input": "total = 30",
+   "expected": "0, F",
+   "actual": "0, F",
+   "status": "Pass",
+   "ms": 0
+  },
+  {
+   "id": "WB08",
+   "technique": "Statement / branch coverage",
+   "module": "fn_grade_points (CASE)",
+   "objective": "Execute every CASE branch once",
+   "input": "total = None",
+   "expected": "None, None",
+   "actual": "None, None",
+   "status": "Pass",
+   "ms": 0
+  },
+  {
+   "id": "WB09",
+   "technique": "Branch coverage",
+   "module": "core.roles.role_required",
+   "objective": "Anonymous branch",
+   "input": "anonymous GET /student/",
+   "expected": "HTTP 302",
+   "actual": "HTTP 302",
+   "status": "Pass",
+   "ms": 1
+  },
+  {
+   "id": "WB10",
+   "technique": "Branch coverage",
+   "module": "core.roles.role_required",
+   "objective": "Wrong-role branch",
+   "input": "ananya.rao GET /student/",
+   "expected": "HTTP 403",
+   "actual": "HTTP 403",
+   "status": "Pass",
+   "ms": 52
+  },
+  {
+   "id": "WB11",
+   "technique": "Branch coverage",
+   "module": "core.roles.role_required",
+   "objective": "Allowed branch",
+   "input": "25cse001 GET /student/",
+   "expected": "HTTP 200",
+   "actual": "HTTP 200",
+   "status": "Pass",
+   "ms": 49
+  },
+  {
+   "id": "WB12",
+   "technique": "Path coverage",
+   "module": "core.services.enroll_student",
+   "objective": "Execute path: mismatch",
+   "input": "Semester-3 student, semester-5 course",
+   "expected": "ServiceError (semester rule)",
+   "actual": "ServiceError: CS501 is a semester 5 course, but 25CSE001 is in semester 3.",
+   "status": "Pass",
+   "ms": 4
+  },
+  {
+   "id": "WB13",
+   "technique": "Path coverage",
+   "module": "core.services.enroll_student",
+   "objective": "Execute path: duplicate",
+   "input": "25CSE001 + CS301 (already enrolled)",
+   "expected": "ServiceError (duplicate, from MySQL 1062)",
+   "actual": "ServiceError: This student is already enrolled in that course.",
+   "status": "Pass",
+   "ms": 5
+  },
+  {
+   "id": "WB14",
+   "technique": "Path coverage",
+   "module": "core.services.enroll_student",
+   "objective": "Execute path: ok",
+   "input": "New semester-3 student + CS301",
+   "expected": "Enrollment created",
+   "actual": "created enrollment for 25CSE062 in CS301",
+   "status": "Pass",
+   "ms": 8
+  },
+  {
+   "id": "WB15",
+   "technique": "Condition coverage",
+   "module": "MarksSheetForm.clean",
+   "objective": "internal is None AND external is not None",
+   "input": "internal='', external=''",
+   "expected": "valid",
+   "actual": "valid",
+   "status": "Pass",
+   "ms": 2
+  },
+  {
+   "id": "WB16",
+   "technique": "Condition coverage",
+   "module": "MarksSheetForm.clean",
+   "objective": "internal is None AND external is not None",
+   "input": "internal='', external='50'",
+   "expected": "error: Enter internal marks before external marks.",
+   "actual": "error: Enter internal marks before external marks.",
+   "status": "Pass",
+   "ms": 1
+  },
+  {
+   "id": "WB17",
+   "technique": "Condition coverage",
+   "module": "MarksSheetForm.clean",
+   "objective": "internal is None AND external is not None",
+   "input": "internal='30', external=''",
+   "expected": "valid",
+   "actual": "valid",
+   "status": "Pass",
+   "ms": 1
+  },
+  {
+   "id": "WB18",
+   "technique": "Condition coverage",
+   "module": "MarksSheetForm.clean",
+   "objective": "internal is None AND external is not None",
+   "input": "internal='30', external='50'",
+   "expected": "valid",
+   "actual": "valid",
+   "status": "Pass",
+   "ms": 1
+  },
+  {
+   "id": "WB19",
+   "technique": "Condition coverage",
+   "module": "trg_marks_after_update",
+   "objective": "NOT(old <=> new internal AND old <=> new external)",
+   "input": "internal same, external same",
+   "expected": "0 audit row(s)",
+   "actual": "0 audit row(s)",
+   "status": "Pass",
+   "ms": 6
+  },
+  {
+   "id": "WB20",
+   "technique": "Condition coverage",
+   "module": "trg_marks_after_update",
+   "objective": "NOT(old <=> new internal AND old <=> new external)",
+   "input": "internal 20, external same",
+   "expected": "1 audit row(s)",
+   "actual": "1 audit row(s)",
+   "status": "Pass",
+   "ms": 7
+  },
+  {
+   "id": "WB21",
+   "technique": "Condition coverage",
+   "module": "trg_marks_after_update",
+   "objective": "NOT(old <=> new internal AND old <=> new external)",
+   "input": "internal same, external NULL",
+   "expected": "1 audit row(s)",
+   "actual": "1 audit row(s)",
+   "status": "Pass",
+   "ms": 7
+  },
+  {
+   "id": "WB22",
+   "technique": "Loop testing",
+   "module": "cli.CommandLine.parse (argument loop)",
+   "objective": "Loop over 0 arguments (shows help)",
+   "input": "java -jar ... ",
+   "expected": "exit 0",
+   "actual": "exit 0: Smart Campus Java engine",
+   "status": "Pass",
+   "ms": 189
+  },
+  {
+   "id": "WB23",
+   "technique": "Loop testing",
+   "module": "cli.CommandLine.parse (argument loop)",
+   "objective": "Loop over 1 argument",
+   "input": "java -jar ... courses",
+   "expected": "exit 0",
+   "actual": "exit 0: Code   Name                         Type    Credits  Sem  Faculty",
+   "status": "Pass",
+   "ms": 654
+  },
+  {
+   "id": "WB24",
+   "technique": "Loop testing",
+   "module": "cli.CommandLine.parse (argument loop)",
+   "objective": "Loop over 6 arguments incl. options",
+   "input": "java -jar ... enroll 25CSE001 CS301 --year 2026-27 --json",
+   "expected": "exit 1",
+   "actual": "exit 1: {\"ok\":false,\"command\":\"enroll\",\"error\":{\"type\":\"DuplicateEnrollment\",\"",
+   "status": "Pass",
+   "ms": 744
+  },
+  {
+   "id": "WB25",
+   "technique": "Loop testing",
+   "module": "config.DatabaseConfig.findEnvFile (walk-up loop)",
+   "objective": "Find .env after 0 parent steps (repo root)",
+   "input": "java -jar ... courses (cwd=3rdSemLabProject)",
+   "expected": "exit 0 (connected)",
+   "actual": "exit 0",
+   "status": "Pass",
+   "ms": 690
+  },
+  {
+   "id": "WB26",
+   "technique": "Loop testing",
+   "module": "config.DatabaseConfig.findEnvFile (walk-up loop)",
+   "objective": "Find .env after 1 parent step",
+   "input": "java -jar ... courses (cwd=3rdSemLabProject\\java_engine)",
+   "expected": "exit 0 (connected)",
+   "actual": "exit 0",
+   "status": "Pass",
+   "ms": 668
+  },
+  {
+   "id": "WB27",
+   "technique": "Loop testing",
+   "module": "config.DatabaseConfig.findEnvFile (walk-up loop)",
+   "objective": "Find .env after 2 parent steps",
+   "input": "java -jar ... courses (cwd=3rdSemLabProject\\java_engine\\target)",
+   "expected": "exit 0 (connected)",
+   "actual": "exit 0",
+   "status": "Pass",
+   "ms": 639
+  }
+ ],
+ "black_box": [
+  {
+   "id": "BB01",
+   "technique": "Equivalence partitioning",
+   "module": "Faculty marks entry (internal, 0-40)",
+   "objective": "Validate internal marks",
+   "input": "internal = 25",
+   "expected": "accepted",
+   "actual": "accepted, stored 25.00",
+   "status": "Pass",
+   "ms": 42
+  },
+  {
+   "id": "BB02",
+   "technique": "Equivalence partitioning",
+   "module": "Faculty marks entry (internal, 0-40)",
+   "objective": "Validate internal marks",
+   "input": "internal = -5",
+   "expected": "rejected",
+   "actual": "rejected (form error), stored value unchanged 36.00",
+   "status": "Pass",
+   "ms": 37
+  },
+  {
+   "id": "BB03",
+   "technique": "Equivalence partitioning",
+   "module": "Faculty marks entry (internal, 0-40)",
+   "objective": "Validate internal marks",
+   "input": "internal = 45",
+   "expected": "rejected",
+   "actual": "rejected (form error), stored value unchanged 36.00",
+   "status": "Pass",
+   "ms": 42
+  },
+  {
+   "id": "BB04",
+   "technique": "Equivalence partitioning",
+   "module": "Faculty marks entry (internal, 0-40)",
+   "objective": "Validate internal marks",
+   "input": "internal = abc",
+   "expected": "rejected",
+   "actual": "rejected (form error), stored value unchanged 36.00",
+   "status": "Pass",
+   "ms": 36
+  },
+  {
+   "id": "BB05",
+   "technique": "Boundary value analysis",
+   "module": "Faculty marks entry (internal, 0-40)",
+   "objective": "Validate internal marks",
+   "input": "internal = -0.01",
+   "expected": "rejected",
+   "actual": "rejected (form error), stored value unchanged 36.00",
+   "status": "Pass",
+   "ms": 38
+  },
+  {
+   "id": "BB06",
+   "technique": "Boundary value analysis",
+   "module": "Faculty marks entry (internal, 0-40)",
+   "objective": "Validate internal marks",
+   "input": "internal = 0",
+   "expected": "accepted",
+   "actual": "accepted, stored 0.00",
+   "status": "Pass",
+   "ms": 31
+  },
+  {
+   "id": "BB07",
+   "technique": "Boundary value analysis",
+   "module": "Faculty marks entry (internal, 0-40)",
+   "objective": "Validate internal marks",
+   "input": "internal = 40",
+   "expected": "accepted",
+   "actual": "accepted, stored 40.00",
+   "status": "Pass",
+   "ms": 29
+  },
+  {
+   "id": "BB08",
+   "technique": "Boundary value analysis",
+   "module": "Faculty marks entry (internal, 0-40)",
+   "objective": "Validate internal marks",
+   "input": "internal = 40.01",
+   "expected": "rejected",
+   "actual": "rejected (form error), stored value unchanged 36.00",
+   "status": "Pass",
+   "ms": 45
+  },
+  {
+   "id": "BB09",
+   "technique": "Boundary value analysis",
+   "module": "Grade scale via trg_marks_before_update",
+   "objective": "Grade at a scale boundary",
+   "input": "39.99 + 0",
+   "expected": "0, F",
+   "actual": "39.99 -> 0, F",
+   "status": "Pass",
+   "ms": 27
+  },
+  {
+   "id": "BB10",
+   "technique": "Boundary value analysis",
+   "module": "Grade scale via trg_marks_before_update",
+   "objective": "Grade at a scale boundary",
+   "input": "40 + 0",
+   "expected": "5, P",
+   "actual": "40.00 -> 5, P",
+   "status": "Pass",
+   "ms": 26
+  },
+  {
+   "id": "BB11",
+   "technique": "Boundary value analysis",
+   "module": "Grade scale via trg_marks_before_update",
+   "objective": "Grade at a scale boundary",
+   "input": "30 + 59.99",
+   "expected": "9, A+",
+   "actual": "89.99 -> 9, A+",
+   "status": "Pass",
+   "ms": 23
+  },
+  {
+   "id": "BB12",
+   "technique": "Boundary value analysis",
+   "module": "Grade scale via trg_marks_before_update",
+   "objective": "Grade at a scale boundary",
+   "input": "30 + 60",
+   "expected": "10, O",
+   "actual": "90.00 -> 10, O",
+   "status": "Pass",
+   "ms": 25
+  },
+  {
+   "id": "BB13",
+   "technique": "Equivalence partitioning / boundary",
+   "module": "Attendance date (weekday rule, CHECK)",
+   "objective": "Friday session",
+   "input": "2026-10-16",
+   "expected": "saved",
+   "actual": "saved",
+   "status": "Pass",
+   "ms": 73
+  },
+  {
+   "id": "BB14",
+   "technique": "Equivalence partitioning / boundary",
+   "module": "Attendance date (weekday rule, CHECK)",
+   "objective": "Saturday session",
+   "input": "2026-10-17",
+   "expected": "rejected (weekend)",
+   "actual": "rejected: Attendance can only be recorded for Monday to Friday.",
+   "status": "Pass",
+   "ms": 32
+  },
+  {
+   "id": "BB15",
+   "technique": "Equivalence partitioning / boundary",
+   "module": "Attendance date (weekday rule, CHECK)",
+   "objective": "Monday session",
+   "input": "2026-10-19",
+   "expected": "saved",
+   "actual": "saved",
+   "status": "Pass",
+   "ms": 70
+  },
+  {
+   "id": "BB16",
+   "technique": "Equivalence partitioning",
+   "module": "Student section (REGEXP_LIKE CHECK)",
+   "objective": "Validate section",
+   "input": "section = 'A'",
+   "expected": "created",
+   "actual": "created",
+   "status": "Pass",
+   "ms": 84
+  },
+  {
+   "id": "BB17",
+   "technique": "Equivalence partitioning",
+   "module": "Student section (REGEXP_LIKE CHECK)",
+   "objective": "Validate section",
+   "input": "section = 'a'",
+   "expected": "rejected",
+   "actual": "rejected: Section must be a single capital letter",
+   "status": "Pass",
+   "ms": 38
+  },
+  {
+   "id": "BB18",
+   "technique": "Equivalence partitioning",
+   "module": "Student section (REGEXP_LIKE CHECK)",
+   "objective": "Validate section",
+   "input": "section = 'AB'",
+   "expected": "rejected",
+   "actual": "rejected: at most 1 character",
+   "status": "Pass",
+   "ms": 37
+  },
+  {
+   "id": "BB19",
+   "technique": "Decision table",
+   "module": "Enroll (semester match x already enrolled)",
+   "objective": "Rule: semester match=Y, enrolled=N",
+   "input": "match=Y, enrolled=N",
+   "expected": "enrolled",
+   "actual": "enrolled",
+   "status": "Pass",
+   "ms": 6
+  },
+  {
+   "id": "BB20",
+   "technique": "Decision table",
+   "module": "Enroll (semester match x already enrolled)",
+   "objective": "Rule: semester match=Y, enrolled=Y",
+   "input": "match=Y, enrolled=Y",
+   "expected": "refused: This student is already enrolled",
+   "actual": "refused: This student is already enrolled in that course.",
+   "status": "Pass",
+   "ms": 8
+  },
+  {
+   "id": "BB21",
+   "technique": "Decision table",
+   "module": "Enroll (semester match x already enrolled)",
+   "objective": "Rule: semester match=N, enrolled=N",
+   "input": "match=N, enrolled=N",
+   "expected": "refused: CS502 is a semester 5 course",
+   "actual": "refused: CS502 is a semester 5 course, but 25CSE064 is in semester 3.",
+   "status": "Pass",
+   "ms": 5
+  },
+  {
+   "id": "BB22",
+   "technique": "Decision table",
+   "module": "Enroll (semester match x already enrolled)",
+   "objective": "Rule: semester match=N, enrolled=Y",
+   "input": "match=N, enrolled=Y",
+   "expected": "refused: CS502 is a semester 5 course",
+   "actual": "refused: CS502 is a semester 5 course, but 25CSE064 is in semester 3.",
+   "status": "Pass",
+   "ms": 6
+  },
+  {
+   "id": "BB23",
+   "technique": "Decision table",
+   "module": "Marks entry (internal given x external given)",
+   "objective": "Rule from the marks decision table",
+   "input": "internal='', external=''",
+   "expected": "no marks row written",
+   "actual": "no marks row written",
+   "status": "Pass",
+   "ms": 27
+  },
+  {
+   "id": "BB24",
+   "technique": "Decision table",
+   "module": "Marks entry (internal given x external given)",
+   "objective": "Rule from the marks decision table",
+   "input": "internal='30', external=''",
+   "expected": "stored; total=None, grade=None",
+   "actual": "stored; total=None, grade=None",
+   "status": "Pass",
+   "ms": 25
+  },
+  {
+   "id": "BB25",
+   "technique": "Decision table",
+   "module": "Marks entry (internal given x external given)",
+   "objective": "Rule from the marks decision table",
+   "input": "internal='30', external='50'",
+   "expected": "stored; total=80.00, grade=A+",
+   "actual": "stored; total=80.00, grade=A+",
+   "status": "Pass",
+   "ms": 24
+  },
+  {
+   "id": "BB26",
+   "technique": "Decision table",
+   "module": "Marks entry (internal given x external given)",
+   "objective": "Rule from the marks decision table",
+   "input": "internal='', external='50'",
+   "expected": "form error",
+   "actual": "form error: Enter internal marks before external marks.",
+   "status": "Pass",
+   "ms": 34
+  },
+  {
+   "id": "BB27",
+   "technique": "State transition",
+   "module": "Marks life cycle",
+   "objective": "No marks -> internal -> graded -> re-graded",
+   "input": "Save internal 30; then 30+50; then 35+50",
+   "expected": "No marks -> Internal only -> Graded (A+) -> Re-graded (A+, 2 audit rows)",
+   "actual": "No marks -> Internal only -> Graded (A+) -> Re-graded (A+, 2 audit rows)",
+   "status": "Pass",
+   "ms": 76
+  },
+  {
+   "id": "BB28",
+   "technique": "State transition",
+   "module": "Defaulter declaration (25CSE004, 66.67% / 58.33%)",
+   "objective": "Not declared -> Declared on 'declare'",
+   "input": "Clear the flag, then CALL sp_refresh_defaulter_flags()",
+   "expected": "False -> True",
+   "actual": "declared flag False -> True",
+   "status": "Pass",
+   "ms": 14
+  },
+  {
+   "id": "BB29",
+   "technique": "Error guessing",
+   "module": "Security / robustness",
+   "objective": "Guess: sqli",
+   "input": "Search q = 25CSE001' OR '1'='1",
+   "expected": "HTTP 200, 0 rows (treated as text)",
+   "actual": "HTTP 200, 0 rows",
+   "status": "Pass",
+   "ms": 38
+  },
+  {
+   "id": "BB30",
+   "technique": "Error guessing",
+   "module": "Security / robustness",
+   "objective": "Guess: bridge",
+   "input": "Engine roll number '25CSE001; dir'",
+   "expected": "Form error, engine not called",
+   "actual": "HTTP 200, form error shown: True",
+   "status": "Pass",
+   "ms": 34
+  },
+  {
+   "id": "BB31",
+   "technique": "Error guessing",
+   "module": "Security / robustness",
+   "objective": "Guess: username",
+   "input": "New student with faculty username ananya.rao",
+   "expected": "Trigger message shown",
+   "actual": "message shown: True",
+   "status": "Pass",
+   "ms": 41
+  },
+  {
+   "id": "BB32",
+   "technique": "Error guessing",
+   "module": "Security / robustness",
+   "objective": "Guess: xss",
+   "input": "Student name <script>alert(1)</script>",
+   "expected": "Name rendered escaped",
+   "actual": "rendered escaped: True",
+   "status": "Pass",
+   "ms": 40
+  },
+  {
+   "id": "BB33",
+   "technique": "Error guessing",
+   "module": "Security / robustness",
+   "objective": "Guess: csrf",
+   "input": "POST /admin-portal/defaulters/ without CSRF token",
+   "expected": "HTTP 403",
+   "actual": "HTTP 403",
+   "status": "Pass",
+   "ms": 48
+  },
+  {
+   "id": "BB34",
+   "technique": "Error guessing",
+   "module": "Security / robustness",
+   "objective": "Guess: role",
+   "input": "Student opens /admin-portal/students/",
+   "expected": "HTTP 403",
+   "actual": "HTTP 403",
+   "status": "Pass",
+   "ms": 48
+  },
+  {
+   "id": "BB35",
+   "technique": "Error guessing",
+   "module": "Security / robustness",
+   "objective": "Guess: other_teacher",
+   "input": "kiran.kumar opens CS301 marks (not his course)",
+   "expected": "HTTP 403",
+   "actual": "HTTP 403",
+   "status": "Pass",
+   "ms": 54
+  }
+ ],
+ "cli_timings": {
+  "help": {
+   "median_ms": 168,
+   "min_ms": 154,
+   "max_ms": 201
+  },
+  "courses": {
+   "median_ms": 697,
+   "min_ms": 608,
+   "max_ms": 816
+  },
+  "student 25CSE001": {
+   "median_ms": 813,
+   "min_ms": 701,
+   "max_ms": 1139
+  },
+  "defaulters": {
+   "median_ms": 636,
+   "min_ms": 589,
+   "max_ms": 858
+  },
+  "gpa-report": {
+   "median_ms": 707,
+   "min_ms": 665,
+   "max_ms": 816
+  },
+  "dashboard": {
+   "median_ms": 773,
+   "min_ms": 703,
+   "max_ms": 873
+  }
+ }
+}

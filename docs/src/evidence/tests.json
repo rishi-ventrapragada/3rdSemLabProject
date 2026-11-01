@@ -1,0 +1,1577 @@
+{
+ "run_at": "2026-11-01T19:03:35",
+ "maven": {
+  "exit_code": 0,
+  "wall_seconds": 18.3,
+  "build": "SUCCESS",
+  "summary": {
+   "run": 29,
+   "failures": 0,
+   "errors": 0,
+   "skipped": 0
+  },
+  "cases": [
+   {
+    "class": "cli.CliTest",
+    "name": "academicYearRollsOverInJuly",
+    "seconds": 0.123,
+    "status": "Pass"
+   },
+   {
+    "class": "cli.CliTest",
+    "name": "wrongArgumentCountIsAUsageErrorBeforeAnyDatabaseCall",
+    "seconds": 0.026,
+    "status": "Pass"
+   },
+   {
+    "class": "cli.CliTest",
+    "name": "optionsAreCheckedPerCommand",
+    "seconds": 0.004,
+    "status": "Pass"
+   },
+   {
+    "class": "cli.CliTest",
+    "name": "usageErrorsAreJsonOnStderrWhenRequested",
+    "seconds": 0.006,
+    "status": "Pass"
+   },
+   {
+    "class": "cli.CliTest",
+    "name": "unknownCommandIsAUsageError",
+    "seconds": 0.002,
+    "status": "Pass"
+   },
+   {
+    "class": "cli.CliTest",
+    "name": "noArgumentsShowsHelp",
+    "seconds": 0.008,
+    "status": "Pass"
+   },
+   {
+    "class": "cli.CliTest",
+    "name": "helpListsEveryCommandAndExitsZero",
+    "seconds": 0.003,
+    "status": "Pass"
+   },
+   {
+    "class": "cli.InteractiveMenuTest",
+    "name": "listsChoicesAndExitsOnZero",
+    "seconds": 0.046,
+    "status": "Pass"
+   },
+   {
+    "class": "cli.InteractiveMenuTest",
+    "name": "blankAnswerCancelsWithoutRunningTheCommand",
+    "seconds": 0.004,
+    "status": "Pass"
+   },
+   {
+    "class": "cli.InteractiveMenuTest",
+    "name": "endOfInputExitsCleanly",
+    "seconds": 0.002,
+    "status": "Pass"
+   },
+   {
+    "class": "cli.InteractiveMenuTest",
+    "name": "leadingByteOrderMarkFromPowerShellPipesIsIgnored",
+    "seconds": 0.003,
+    "status": "Pass"
+   },
+   {
+    "class": "cli.InteractiveMenuTest",
+    "name": "rejectsUnknownChoices",
+    "seconds": 0.004,
+    "status": "Pass"
+   },
+   {
+    "class": "cli.InteractiveMenuTest",
+    "name": "menuRefusesJson",
+    "seconds": 0.031,
+    "status": "Pass"
+   },
+   {
+    "class": "cli.JsonWriterTest",
+    "name": "escapesBackslash",
+    "seconds": 0.002,
+    "status": "Pass"
+   },
+   {
+    "class": "cli.JsonWriterTest",
+    "name": "writesAWholeStudentRecordWithAHostileName",
+    "seconds": 0.008,
+    "status": "Pass"
+   },
+   {
+    "class": "cli.JsonWriterTest",
+    "name": "writesNullsNumbersAndNestedCollections",
+    "seconds": 0.006,
+    "status": "Pass"
+   },
+   {
+    "class": "cli.JsonWriterTest",
+    "name": "escapesQuoteInAName",
+    "seconds": 0.003,
+    "status": "Pass"
+   },
+   {
+    "class": "cli.JsonWriterTest",
+    "name": "rejectsValuesJsonCannotRepresent",
+    "seconds": 0.011,
+    "status": "Pass"
+   },
+   {
+    "class": "cli.JsonWriterTest",
+    "name": "leavesOrdinaryUnicodeAndApostrophesAlone",
+    "seconds": 0.003,
+    "status": "Pass"
+   },
+   {
+    "class": "cli.JsonWriterTest",
+    "name": "escapesLineAndParagraphSeparators",
+    "seconds": 0.003,
+    "status": "Pass"
+   },
+   {
+    "class": "cli.JsonWriterTest",
+    "name": "escapesOtherControlCharactersAsUnicode",
+    "seconds": 0.004,
+    "status": "Pass"
+   },
+   {
+    "class": "cli.JsonWriterTest",
+    "name": "escapesNewlinesTabsAndShortEscapes",
+    "seconds": 0.002,
+    "status": "Pass"
+   },
+   {
+    "class": "config.DatabaseConfigTest",
+    "name": "findsEnvFileInAParentDirectory(Path)",
+    "seconds": 0.225,
+    "status": "Pass"
+   },
+   {
+    "class": "config.DatabaseConfigTest",
+    "name": "parsesEnvFileSkippingCommentsAndBlankLines(Path)",
+    "seconds": 0.018,
+    "status": "Pass"
+   },
+   {
+    "class": "config.DatabaseConfigTest",
+    "name": "reportsMissingAndInvalidSettings",
+    "seconds": 0.011,
+    "status": "Pass"
+   },
+   {
+    "class": "config.DatabaseConfigTest",
+    "name": "buildsJdbcUrlWithRequiredOptionsAndHidesPassword",
+    "seconds": 0.017,
+    "status": "Pass"
+   },
+   {
+    "class": "services.ReportExporterTest",
+    "name": "writesHeaderAndRowsAndCreatesParentFolders(Path)",
+    "seconds": 0.056,
+    "status": "Pass"
+   },
+   {
+    "class": "services.ReportExporterTest",
+    "name": "quotesFieldsWithCommasQuotesAndLineBreaks",
+    "seconds": 0.002,
+    "status": "Pass"
+   },
+   {
+    "class": "services.ReportExporterTest",
+    "name": "reportNamesAreCaseInsensitiveAndUnknownOnesAreRejected",
+    "seconds": 0.009,
+    "status": "Pass"
+   }
+  ],
+  "coverage": [
+   {
+    "PACKAGE": "com.smartcampus.services",
+    "CLASS": "ReportExporter",
+    "INSTRUCTION_MISSED": "164",
+    "INSTRUCTION_COVERED": "97",
+    "BRANCH_MISSED": "5",
+    "BRANCH_COVERED": "12",
+    "LINE_MISSED": "17",
+    "LINE_COVERED": "20"
+   },
+   {
+    "PACKAGE": "com.smartcampus.services",
+    "CLASS": "ReportService",
+    "INSTRUCTION_MISSED": "329",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "6",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "63",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.services",
+    "CLASS": "ReportExporter.ExportResult",
+    "INSTRUCTION_MISSED": "12",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "1",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.services",
+    "CLASS": "Dashboard",
+    "INSTRUCTION_MISSED": "30",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "1",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.services",
+    "CLASS": "TaskResult",
+    "INSTRUCTION_MISSED": "12",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "1",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.services",
+    "CLASS": "StudentService",
+    "INSTRUCTION_MISSED": "226",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "8",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "45",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.services",
+    "CLASS": "ReportExporter.Report",
+    "INSTRUCTION_MISSED": "0",
+    "INSTRUCTION_COVERED": "66",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "0",
+    "LINE_COVERED": "13"
+   },
+   {
+    "PACKAGE": "com.smartcampus.models",
+    "CLASS": "GpaReportRow",
+    "INSTRUCTION_MISSED": "36",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "1",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.models",
+    "CLASS": "Course",
+    "INSTRUCTION_MISSED": "125",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "12",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "27",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.models",
+    "CLASS": "StudentProfile",
+    "INSTRUCTION_MISSED": "12",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "3",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.models",
+    "CLASS": "AttendanceStatus",
+    "INSTRUCTION_MISSED": "15",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "3",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.models",
+    "CLASS": "AttendanceRecord",
+    "INSTRUCTION_MISSED": "92",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "10",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "17",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.models",
+    "CLASS": "EnrollmentReceipt",
+    "INSTRUCTION_MISSED": "12",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "1",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.models",
+    "CLASS": "CourseStanding",
+    "INSTRUCTION_MISSED": "13",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "2",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.models",
+    "CLASS": "AttendanceSummary",
+    "INSTRUCTION_MISSED": "42",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "1",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.models",
+    "CLASS": "Marks",
+    "INSTRUCTION_MISSED": "96",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "8",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "20",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.models",
+    "CLASS": "Enrollment",
+    "INSTRUCTION_MISSED": "142",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "22",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "24",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.models",
+    "CLASS": "Person",
+    "INSTRUCTION_MISSED": "132",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "16",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "25",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.models",
+    "CLASS": "Faculty",
+    "INSTRUCTION_MISSED": "35",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "9",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.models",
+    "CLASS": "SessionHistory",
+    "INSTRUCTION_MISSED": "22",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "4",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.models",
+    "CLASS": "CourseType",
+    "INSTRUCTION_MISSED": "15",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "3",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.models",
+    "CLASS": "Student",
+    "INSTRUCTION_MISSED": "113",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "16",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "27",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus",
+    "CLASS": "Main",
+    "INSTRUCTION_MISSED": "6",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "2",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.exceptions",
+    "CLASS": "DuplicateEnrollmentException",
+    "INSTRUCTION_MISSED": "7",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "2",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.exceptions",
+    "CLASS": "CourseNotFoundException",
+    "INSTRUCTION_MISSED": "5",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "2",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.exceptions",
+    "CLASS": "EntityNotFoundException",
+    "INSTRUCTION_MISSED": "18",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "6",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.exceptions",
+    "CLASS": "StudentNotFoundException",
+    "INSTRUCTION_MISSED": "5",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "2",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.exceptions",
+    "CLASS": "ValidationException",
+    "INSTRUCTION_MISSED": "0",
+    "INSTRUCTION_COVERED": "9",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "0",
+    "LINE_COVERED": "4"
+   },
+   {
+    "PACKAGE": "com.smartcampus.exceptions",
+    "CLASS": "DatabaseException",
+    "INSTRUCTION_MISSED": "26",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "2",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "5",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.exceptions",
+    "CLASS": "ExportException",
+    "INSTRUCTION_MISSED": "8",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "2",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.exceptions",
+    "CLASS": "SmartCampusException",
+    "INSTRUCTION_MISSED": "19",
+    "INSTRUCTION_COVERED": "9",
+    "BRANCH_MISSED": "2",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "2",
+    "LINE_COVERED": "4"
+   },
+   {
+    "PACKAGE": "com.smartcampus.cli",
+    "CLASS": "Cli",
+    "INSTRUCTION_MISSED": "120",
+    "INSTRUCTION_COVERED": "197",
+    "BRANCH_MISSED": "6",
+    "BRANCH_COVERED": "8",
+    "LINE_MISSED": "23",
+    "LINE_COVERED": "43"
+   },
+   {
+    "PACKAGE": "com.smartcampus.cli",
+    "CLASS": "InteractiveMenu",
+    "INSTRUCTION_MISSED": "18",
+    "INSTRUCTION_COVERED": "254",
+    "BRANCH_MISSED": "3",
+    "BRANCH_COVERED": "15",
+    "LINE_MISSED": "3",
+    "LINE_COVERED": "51"
+   },
+   {
+    "PACKAGE": "com.smartcampus.cli",
+    "CLASS": "UsageException",
+    "INSTRUCTION_MISSED": "0",
+    "INSTRUCTION_COVERED": "4",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "0",
+    "LINE_COVERED": "2"
+   },
+   {
+    "PACKAGE": "com.smartcampus.cli",
+    "CLASS": "TableFormatter.Column",
+    "INSTRUCTION_MISSED": "12",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "1",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.cli",
+    "CLASS": "TextRenderer",
+    "INSTRUCTION_MISSED": "570",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "6",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "105",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.cli",
+    "CLASS": "Commands",
+    "INSTRUCTION_MISSED": "195",
+    "INSTRUCTION_COVERED": "188",
+    "BRANCH_MISSED": "3",
+    "BRANCH_COVERED": "3",
+    "LINE_MISSED": "28",
+    "LINE_COVERED": "32"
+   },
+   {
+    "PACKAGE": "com.smartcampus.cli",
+    "CLASS": "InteractiveMenu.Choice",
+    "INSTRUCTION_MISSED": "0",
+    "INSTRUCTION_COVERED": "12",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "0",
+    "LINE_COVERED": "1"
+   },
+   {
+    "PACKAGE": "com.smartcampus.cli",
+    "CLASS": "CommandLine",
+    "INSTRUCTION_MISSED": "19",
+    "INSTRUCTION_COVERED": "147",
+    "BRANCH_MISSED": "3",
+    "BRANCH_COVERED": "17",
+    "LINE_MISSED": "3",
+    "LINE_COVERED": "32"
+   },
+   {
+    "PACKAGE": "com.smartcampus.cli",
+    "CLASS": "Engine",
+    "INSTRUCTION_MISSED": "75",
+    "INSTRUCTION_COVERED": "3",
+    "BRANCH_MISSED": "2",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "15",
+    "LINE_COVERED": "1"
+   },
+   {
+    "PACKAGE": "com.smartcampus.cli",
+    "CLASS": "Command",
+    "INSTRUCTION_MISSED": "1",
+    "INSTRUCTION_COVERED": "87",
+    "BRANCH_MISSED": "2",
+    "BRANCH_COVERED": "10",
+    "LINE_MISSED": "1",
+    "LINE_COVERED": "9"
+   },
+   {
+    "PACKAGE": "com.smartcampus.cli",
+    "CLASS": "TableFormatter.Align",
+    "INSTRUCTION_MISSED": "15",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "1",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.cli",
+    "CLASS": "JsonWriter",
+    "INSTRUCTION_MISSED": "16",
+    "INSTRUCTION_COVERED": "356",
+    "BRANCH_MISSED": "3",
+    "BRANCH_COVERED": "51",
+    "LINE_MISSED": "2",
+    "LINE_COVERED": "75"
+   },
+   {
+    "PACKAGE": "com.smartcampus.cli",
+    "CLASS": "TableFormatter",
+    "INSTRUCTION_MISSED": "255",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "20",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "39",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.cli",
+    "CLASS": "JsonMapper",
+    "INSTRUCTION_MISSED": "745",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "4",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "131",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.cli",
+    "CLASS": "Command.Result",
+    "INSTRUCTION_MISSED": "9",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "1",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.config",
+    "CLASS": "DatabaseConfig",
+    "INSTRUCTION_MISSED": "67",
+    "INSTRUCTION_COVERED": "185",
+    "BRANCH_MISSED": "6",
+    "BRANCH_COVERED": "14",
+    "LINE_MISSED": "15",
+    "LINE_COVERED": "35"
+   },
+   {
+    "PACKAGE": "com.smartcampus.config",
+    "CLASS": "ConnectionFactory",
+    "INSTRUCTION_MISSED": "30",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "7",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.dao",
+    "CLASS": "CrudDao",
+    "INSTRUCTION_MISSED": "21",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "2",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.dao",
+    "CLASS": "JdbcAttendanceRecordDao",
+    "INSTRUCTION_MISSED": "57",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "10",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.dao",
+    "CLASS": "JdbcCourseDao",
+    "INSTRUCTION_MISSED": "70",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "15",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.dao",
+    "CLASS": "FacultyDao",
+    "INSTRUCTION_MISSED": "2",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "1",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.dao",
+    "CLASS": "JdbcEnrollmentDao",
+    "INSTRUCTION_MISSED": "143",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "8",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "29",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.dao",
+    "CLASS": "JdbcReportDao",
+    "INSTRUCTION_MISSED": "163",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "47",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.dao",
+    "CLASS": "StudentDao",
+    "INSTRUCTION_MISSED": "15",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "2",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.dao",
+    "CLASS": "JdbcMarksDao",
+    "INSTRUCTION_MISSED": "65",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "13",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.dao",
+    "CLASS": "EnrollmentDao",
+    "INSTRUCTION_MISSED": "2",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "1",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.dao",
+    "CLASS": "JdbcDaoSupport",
+    "INSTRUCTION_MISSED": "59",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "2",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "15",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.dao",
+    "CLASS": "StatementBinder",
+    "INSTRUCTION_MISSED": "4",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "1",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.dao",
+    "CLASS": "CourseDao",
+    "INSTRUCTION_MISSED": "15",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "2",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.dao",
+    "CLASS": "AttendanceRecordDao",
+    "INSTRUCTION_MISSED": "2",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "1",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.dao",
+    "CLASS": "MarksDao",
+    "INSTRUCTION_MISSED": "2",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "1",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.dao",
+    "CLASS": "JdbcStudentDao",
+    "INSTRUCTION_MISSED": "87",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "17",
+    "LINE_COVERED": "0"
+   },
+   {
+    "PACKAGE": "com.smartcampus.dao",
+    "CLASS": "JdbcFacultyDao",
+    "INSTRUCTION_MISSED": "63",
+    "INSTRUCTION_COVERED": "0",
+    "BRANCH_MISSED": "0",
+    "BRANCH_COVERED": "0",
+    "LINE_MISSED": "13",
+    "LINE_COVERED": "0"
+   }
+  ]
+ },
+ "django": {
+  "exit_code": 0,
+  "wall_seconds": 16.7,
+  "ran": 71,
+  "test_seconds": 9.397,
+  "result_line": "OK",
+  "cases": [
+   {
+    "module": "test_access",
+    "class": "LoginRedirectTests",
+    "name": "test_each_role_lands_on_its_dashboard",
+    "status": "Pass"
+   },
+   {
+    "module": "test_access",
+    "class": "LoginRedirectTests",
+    "name": "test_login_honours_next",
+    "status": "Pass"
+   },
+   {
+    "module": "test_access",
+    "class": "LoginRedirectTests",
+    "name": "test_login_not_linked_to_a_person_gets_403_not_a_crash",
+    "status": "Pass"
+   },
+   {
+    "module": "test_access",
+    "class": "LoginRedirectTests",
+    "name": "test_logout_requires_post",
+    "status": "Pass"
+   },
+   {
+    "module": "test_access",
+    "class": "LoginRedirectTests",
+    "name": "test_wrong_password_stays_on_login",
+    "status": "Pass"
+   },
+   {
+    "module": "test_access",
+    "class": "RoleAccessTests",
+    "name": "test_admin_reaches_only_the_admin_portal_and_engine",
+    "status": "Pass"
+   },
+   {
+    "module": "test_access",
+    "class": "RoleAccessTests",
+    "name": "test_anonymous_users_are_sent_to_login",
+    "status": "Pass"
+   },
+   {
+    "module": "test_access",
+    "class": "RoleAccessTests",
+    "name": "test_faculty_reaches_only_the_faculty_portal",
+    "status": "Pass"
+   },
+   {
+    "module": "test_access",
+    "class": "RoleAccessTests",
+    "name": "test_student_reaches_only_the_student_portal",
+    "status": "Pass"
+   },
+   {
+    "module": "test_access",
+    "class": "RoleAccessTests",
+    "name": "test_teacher_cannot_open_another_teachers_course",
+    "status": "Pass"
+   },
+   {
+    "module": "test_access",
+    "class": "RoleAccessTests",
+    "name": "test_unknown_course_is_404",
+    "status": "Pass"
+   },
+   {
+    "module": "test_java_bridge",
+    "class": "EngineViewTests",
+    "name": "test_engine_error_type_is_shown",
+    "status": "Pass"
+   },
+   {
+    "module": "test_java_bridge",
+    "class": "EngineViewTests",
+    "name": "test_enroll_form_passes_year",
+    "status": "Pass"
+   },
+   {
+    "module": "test_java_bridge",
+    "class": "EngineViewTests",
+    "name": "test_gpa_report_renders_a_table_with_one_call",
+    "status": "Pass"
+   },
+   {
+    "module": "test_java_bridge",
+    "class": "EngineViewTests",
+    "name": "test_invalid_roll_number_never_reaches_the_engine",
+    "status": "Pass"
+   },
+   {
+    "module": "test_java_bridge",
+    "class": "EngineViewTests",
+    "name": "test_missing_jar_shows_build_instructions",
+    "status": "Pass"
+   },
+   {
+    "module": "test_java_bridge",
+    "class": "EngineViewTests",
+    "name": "test_non_admins_get_403",
+    "status": "Pass"
+   },
+   {
+    "module": "test_java_bridge",
+    "class": "EngineViewTests",
+    "name": "test_page_without_a_command_makes_no_call",
+    "status": "Pass"
+   },
+   {
+    "module": "test_java_bridge",
+    "class": "EngineViewTests",
+    "name": "test_student_lookup_passes_the_validated_roll_number",
+    "status": "Pass"
+   },
+   {
+    "module": "test_java_bridge",
+    "class": "EngineViewTests",
+    "name": "test_writes_require_post",
+    "status": "Pass"
+   },
+   {
+    "module": "test_polish",
+    "class": "DeleteTests",
+    "name": "test_confirm_page_then_cascading_delete_of_a_student",
+    "status": "Pass"
+   },
+   {
+    "module": "test_polish",
+    "class": "DeleteTests",
+    "name": "test_course_with_enrollments_is_protected_by_restrict",
+    "status": "Pass"
+   },
+   {
+    "module": "test_polish",
+    "class": "DeleteTests",
+    "name": "test_delete_requires_post",
+    "status": "Pass"
+   },
+   {
+    "module": "test_polish",
+    "class": "DeleteTests",
+    "name": "test_deleting_a_teacher_unassigns_their_courses",
+    "status": "Pass"
+   },
+   {
+    "module": "test_polish",
+    "class": "DjangoAdminTests",
+    "name": "test_deletes_are_routed_to_the_portal",
+    "status": "Pass"
+   },
+   {
+    "module": "test_polish",
+    "class": "DjangoAdminTests",
+    "name": "test_every_registered_model_has_a_working_changelist",
+    "status": "Pass"
+   },
+   {
+    "module": "test_polish",
+    "class": "ErrorPageAndHeaderTests",
+    "name": "test_custom_404_page",
+    "status": "Pass"
+   },
+   {
+    "module": "test_polish",
+    "class": "ErrorPageAndHeaderTests",
+    "name": "test_custom_500_page_needs_no_context",
+    "status": "Pass"
+   },
+   {
+    "module": "test_polish",
+    "class": "ErrorPageAndHeaderTests",
+    "name": "test_security_headers_and_session_cookie",
+    "status": "Pass"
+   },
+   {
+    "module": "test_polish",
+    "class": "EveryUrlIsProtectedTests",
+    "name": "test_anonymous_requests_redirect_to_login",
+    "status": "Pass"
+   },
+   {
+    "module": "test_polish",
+    "class": "EveryUrlIsProtectedTests",
+    "name": "test_each_role_is_refused_outside_its_own_portal",
+    "status": "Pass"
+   },
+   {
+    "module": "test_polish",
+    "class": "MarksAuditTests",
+    "name": "test_changed_marks_are_audited_by_the_after_trigger",
+    "status": "Pass"
+   },
+   {
+    "module": "test_polish",
+    "class": "PasswordChangeTests",
+    "name": "test_user_can_change_password_and_log_in_with_it",
+    "status": "Pass"
+   },
+   {
+    "module": "test_polish",
+    "class": "PasswordChangeTests",
+    "name": "test_weak_or_mismatched_passwords_are_rejected",
+    "status": "Pass"
+   },
+   {
+    "module": "test_polish",
+    "class": "SearchAndPaginationTests",
+    "name": "test_active_navigation_link",
+    "status": "Pass"
+   },
+   {
+    "module": "test_polish",
+    "class": "SearchAndPaginationTests",
+    "name": "test_empty_search_result_shows_an_empty_state",
+    "status": "Pass"
+   },
+   {
+    "module": "test_polish",
+    "class": "SearchAndPaginationTests",
+    "name": "test_enrollments_are_paginated",
+    "status": "Pass"
+   },
+   {
+    "module": "test_polish",
+    "class": "SearchAndPaginationTests",
+    "name": "test_search_filters_and_keeps_other_filters",
+    "status": "Pass"
+   },
+   {
+    "module": "test_portals",
+    "class": "AdminPortalTests",
+    "name": "test_check_constraint_message_for_bad_section",
+    "status": "Pass"
+   },
+   {
+    "module": "test_portals",
+    "class": "AdminPortalTests",
+    "name": "test_declaring_defaulters_calls_the_procedure",
+    "status": "Pass"
+   },
+   {
+    "module": "test_portals",
+    "class": "AdminPortalTests",
+    "name": "test_duplicate_enrollment_is_explained",
+    "status": "Pass"
+   },
+   {
+    "module": "test_portals",
+    "class": "AdminPortalTests",
+    "name": "test_enroll_enforces_the_semester_rule_and_succeeds_otherwise",
+    "status": "Pass"
+   },
+   {
+    "module": "test_portals",
+    "class": "AdminPortalTests",
+    "name": "test_gpa_report_is_ordered_by_weighted_gpa",
+    "status": "Pass"
+   },
+   {
+    "module": "test_portals",
+    "class": "AdminPortalTests",
+    "name": "test_room_double_booking_uses_the_unique_constraint_message",
+    "status": "Pass"
+   },
+   {
+    "module": "test_portals",
+    "class": "AdminPortalTests",
+    "name": "test_student_can_be_added_and_edited",
+    "status": "Pass"
+   },
+   {
+    "module": "test_portals",
+    "class": "AdminPortalTests",
+    "name": "test_student_cannot_take_a_faculty_username",
+    "status": "Pass"
+   },
+   {
+    "module": "test_portals",
+    "class": "AdminPortalTests",
+    "name": "test_teacher_double_booking_shows_a_friendly_message",
+    "status": "Pass"
+   },
+   {
+    "module": "test_portals",
+    "class": "AdminPortalTests",
+    "name": "test_valid_timetable_entry_is_added",
+    "status": "Pass"
+   },
+   {
+    "module": "test_portals",
+    "class": "FacultyPortalTests",
+    "name": "test_attendance_is_saved_and_updated",
+    "status": "Pass"
+   },
+   {
+    "module": "test_portals",
+    "class": "FacultyPortalTests",
+    "name": "test_internal_only_leaves_the_grade_empty",
+    "status": "Pass"
+   },
+   {
+    "module": "test_portals",
+    "class": "FacultyPortalTests",
+    "name": "test_marks_are_graded_by_the_trigger_not_python",
+    "status": "Pass"
+   },
+   {
+    "module": "test_portals",
+    "class": "FacultyPortalTests",
+    "name": "test_out_of_range_marks_are_rejected_per_row",
+    "status": "Pass"
+   },
+   {
+    "module": "test_portals",
+    "class": "FacultyPortalTests",
+    "name": "test_weekend_attendance_shows_the_database_rule",
+    "status": "Pass"
+   },
+   {
+    "module": "test_portals",
+    "class": "SeedDemoUsersTests",
+    "name": "test_rerunning_updates_instead_of_duplicating",
+    "status": "Pass"
+   },
+   {
+    "module": "test_portals",
+    "class": "StudentPortalTests",
+    "name": "test_defaulter_sees_the_warning_from_v_defaulter_list",
+    "status": "Pass"
+   },
+   {
+    "module": "test_portals",
+    "class": "StudentPortalTests",
+    "name": "test_student_in_good_standing_sees_no_warning",
+    "status": "Pass"
+   },
+   {
+    "module": "test_portals",
+    "class": "StudentPortalTests",
+    "name": "test_student_sees_only_their_own_courses",
+    "status": "Pass"
+   },
+   {
+    "module": "test_java_bridge",
+    "class": "BuildCommandTests",
+    "name": "test_arguments_are_validated",
+    "status": "Pass"
+   },
+   {
+    "module": "test_java_bridge",
+    "class": "BuildCommandTests",
+    "name": "test_argv_is_a_list_with_json_flag_and_utf8",
+    "status": "Pass"
+   },
+   {
+    "module": "test_java_bridge",
+    "class": "BuildCommandTests",
+    "name": "test_commands_off_the_allow_list_are_refused",
+    "status": "Pass"
+   },
+   {
+    "module": "test_java_bridge",
+    "class": "BuildCommandTests",
+    "name": "test_enroll_with_year",
+    "status": "Pass"
+   },
+   {
+    "module": "test_java_bridge",
+    "class": "BuildCommandTests",
+    "name": "test_year_is_validated_and_only_for_enroll",
+    "status": "Pass"
+   },
+   {
+    "module": "test_java_bridge",
+    "class": "RunEngineTests",
+    "name": "test_engine_error_type_comes_from_stderr_json",
+    "status": "Pass"
+   },
+   {
+    "module": "test_java_bridge",
+    "class": "RunEngineTests",
+    "name": "test_jar_missing_never_starts_java",
+    "status": "Pass"
+   },
+   {
+    "module": "test_java_bridge",
+    "class": "RunEngineTests",
+    "name": "test_java_missing",
+    "status": "Pass"
+   },
+   {
+    "module": "test_java_bridge",
+    "class": "RunEngineTests",
+    "name": "test_json_after_jvm_warnings_is_still_parsed",
+    "status": "Pass"
+   },
+   {
+    "module": "test_java_bridge",
+    "class": "RunEngineTests",
+    "name": "test_non_json_failure_is_internal",
+    "status": "Pass"
+   },
+   {
+    "module": "test_java_bridge",
+    "class": "RunEngineTests",
+    "name": "test_success_parses_stdout_and_runs_without_a_shell",
+    "status": "Pass"
+   },
+   {
+    "module": "test_java_bridge",
+    "class": "RunEngineTests",
+    "name": "test_success_without_json_is_bad_output",
+    "status": "Pass"
+   },
+   {
+    "module": "test_java_bridge",
+    "class": "RunEngineTests",
+    "name": "test_timeout",
+    "status": "Pass"
+   },
+   {
+    "module": "test_java_bridge",
+    "class": "RunEngineTests",
+    "name": "test_usage_error_keeps_exit_code_2",
+    "status": "Pass"
+   }
+  ],
+  "coverage_files": {
+   "accounts/__init__.py": {
+    "num_statements": 0,
+    "covered_lines": 0,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 100.0
+   },
+   "accounts/apps.py": {
+    "num_statements": 4,
+    "covered_lines": 4,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 100.0
+   },
+   "accounts/management/__init__.py": {
+    "num_statements": 0,
+    "covered_lines": 0,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 100.0
+   },
+   "accounts/management/commands/__init__.py": {
+    "num_statements": 0,
+    "covered_lines": 0,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 100.0
+   },
+   "accounts/management/commands/seed_demo_users.py": {
+    "num_statements": 36,
+    "covered_lines": 33,
+    "num_branches": 10,
+    "covered_branches": 7,
+    "percent_covered": 86.95652173913044
+   },
+   "accounts/urls.py": {
+    "num_statements": 5,
+    "covered_lines": 5,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 100.0
+   },
+   "accounts/views.py": {
+    "num_statements": 21,
+    "covered_lines": 21,
+    "num_branches": 2,
+    "covered_branches": 2,
+    "percent_covered": 100.0
+   },
+   "admin_portal/__init__.py": {
+    "num_statements": 0,
+    "covered_lines": 0,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 100.0
+   },
+   "admin_portal/apps.py": {
+    "num_statements": 4,
+    "covered_lines": 4,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 100.0
+   },
+   "admin_portal/forms.py": {
+    "num_statements": 40,
+    "covered_lines": 40,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 100.0
+   },
+   "admin_portal/urls.py": {
+    "num_statements": 4,
+    "covered_lines": 4,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 100.0
+   },
+   "admin_portal/views.py": {
+    "num_statements": 137,
+    "covered_lines": 135,
+    "num_branches": 14,
+    "covered_branches": 13,
+    "percent_covered": 98.01324503311258
+   },
+   "campus_portal/__init__.py": {
+    "num_statements": 2,
+    "covered_lines": 2,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 100.0
+   },
+   "campus_portal/asgi.py": {
+    "num_statements": 4,
+    "covered_lines": 0,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 0.0
+   },
+   "campus_portal/settings.py": {
+    "num_statements": 54,
+    "covered_lines": 47,
+    "num_branches": 6,
+    "covered_branches": 3,
+    "percent_covered": 83.33333333333333
+   },
+   "campus_portal/urls.py": {
+    "num_statements": 3,
+    "covered_lines": 3,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 100.0
+   },
+   "campus_portal/wsgi.py": {
+    "num_statements": 4,
+    "covered_lines": 0,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 0.0
+   },
+   "core/__init__.py": {
+    "num_statements": 0,
+    "covered_lines": 0,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 100.0
+   },
+   "core/admin.py": {
+    "num_statements": 81,
+    "covered_lines": 81,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 100.0
+   },
+   "core/apps.py": {
+    "num_statements": 4,
+    "covered_lines": 4,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 100.0
+   },
+   "core/context_processors.py": {
+    "num_statements": 7,
+    "covered_lines": 7,
+    "num_branches": 2,
+    "covered_branches": 2,
+    "percent_covered": 100.0
+   },
+   "core/db_errors.py": {
+    "num_statements": 31,
+    "covered_lines": 30,
+    "num_branches": 8,
+    "covered_branches": 7,
+    "percent_covered": 94.87179487179488
+   },
+   "core/forms.py": {
+    "num_statements": 12,
+    "covered_lines": 12,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 100.0
+   },
+   "core/java_bridge.py": {
+    "num_statements": 73,
+    "covered_lines": 72,
+    "num_branches": 22,
+    "covered_branches": 21,
+    "percent_covered": 97.89473684210526
+   },
+   "core/listing.py": {
+    "num_statements": 16,
+    "covered_lines": 16,
+    "num_branches": 2,
+    "covered_branches": 2,
+    "percent_covered": 100.0
+   },
+   "core/models.py": {
+    "num_statements": 207,
+    "covered_lines": 207,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 100.0
+   },
+   "core/roles.py": {
+    "num_statements": 48,
+    "covered_lines": 48,
+    "num_branches": 18,
+    "covered_branches": 17,
+    "percent_covered": 98.48484848484848
+   },
+   "core/services.py": {
+    "num_statements": 55,
+    "covered_lines": 54,
+    "num_branches": 12,
+    "covered_branches": 9,
+    "percent_covered": 94.02985074626865
+   },
+   "core/sql_loader.py": {
+    "num_statements": 22,
+    "covered_lines": 21,
+    "num_branches": 8,
+    "covered_branches": 7,
+    "percent_covered": 93.33333333333333
+   },
+   "core/templatetags/__init__.py": {
+    "num_statements": 0,
+    "covered_lines": 0,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 100.0
+   },
+   "core/templatetags/campus.py": {
+    "num_statements": 17,
+    "covered_lines": 16,
+    "num_branches": 4,
+    "covered_branches": 3,
+    "percent_covered": 90.47619047619048
+   },
+   "core/test_runner.py": {
+    "num_statements": 8,
+    "covered_lines": 8,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 100.0
+   },
+   "core/urls.py": {
+    "num_statements": 4,
+    "covered_lines": 4,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 100.0
+   },
+   "core/views.py": {
+    "num_statements": 40,
+    "covered_lines": 40,
+    "num_branches": 20,
+    "covered_branches": 18,
+    "percent_covered": 96.66666666666667
+   },
+   "faculty_portal/__init__.py": {
+    "num_statements": 0,
+    "covered_lines": 0,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 100.0
+   },
+   "faculty_portal/apps.py": {
+    "num_statements": 4,
+    "covered_lines": 4,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 100.0
+   },
+   "faculty_portal/forms.py": {
+    "num_statements": 40,
+    "covered_lines": 39,
+    "num_branches": 12,
+    "covered_branches": 11,
+    "percent_covered": 96.15384615384616
+   },
+   "faculty_portal/urls.py": {
+    "num_statements": 4,
+    "covered_lines": 4,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 100.0
+   },
+   "faculty_portal/views.py": {
+    "num_statements": 77,
+    "covered_lines": 73,
+    "num_branches": 12,
+    "covered_branches": 11,
+    "percent_covered": 94.38202247191012
+   },
+   "student_portal/__init__.py": {
+    "num_statements": 0,
+    "covered_lines": 0,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 100.0
+   },
+   "student_portal/apps.py": {
+    "num_statements": 4,
+    "covered_lines": 4,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 100.0
+   },
+   "student_portal/urls.py": {
+    "num_statements": 4,
+    "covered_lines": 4,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 100.0
+   },
+   "student_portal/views.py": {
+    "num_statements": 12,
+    "covered_lines": 12,
+    "num_branches": 0,
+    "covered_branches": 0,
+    "percent_covered": 100.0
+   }
+  },
+  "coverage_totals": {
+   "num_statements": 1088,
+   "covered_lines": 1058,
+   "num_branches": 152,
+   "covered_branches": 133,
+   "percent_covered": 96.04838709677419
+  }
+ }
+}

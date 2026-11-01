@@ -1,0 +1,2682 @@
+{
+ "schema": {
+  "mysql_version": "8.0.42",
+  "tables": [
+   {
+    "table_name": "attendance_records",
+    "table_type": "BASE TABLE"
+   },
+   {
+    "table_name": "auth_group",
+    "table_type": "BASE TABLE"
+   },
+   {
+    "table_name": "auth_group_permissions",
+    "table_type": "BASE TABLE"
+   },
+   {
+    "table_name": "auth_permission",
+    "table_type": "BASE TABLE"
+   },
+   {
+    "table_name": "auth_user",
+    "table_type": "BASE TABLE"
+   },
+   {
+    "table_name": "auth_user_groups",
+    "table_type": "BASE TABLE"
+   },
+   {
+    "table_name": "auth_user_user_permissions",
+    "table_type": "BASE TABLE"
+   },
+   {
+    "table_name": "courses",
+    "table_type": "BASE TABLE"
+   },
+   {
+    "table_name": "departments",
+    "table_type": "BASE TABLE"
+   },
+   {
+    "table_name": "django_admin_log",
+    "table_type": "BASE TABLE"
+   },
+   {
+    "table_name": "django_content_type",
+    "table_type": "BASE TABLE"
+   },
+   {
+    "table_name": "django_migrations",
+    "table_type": "BASE TABLE"
+   },
+   {
+    "table_name": "django_session",
+    "table_type": "BASE TABLE"
+   },
+   {
+    "table_name": "enrollments",
+    "table_type": "BASE TABLE"
+   },
+   {
+    "table_name": "faculty",
+    "table_type": "BASE TABLE"
+   },
+   {
+    "table_name": "marks",
+    "table_type": "BASE TABLE"
+   },
+   {
+    "table_name": "marks_audit",
+    "table_type": "BASE TABLE"
+   },
+   {
+    "table_name": "rooms",
+    "table_type": "BASE TABLE"
+   },
+   {
+    "table_name": "students",
+    "table_type": "BASE TABLE"
+   },
+   {
+    "table_name": "time_slots",
+    "table_type": "BASE TABLE"
+   },
+   {
+    "table_name": "timetable_entries",
+    "table_type": "BASE TABLE"
+   },
+   {
+    "table_name": "v_attendance_summary",
+    "table_type": "VIEW"
+   },
+   {
+    "table_name": "v_defaulter_list",
+    "table_type": "VIEW"
+   },
+   {
+    "table_name": "v_marks_audit",
+    "table_type": "VIEW"
+   },
+   {
+    "table_name": "v_student_cgpa_report",
+    "table_type": "VIEW"
+   }
+  ],
+  "columns": [
+   {
+    "table_name": "attendance_records",
+    "column_name": "attendance_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "PRI",
+    "column_default": null,
+    "extra": "auto_increment",
+    "ordinal_position": 1
+   },
+   {
+    "table_name": "attendance_records",
+    "column_name": "enrollment_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "MUL",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 2
+   },
+   {
+    "table_name": "attendance_records",
+    "column_name": "session_date",
+    "column_type": "date",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 3
+   },
+   {
+    "table_name": "attendance_records",
+    "column_name": "status",
+    "column_type": "enum('PRESENT','ABSENT')",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 4
+   },
+   {
+    "table_name": "auth_group",
+    "column_name": "id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "PRI",
+    "column_default": null,
+    "extra": "auto_increment",
+    "ordinal_position": 1
+   },
+   {
+    "table_name": "auth_group",
+    "column_name": "name",
+    "column_type": "varchar(150)",
+    "is_nullable": "NO",
+    "column_key": "UNI",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 2
+   },
+   {
+    "table_name": "auth_group_permissions",
+    "column_name": "id",
+    "column_type": "bigint",
+    "is_nullable": "NO",
+    "column_key": "PRI",
+    "column_default": null,
+    "extra": "auto_increment",
+    "ordinal_position": 1
+   },
+   {
+    "table_name": "auth_group_permissions",
+    "column_name": "group_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "MUL",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 2
+   },
+   {
+    "table_name": "auth_group_permissions",
+    "column_name": "permission_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "MUL",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 3
+   },
+   {
+    "table_name": "auth_permission",
+    "column_name": "id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "PRI",
+    "column_default": null,
+    "extra": "auto_increment",
+    "ordinal_position": 1
+   },
+   {
+    "table_name": "auth_permission",
+    "column_name": "name",
+    "column_type": "varchar(255)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 2
+   },
+   {
+    "table_name": "auth_permission",
+    "column_name": "content_type_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "MUL",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 3
+   },
+   {
+    "table_name": "auth_permission",
+    "column_name": "codename",
+    "column_type": "varchar(100)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 4
+   },
+   {
+    "table_name": "auth_user",
+    "column_name": "id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "PRI",
+    "column_default": null,
+    "extra": "auto_increment",
+    "ordinal_position": 1
+   },
+   {
+    "table_name": "auth_user",
+    "column_name": "password",
+    "column_type": "varchar(128)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 2
+   },
+   {
+    "table_name": "auth_user",
+    "column_name": "last_login",
+    "column_type": "datetime(6)",
+    "is_nullable": "YES",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 3
+   },
+   {
+    "table_name": "auth_user",
+    "column_name": "is_superuser",
+    "column_type": "tinyint(1)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 4
+   },
+   {
+    "table_name": "auth_user",
+    "column_name": "username",
+    "column_type": "varchar(150)",
+    "is_nullable": "NO",
+    "column_key": "UNI",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 5
+   },
+   {
+    "table_name": "auth_user",
+    "column_name": "first_name",
+    "column_type": "varchar(150)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 6
+   },
+   {
+    "table_name": "auth_user",
+    "column_name": "last_name",
+    "column_type": "varchar(150)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 7
+   },
+   {
+    "table_name": "auth_user",
+    "column_name": "email",
+    "column_type": "varchar(254)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 8
+   },
+   {
+    "table_name": "auth_user",
+    "column_name": "is_staff",
+    "column_type": "tinyint(1)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 9
+   },
+   {
+    "table_name": "auth_user",
+    "column_name": "is_active",
+    "column_type": "tinyint(1)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 10
+   },
+   {
+    "table_name": "auth_user",
+    "column_name": "date_joined",
+    "column_type": "datetime(6)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 11
+   },
+   {
+    "table_name": "auth_user_groups",
+    "column_name": "id",
+    "column_type": "bigint",
+    "is_nullable": "NO",
+    "column_key": "PRI",
+    "column_default": null,
+    "extra": "auto_increment",
+    "ordinal_position": 1
+   },
+   {
+    "table_name": "auth_user_groups",
+    "column_name": "user_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "MUL",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 2
+   },
+   {
+    "table_name": "auth_user_groups",
+    "column_name": "group_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "MUL",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 3
+   },
+   {
+    "table_name": "auth_user_user_permissions",
+    "column_name": "id",
+    "column_type": "bigint",
+    "is_nullable": "NO",
+    "column_key": "PRI",
+    "column_default": null,
+    "extra": "auto_increment",
+    "ordinal_position": 1
+   },
+   {
+    "table_name": "auth_user_user_permissions",
+    "column_name": "user_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "MUL",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 2
+   },
+   {
+    "table_name": "auth_user_user_permissions",
+    "column_name": "permission_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "MUL",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 3
+   },
+   {
+    "table_name": "courses",
+    "column_name": "course_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "PRI",
+    "column_default": null,
+    "extra": "auto_increment",
+    "ordinal_position": 1
+   },
+   {
+    "table_name": "courses",
+    "column_name": "course_code",
+    "column_type": "varchar(10)",
+    "is_nullable": "NO",
+    "column_key": "UNI",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 2
+   },
+   {
+    "table_name": "courses",
+    "column_name": "course_name",
+    "column_type": "varchar(100)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 3
+   },
+   {
+    "table_name": "courses",
+    "column_name": "credits",
+    "column_type": "tinyint",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 4
+   },
+   {
+    "table_name": "courses",
+    "column_name": "course_type",
+    "column_type": "enum('THEORY','LAB')",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 5
+   },
+   {
+    "table_name": "courses",
+    "column_name": "hours_per_week",
+    "column_type": "tinyint",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 6
+   },
+   {
+    "table_name": "courses",
+    "column_name": "semester",
+    "column_type": "tinyint",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 7
+   },
+   {
+    "table_name": "courses",
+    "column_name": "dept_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "MUL",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 8
+   },
+   {
+    "table_name": "courses",
+    "column_name": "faculty_id",
+    "column_type": "int",
+    "is_nullable": "YES",
+    "column_key": "MUL",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 9
+   },
+   {
+    "table_name": "departments",
+    "column_name": "dept_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "PRI",
+    "column_default": null,
+    "extra": "auto_increment",
+    "ordinal_position": 1
+   },
+   {
+    "table_name": "departments",
+    "column_name": "dept_code",
+    "column_type": "varchar(10)",
+    "is_nullable": "NO",
+    "column_key": "UNI",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 2
+   },
+   {
+    "table_name": "departments",
+    "column_name": "dept_name",
+    "column_type": "varchar(100)",
+    "is_nullable": "NO",
+    "column_key": "UNI",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 3
+   },
+   {
+    "table_name": "django_admin_log",
+    "column_name": "id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "PRI",
+    "column_default": null,
+    "extra": "auto_increment",
+    "ordinal_position": 1
+   },
+   {
+    "table_name": "django_admin_log",
+    "column_name": "action_time",
+    "column_type": "datetime(6)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 2
+   },
+   {
+    "table_name": "django_admin_log",
+    "column_name": "object_id",
+    "column_type": "longtext",
+    "is_nullable": "YES",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 3
+   },
+   {
+    "table_name": "django_admin_log",
+    "column_name": "object_repr",
+    "column_type": "varchar(200)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 4
+   },
+   {
+    "table_name": "django_admin_log",
+    "column_name": "action_flag",
+    "column_type": "smallint unsigned",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 5
+   },
+   {
+    "table_name": "django_admin_log",
+    "column_name": "change_message",
+    "column_type": "longtext",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 6
+   },
+   {
+    "table_name": "django_admin_log",
+    "column_name": "content_type_id",
+    "column_type": "int",
+    "is_nullable": "YES",
+    "column_key": "MUL",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 7
+   },
+   {
+    "table_name": "django_admin_log",
+    "column_name": "user_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "MUL",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 8
+   },
+   {
+    "table_name": "django_content_type",
+    "column_name": "id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "PRI",
+    "column_default": null,
+    "extra": "auto_increment",
+    "ordinal_position": 1
+   },
+   {
+    "table_name": "django_content_type",
+    "column_name": "app_label",
+    "column_type": "varchar(100)",
+    "is_nullable": "NO",
+    "column_key": "MUL",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 2
+   },
+   {
+    "table_name": "django_content_type",
+    "column_name": "model",
+    "column_type": "varchar(100)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 3
+   },
+   {
+    "table_name": "django_migrations",
+    "column_name": "id",
+    "column_type": "bigint",
+    "is_nullable": "NO",
+    "column_key": "PRI",
+    "column_default": null,
+    "extra": "auto_increment",
+    "ordinal_position": 1
+   },
+   {
+    "table_name": "django_migrations",
+    "column_name": "app",
+    "column_type": "varchar(255)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 2
+   },
+   {
+    "table_name": "django_migrations",
+    "column_name": "name",
+    "column_type": "varchar(255)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 3
+   },
+   {
+    "table_name": "django_migrations",
+    "column_name": "applied",
+    "column_type": "datetime(6)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 4
+   },
+   {
+    "table_name": "django_session",
+    "column_name": "session_key",
+    "column_type": "varchar(40)",
+    "is_nullable": "NO",
+    "column_key": "PRI",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 1
+   },
+   {
+    "table_name": "django_session",
+    "column_name": "session_data",
+    "column_type": "longtext",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 2
+   },
+   {
+    "table_name": "django_session",
+    "column_name": "expire_date",
+    "column_type": "datetime(6)",
+    "is_nullable": "NO",
+    "column_key": "MUL",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 3
+   },
+   {
+    "table_name": "enrollments",
+    "column_name": "enrollment_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "PRI",
+    "column_default": null,
+    "extra": "auto_increment",
+    "ordinal_position": 1
+   },
+   {
+    "table_name": "enrollments",
+    "column_name": "student_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "MUL",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 2
+   },
+   {
+    "table_name": "enrollments",
+    "column_name": "course_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "MUL",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 3
+   },
+   {
+    "table_name": "enrollments",
+    "column_name": "academic_year",
+    "column_type": "char(7)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 4
+   },
+   {
+    "table_name": "faculty",
+    "column_name": "faculty_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "PRI",
+    "column_default": null,
+    "extra": "auto_increment",
+    "ordinal_position": 1
+   },
+   {
+    "table_name": "faculty",
+    "column_name": "employee_code",
+    "column_type": "varchar(20)",
+    "is_nullable": "NO",
+    "column_key": "UNI",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 2
+   },
+   {
+    "table_name": "faculty",
+    "column_name": "username",
+    "column_type": "varchar(150)",
+    "is_nullable": "NO",
+    "column_key": "UNI",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 3
+   },
+   {
+    "table_name": "faculty",
+    "column_name": "full_name",
+    "column_type": "varchar(100)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 4
+   },
+   {
+    "table_name": "faculty",
+    "column_name": "email",
+    "column_type": "varchar(254)",
+    "is_nullable": "NO",
+    "column_key": "UNI",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 5
+   },
+   {
+    "table_name": "faculty",
+    "column_name": "designation",
+    "column_type": "varchar(50)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 6
+   },
+   {
+    "table_name": "faculty",
+    "column_name": "dept_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "MUL",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 7
+   },
+   {
+    "table_name": "marks",
+    "column_name": "mark_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "PRI",
+    "column_default": null,
+    "extra": "auto_increment",
+    "ordinal_position": 1
+   },
+   {
+    "table_name": "marks",
+    "column_name": "enrollment_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "UNI",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 2
+   },
+   {
+    "table_name": "marks",
+    "column_name": "internal_marks",
+    "column_type": "decimal(5,2)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 3
+   },
+   {
+    "table_name": "marks",
+    "column_name": "external_marks",
+    "column_type": "decimal(5,2)",
+    "is_nullable": "YES",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 4
+   },
+   {
+    "table_name": "marks",
+    "column_name": "total_marks",
+    "column_type": "decimal(5,2)",
+    "is_nullable": "YES",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 5
+   },
+   {
+    "table_name": "marks",
+    "column_name": "grade_points",
+    "column_type": "int",
+    "is_nullable": "YES",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 6
+   },
+   {
+    "table_name": "marks",
+    "column_name": "letter_grade",
+    "column_type": "varchar(2)",
+    "is_nullable": "YES",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 7
+   },
+   {
+    "table_name": "marks_audit",
+    "column_name": "audit_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "PRI",
+    "column_default": null,
+    "extra": "auto_increment",
+    "ordinal_position": 1
+   },
+   {
+    "table_name": "marks_audit",
+    "column_name": "mark_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "MUL",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 2
+   },
+   {
+    "table_name": "marks_audit",
+    "column_name": "old_internal",
+    "column_type": "decimal(5,2)",
+    "is_nullable": "YES",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 3
+   },
+   {
+    "table_name": "marks_audit",
+    "column_name": "new_internal",
+    "column_type": "decimal(5,2)",
+    "is_nullable": "YES",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 4
+   },
+   {
+    "table_name": "marks_audit",
+    "column_name": "old_external",
+    "column_type": "decimal(5,2)",
+    "is_nullable": "YES",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 5
+   },
+   {
+    "table_name": "marks_audit",
+    "column_name": "new_external",
+    "column_type": "decimal(5,2)",
+    "is_nullable": "YES",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 6
+   },
+   {
+    "table_name": "marks_audit",
+    "column_name": "changed_at",
+    "column_type": "datetime",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 7
+   },
+   {
+    "table_name": "rooms",
+    "column_name": "room_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "PRI",
+    "column_default": null,
+    "extra": "auto_increment",
+    "ordinal_position": 1
+   },
+   {
+    "table_name": "rooms",
+    "column_name": "room_number",
+    "column_type": "varchar(20)",
+    "is_nullable": "NO",
+    "column_key": "UNI",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 2
+   },
+   {
+    "table_name": "rooms",
+    "column_name": "capacity",
+    "column_type": "smallint",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 3
+   },
+   {
+    "table_name": "rooms",
+    "column_name": "room_type",
+    "column_type": "enum('LECTURE','LAB')",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 4
+   },
+   {
+    "table_name": "students",
+    "column_name": "student_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "PRI",
+    "column_default": null,
+    "extra": "auto_increment",
+    "ordinal_position": 1
+   },
+   {
+    "table_name": "students",
+    "column_name": "roll_number",
+    "column_type": "varchar(20)",
+    "is_nullable": "NO",
+    "column_key": "UNI",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 2
+   },
+   {
+    "table_name": "students",
+    "column_name": "username",
+    "column_type": "varchar(150)",
+    "is_nullable": "NO",
+    "column_key": "UNI",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 3
+   },
+   {
+    "table_name": "students",
+    "column_name": "full_name",
+    "column_type": "varchar(100)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 4
+   },
+   {
+    "table_name": "students",
+    "column_name": "email",
+    "column_type": "varchar(254)",
+    "is_nullable": "NO",
+    "column_key": "UNI",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 5
+   },
+   {
+    "table_name": "students",
+    "column_name": "semester",
+    "column_type": "tinyint",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 6
+   },
+   {
+    "table_name": "students",
+    "column_name": "section",
+    "column_type": "char(1)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 7
+   },
+   {
+    "table_name": "students",
+    "column_name": "dept_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "MUL",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 8
+   },
+   {
+    "table_name": "students",
+    "column_name": "cgpa",
+    "column_type": "decimal(4,2)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": "0.00",
+    "extra": "",
+    "ordinal_position": 9
+   },
+   {
+    "table_name": "students",
+    "column_name": "is_defaulter",
+    "column_type": "tinyint(1)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": "0",
+    "extra": "",
+    "ordinal_position": 10
+   },
+   {
+    "table_name": "time_slots",
+    "column_name": "slot_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "PRI",
+    "column_default": null,
+    "extra": "auto_increment",
+    "ordinal_position": 1
+   },
+   {
+    "table_name": "time_slots",
+    "column_name": "day_of_week",
+    "column_type": "enum('MON','TUE','WED','THU','FRI')",
+    "is_nullable": "NO",
+    "column_key": "MUL",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 2
+   },
+   {
+    "table_name": "time_slots",
+    "column_name": "start_time",
+    "column_type": "time",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 3
+   },
+   {
+    "table_name": "time_slots",
+    "column_name": "end_time",
+    "column_type": "time",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 4
+   },
+   {
+    "table_name": "time_slots",
+    "column_name": "slot_number",
+    "column_type": "tinyint",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 5
+   },
+   {
+    "table_name": "timetable_entries",
+    "column_name": "entry_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "PRI",
+    "column_default": null,
+    "extra": "auto_increment",
+    "ordinal_position": 1
+   },
+   {
+    "table_name": "timetable_entries",
+    "column_name": "course_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "MUL",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 2
+   },
+   {
+    "table_name": "timetable_entries",
+    "column_name": "room_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "MUL",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 3
+   },
+   {
+    "table_name": "timetable_entries",
+    "column_name": "slot_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "MUL",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 4
+   },
+   {
+    "table_name": "timetable_entries",
+    "column_name": "section",
+    "column_type": "char(1)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 5
+   },
+   {
+    "table_name": "v_attendance_summary",
+    "column_name": "enrollment_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": "0",
+    "extra": "",
+    "ordinal_position": 1
+   },
+   {
+    "table_name": "v_attendance_summary",
+    "column_name": "student_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": "0",
+    "extra": "",
+    "ordinal_position": 2
+   },
+   {
+    "table_name": "v_attendance_summary",
+    "column_name": "roll_number",
+    "column_type": "varchar(20)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 3
+   },
+   {
+    "table_name": "v_attendance_summary",
+    "column_name": "full_name",
+    "column_type": "varchar(100)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 4
+   },
+   {
+    "table_name": "v_attendance_summary",
+    "column_name": "semester",
+    "column_type": "tinyint",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 5
+   },
+   {
+    "table_name": "v_attendance_summary",
+    "column_name": "section",
+    "column_type": "char(1)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 6
+   },
+   {
+    "table_name": "v_attendance_summary",
+    "column_name": "course_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": "0",
+    "extra": "",
+    "ordinal_position": 7
+   },
+   {
+    "table_name": "v_attendance_summary",
+    "column_name": "course_code",
+    "column_type": "varchar(10)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 8
+   },
+   {
+    "table_name": "v_attendance_summary",
+    "column_name": "course_name",
+    "column_type": "varchar(100)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 9
+   },
+   {
+    "table_name": "v_attendance_summary",
+    "column_name": "academic_year",
+    "column_type": "char(7)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 10
+   },
+   {
+    "table_name": "v_attendance_summary",
+    "column_name": "total_classes",
+    "column_type": "bigint",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": "0",
+    "extra": "",
+    "ordinal_position": 11
+   },
+   {
+    "table_name": "v_attendance_summary",
+    "column_name": "classes_attended",
+    "column_type": "bigint unsigned",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": "0",
+    "extra": "",
+    "ordinal_position": 12
+   },
+   {
+    "table_name": "v_attendance_summary",
+    "column_name": "attendance_percentage",
+    "column_type": "decimal(5,2)",
+    "is_nullable": "YES",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 13
+   },
+   {
+    "table_name": "v_defaulter_list",
+    "column_name": "enrollment_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": "0",
+    "extra": "",
+    "ordinal_position": 1
+   },
+   {
+    "table_name": "v_defaulter_list",
+    "column_name": "student_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": "0",
+    "extra": "",
+    "ordinal_position": 2
+   },
+   {
+    "table_name": "v_defaulter_list",
+    "column_name": "roll_number",
+    "column_type": "varchar(20)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 3
+   },
+   {
+    "table_name": "v_defaulter_list",
+    "column_name": "full_name",
+    "column_type": "varchar(100)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 4
+   },
+   {
+    "table_name": "v_defaulter_list",
+    "column_name": "semester",
+    "column_type": "tinyint",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 5
+   },
+   {
+    "table_name": "v_defaulter_list",
+    "column_name": "section",
+    "column_type": "char(1)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 6
+   },
+   {
+    "table_name": "v_defaulter_list",
+    "column_name": "course_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": "0",
+    "extra": "",
+    "ordinal_position": 7
+   },
+   {
+    "table_name": "v_defaulter_list",
+    "column_name": "course_code",
+    "column_type": "varchar(10)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 8
+   },
+   {
+    "table_name": "v_defaulter_list",
+    "column_name": "course_name",
+    "column_type": "varchar(100)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 9
+   },
+   {
+    "table_name": "v_defaulter_list",
+    "column_name": "academic_year",
+    "column_type": "char(7)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 10
+   },
+   {
+    "table_name": "v_defaulter_list",
+    "column_name": "total_classes",
+    "column_type": "bigint",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": "0",
+    "extra": "",
+    "ordinal_position": 11
+   },
+   {
+    "table_name": "v_defaulter_list",
+    "column_name": "classes_attended",
+    "column_type": "bigint unsigned",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": "0",
+    "extra": "",
+    "ordinal_position": 12
+   },
+   {
+    "table_name": "v_defaulter_list",
+    "column_name": "attendance_percentage",
+    "column_type": "decimal(5,2)",
+    "is_nullable": "YES",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 13
+   },
+   {
+    "table_name": "v_marks_audit",
+    "column_name": "audit_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": "0",
+    "extra": "",
+    "ordinal_position": 1
+   },
+   {
+    "table_name": "v_marks_audit",
+    "column_name": "mark_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 2
+   },
+   {
+    "table_name": "v_marks_audit",
+    "column_name": "roll_number",
+    "column_type": "varchar(20)",
+    "is_nullable": "YES",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 3
+   },
+   {
+    "table_name": "v_marks_audit",
+    "column_name": "full_name",
+    "column_type": "varchar(100)",
+    "is_nullable": "YES",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 4
+   },
+   {
+    "table_name": "v_marks_audit",
+    "column_name": "course_code",
+    "column_type": "varchar(10)",
+    "is_nullable": "YES",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 5
+   },
+   {
+    "table_name": "v_marks_audit",
+    "column_name": "course_name",
+    "column_type": "varchar(100)",
+    "is_nullable": "YES",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 6
+   },
+   {
+    "table_name": "v_marks_audit",
+    "column_name": "old_internal",
+    "column_type": "decimal(5,2)",
+    "is_nullable": "YES",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 7
+   },
+   {
+    "table_name": "v_marks_audit",
+    "column_name": "old_external",
+    "column_type": "decimal(5,2)",
+    "is_nullable": "YES",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 8
+   },
+   {
+    "table_name": "v_marks_audit",
+    "column_name": "old_total",
+    "column_type": "decimal(6,2)",
+    "is_nullable": "YES",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 9
+   },
+   {
+    "table_name": "v_marks_audit",
+    "column_name": "old_letter_grade",
+    "column_type": "varchar(2)",
+    "is_nullable": "YES",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 10
+   },
+   {
+    "table_name": "v_marks_audit",
+    "column_name": "new_internal",
+    "column_type": "decimal(5,2)",
+    "is_nullable": "YES",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 11
+   },
+   {
+    "table_name": "v_marks_audit",
+    "column_name": "new_external",
+    "column_type": "decimal(5,2)",
+    "is_nullable": "YES",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 12
+   },
+   {
+    "table_name": "v_marks_audit",
+    "column_name": "new_total",
+    "column_type": "decimal(6,2)",
+    "is_nullable": "YES",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 13
+   },
+   {
+    "table_name": "v_marks_audit",
+    "column_name": "new_letter_grade",
+    "column_type": "varchar(2)",
+    "is_nullable": "YES",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 14
+   },
+   {
+    "table_name": "v_marks_audit",
+    "column_name": "changed_at",
+    "column_type": "datetime",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 15
+   },
+   {
+    "table_name": "v_student_cgpa_report",
+    "column_name": "student_id",
+    "column_type": "int",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": "0",
+    "extra": "",
+    "ordinal_position": 1
+   },
+   {
+    "table_name": "v_student_cgpa_report",
+    "column_name": "roll_number",
+    "column_type": "varchar(20)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 2
+   },
+   {
+    "table_name": "v_student_cgpa_report",
+    "column_name": "full_name",
+    "column_type": "varchar(100)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 3
+   },
+   {
+    "table_name": "v_student_cgpa_report",
+    "column_name": "dept_code",
+    "column_type": "varchar(10)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 4
+   },
+   {
+    "table_name": "v_student_cgpa_report",
+    "column_name": "semester",
+    "column_type": "tinyint",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 5
+   },
+   {
+    "table_name": "v_student_cgpa_report",
+    "column_name": "section",
+    "column_type": "char(1)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 6
+   },
+   {
+    "table_name": "v_student_cgpa_report",
+    "column_name": "courses_graded",
+    "column_type": "bigint",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": "0",
+    "extra": "",
+    "ordinal_position": 7
+   },
+   {
+    "table_name": "v_student_cgpa_report",
+    "column_name": "credits_graded",
+    "column_type": "bigint unsigned",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": "0",
+    "extra": "",
+    "ordinal_position": 8
+   },
+   {
+    "table_name": "v_student_cgpa_report",
+    "column_name": "credits_earned",
+    "column_type": "bigint unsigned",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": "0",
+    "extra": "",
+    "ordinal_position": 9
+   },
+   {
+    "table_name": "v_student_cgpa_report",
+    "column_name": "weighted_gpa",
+    "column_type": "decimal(4,2)",
+    "is_nullable": "YES",
+    "column_key": "",
+    "column_default": null,
+    "extra": "",
+    "ordinal_position": 10
+   },
+   {
+    "table_name": "v_student_cgpa_report",
+    "column_name": "cgpa",
+    "column_type": "decimal(4,2)",
+    "is_nullable": "NO",
+    "column_key": "",
+    "column_default": "0.00",
+    "extra": "",
+    "ordinal_position": 11
+   }
+  ],
+  "constraints": [
+   {
+    "table_name": "attendance_records",
+    "constraint_name": "chk_attendance_records_weekday",
+    "constraint_type": "CHECK",
+    "check_clause": "(dayofweek(`session_date`) between 2 and 6)"
+   },
+   {
+    "table_name": "attendance_records",
+    "constraint_name": "fk_attendance_records_enrollments",
+    "constraint_type": "FOREIGN KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "attendance_records",
+    "constraint_name": "PRIMARY",
+    "constraint_type": "PRIMARY KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "attendance_records",
+    "constraint_name": "uq_attendance_records_enrollment_date",
+    "constraint_type": "UNIQUE",
+    "check_clause": null
+   },
+   {
+    "table_name": "auth_group",
+    "constraint_name": "PRIMARY",
+    "constraint_type": "PRIMARY KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "auth_group",
+    "constraint_name": "name",
+    "constraint_type": "UNIQUE",
+    "check_clause": null
+   },
+   {
+    "table_name": "auth_group_permissions",
+    "constraint_name": "auth_group_permissio_permission_id_84c5c92e_fk_auth_perm",
+    "constraint_type": "FOREIGN KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "auth_group_permissions",
+    "constraint_name": "auth_group_permissions_group_id_b120cbf9_fk_auth_group_id",
+    "constraint_type": "FOREIGN KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "auth_group_permissions",
+    "constraint_name": "PRIMARY",
+    "constraint_type": "PRIMARY KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "auth_group_permissions",
+    "constraint_name": "auth_group_permissions_group_id_permission_id_0cd325b0_uniq",
+    "constraint_type": "UNIQUE",
+    "check_clause": null
+   },
+   {
+    "table_name": "auth_permission",
+    "constraint_name": "auth_permission_content_type_id_2f476e4b_fk_django_co",
+    "constraint_type": "FOREIGN KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "auth_permission",
+    "constraint_name": "PRIMARY",
+    "constraint_type": "PRIMARY KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "auth_permission",
+    "constraint_name": "auth_permission_content_type_id_codename_01ab375a_uniq",
+    "constraint_type": "UNIQUE",
+    "check_clause": null
+   },
+   {
+    "table_name": "auth_user",
+    "constraint_name": "PRIMARY",
+    "constraint_type": "PRIMARY KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "auth_user",
+    "constraint_name": "username",
+    "constraint_type": "UNIQUE",
+    "check_clause": null
+   },
+   {
+    "table_name": "auth_user_groups",
+    "constraint_name": "auth_user_groups_group_id_97559544_fk_auth_group_id",
+    "constraint_type": "FOREIGN KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "auth_user_groups",
+    "constraint_name": "auth_user_groups_user_id_6a12ed8b_fk_auth_user_id",
+    "constraint_type": "FOREIGN KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "auth_user_groups",
+    "constraint_name": "PRIMARY",
+    "constraint_type": "PRIMARY KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "auth_user_groups",
+    "constraint_name": "auth_user_groups_user_id_group_id_94350c0c_uniq",
+    "constraint_type": "UNIQUE",
+    "check_clause": null
+   },
+   {
+    "table_name": "auth_user_user_permissions",
+    "constraint_name": "auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm",
+    "constraint_type": "FOREIGN KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "auth_user_user_permissions",
+    "constraint_name": "auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id",
+    "constraint_type": "FOREIGN KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "auth_user_user_permissions",
+    "constraint_name": "PRIMARY",
+    "constraint_type": "PRIMARY KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "auth_user_user_permissions",
+    "constraint_name": "auth_user_user_permissions_user_id_permission_id_14a6b632_uniq",
+    "constraint_type": "UNIQUE",
+    "check_clause": null
+   },
+   {
+    "table_name": "courses",
+    "constraint_name": "chk_courses_credits",
+    "constraint_type": "CHECK",
+    "check_clause": "(`credits` between 1 and 6)"
+   },
+   {
+    "table_name": "courses",
+    "constraint_name": "chk_courses_hours",
+    "constraint_type": "CHECK",
+    "check_clause": "(`hours_per_week` between 1 and 10)"
+   },
+   {
+    "table_name": "courses",
+    "constraint_name": "chk_courses_semester",
+    "constraint_type": "CHECK",
+    "check_clause": "(`semester` between 1 and 8)"
+   },
+   {
+    "table_name": "courses",
+    "constraint_name": "fk_courses_departments",
+    "constraint_type": "FOREIGN KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "courses",
+    "constraint_name": "fk_courses_faculty",
+    "constraint_type": "FOREIGN KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "courses",
+    "constraint_name": "PRIMARY",
+    "constraint_type": "PRIMARY KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "courses",
+    "constraint_name": "uq_courses_course_code",
+    "constraint_type": "UNIQUE",
+    "check_clause": null
+   },
+   {
+    "table_name": "departments",
+    "constraint_name": "chk_departments_dept_code",
+    "constraint_type": "CHECK",
+    "check_clause": "regexp_like(`dept_code`,_utf8mb4\\'^[A-Z]{2,10}$\\',_utf8mb4\\'c\\')"
+   },
+   {
+    "table_name": "departments",
+    "constraint_name": "PRIMARY",
+    "constraint_type": "PRIMARY KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "departments",
+    "constraint_name": "uq_departments_dept_code",
+    "constraint_type": "UNIQUE",
+    "check_clause": null
+   },
+   {
+    "table_name": "departments",
+    "constraint_name": "uq_departments_dept_name",
+    "constraint_type": "UNIQUE",
+    "check_clause": null
+   },
+   {
+    "table_name": "django_admin_log",
+    "constraint_name": "django_admin_log_chk_1",
+    "constraint_type": "CHECK",
+    "check_clause": "(`action_flag` >= 0)"
+   },
+   {
+    "table_name": "django_admin_log",
+    "constraint_name": "django_admin_log_content_type_id_c4bce8eb_fk_django_co",
+    "constraint_type": "FOREIGN KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "django_admin_log",
+    "constraint_name": "django_admin_log_user_id_c564eba6_fk_auth_user_id",
+    "constraint_type": "FOREIGN KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "django_admin_log",
+    "constraint_name": "PRIMARY",
+    "constraint_type": "PRIMARY KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "django_content_type",
+    "constraint_name": "PRIMARY",
+    "constraint_type": "PRIMARY KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "django_content_type",
+    "constraint_name": "django_content_type_app_label_model_76bd3d3b_uniq",
+    "constraint_type": "UNIQUE",
+    "check_clause": null
+   },
+   {
+    "table_name": "django_migrations",
+    "constraint_name": "PRIMARY",
+    "constraint_type": "PRIMARY KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "django_session",
+    "constraint_name": "PRIMARY",
+    "constraint_type": "PRIMARY KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "enrollments",
+    "constraint_name": "chk_enrollments_academic_year",
+    "constraint_type": "CHECK",
+    "check_clause": "regexp_like(`academic_year`,_utf8mb4\\'^[0-9]{4}-[0-9]{2}$\\')"
+   },
+   {
+    "table_name": "enrollments",
+    "constraint_name": "fk_enrollments_courses",
+    "constraint_type": "FOREIGN KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "enrollments",
+    "constraint_name": "fk_enrollments_students",
+    "constraint_type": "FOREIGN KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "enrollments",
+    "constraint_name": "PRIMARY",
+    "constraint_type": "PRIMARY KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "enrollments",
+    "constraint_name": "uq_enrollments_student_course",
+    "constraint_type": "UNIQUE",
+    "check_clause": null
+   },
+   {
+    "table_name": "faculty",
+    "constraint_name": "chk_faculty_designation",
+    "constraint_type": "CHECK",
+    "check_clause": "(`designation` in (_utf8mb4\\'Professor\\',_utf8mb4\\'Associate Professor\\',_utf8mb4\\'Assistant Professor\\',_utf8mb4\\'Lecturer\\'))"
+   },
+   {
+    "table_name": "faculty",
+    "constraint_name": "chk_faculty_email",
+    "constraint_type": "CHECK",
+    "check_clause": "(`email` like _utf8mb4\\'_%@_%._%\\')"
+   },
+   {
+    "table_name": "faculty",
+    "constraint_name": "chk_faculty_username",
+    "constraint_type": "CHECK",
+    "check_clause": "regexp_like(`username`,_utf8mb4\\'^[A-Za-z0-9.@+_-]+$\\')"
+   },
+   {
+    "table_name": "faculty",
+    "constraint_name": "fk_faculty_departments",
+    "constraint_type": "FOREIGN KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "faculty",
+    "constraint_name": "PRIMARY",
+    "constraint_type": "PRIMARY KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "faculty",
+    "constraint_name": "uq_faculty_email",
+    "constraint_type": "UNIQUE",
+    "check_clause": null
+   },
+   {
+    "table_name": "faculty",
+    "constraint_name": "uq_faculty_employee_code",
+    "constraint_type": "UNIQUE",
+    "check_clause": null
+   },
+   {
+    "table_name": "faculty",
+    "constraint_name": "uq_faculty_username",
+    "constraint_type": "UNIQUE",
+    "check_clause": null
+   },
+   {
+    "table_name": "marks",
+    "constraint_name": "chk_marks_external",
+    "constraint_type": "CHECK",
+    "check_clause": "(`external_marks` between 0 and 60)"
+   },
+   {
+    "table_name": "marks",
+    "constraint_name": "chk_marks_grade_points",
+    "constraint_type": "CHECK",
+    "check_clause": "(`grade_points` in (0,5,6,7,8,9,10))"
+   },
+   {
+    "table_name": "marks",
+    "constraint_name": "chk_marks_internal",
+    "constraint_type": "CHECK",
+    "check_clause": "(`internal_marks` between 0 and 40)"
+   },
+   {
+    "table_name": "marks",
+    "constraint_name": "chk_marks_letter_grade",
+    "constraint_type": "CHECK",
+    "check_clause": "(`letter_grade` in (_utf8mb4\\'O\\',_utf8mb4\\'A+\\',_utf8mb4\\'A\\',_utf8mb4\\'B+\\',_utf8mb4\\'B\\',_utf8mb4\\'P\\',_utf8mb4\\'F\\'))"
+   },
+   {
+    "table_name": "marks",
+    "constraint_name": "chk_marks_total",
+    "constraint_type": "CHECK",
+    "check_clause": "(`total_marks` between 0 and 100)"
+   },
+   {
+    "table_name": "marks",
+    "constraint_name": "fk_marks_enrollments",
+    "constraint_type": "FOREIGN KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "marks",
+    "constraint_name": "PRIMARY",
+    "constraint_type": "PRIMARY KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "marks",
+    "constraint_name": "uq_marks_enrollment",
+    "constraint_type": "UNIQUE",
+    "check_clause": null
+   },
+   {
+    "table_name": "marks_audit",
+    "constraint_name": "PRIMARY",
+    "constraint_type": "PRIMARY KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "rooms",
+    "constraint_name": "chk_rooms_capacity",
+    "constraint_type": "CHECK",
+    "check_clause": "(`capacity` between 1 and 500)"
+   },
+   {
+    "table_name": "rooms",
+    "constraint_name": "PRIMARY",
+    "constraint_type": "PRIMARY KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "rooms",
+    "constraint_name": "uq_rooms_room_number",
+    "constraint_type": "UNIQUE",
+    "check_clause": null
+   },
+   {
+    "table_name": "students",
+    "constraint_name": "chk_students_cgpa",
+    "constraint_type": "CHECK",
+    "check_clause": "(`cgpa` between 0.00 and 10.00)"
+   },
+   {
+    "table_name": "students",
+    "constraint_name": "chk_students_email",
+    "constraint_type": "CHECK",
+    "check_clause": "(`email` like _utf8mb4\\'_%@_%._%\\')"
+   },
+   {
+    "table_name": "students",
+    "constraint_name": "chk_students_section",
+    "constraint_type": "CHECK",
+    "check_clause": "regexp_like(`section`,_utf8mb4\\'^[A-Z]$\\',_utf8mb4\\'c\\')"
+   },
+   {
+    "table_name": "students",
+    "constraint_name": "chk_students_semester",
+    "constraint_type": "CHECK",
+    "check_clause": "(`semester` between 1 and 8)"
+   },
+   {
+    "table_name": "students",
+    "constraint_name": "chk_students_username",
+    "constraint_type": "CHECK",
+    "check_clause": "regexp_like(`username`,_utf8mb4\\'^[A-Za-z0-9.@+_-]+$\\')"
+   },
+   {
+    "table_name": "students",
+    "constraint_name": "fk_students_departments",
+    "constraint_type": "FOREIGN KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "students",
+    "constraint_name": "PRIMARY",
+    "constraint_type": "PRIMARY KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "students",
+    "constraint_name": "uq_students_email",
+    "constraint_type": "UNIQUE",
+    "check_clause": null
+   },
+   {
+    "table_name": "students",
+    "constraint_name": "uq_students_roll_number",
+    "constraint_type": "UNIQUE",
+    "check_clause": null
+   },
+   {
+    "table_name": "students",
+    "constraint_name": "uq_students_username",
+    "constraint_type": "UNIQUE",
+    "check_clause": null
+   },
+   {
+    "table_name": "time_slots",
+    "constraint_name": "chk_time_slots_order",
+    "constraint_type": "CHECK",
+    "check_clause": "(`end_time` > `start_time`)"
+   },
+   {
+    "table_name": "time_slots",
+    "constraint_name": "chk_time_slots_slot_number",
+    "constraint_type": "CHECK",
+    "check_clause": "(`slot_number` between 1 and 10)"
+   },
+   {
+    "table_name": "time_slots",
+    "constraint_name": "PRIMARY",
+    "constraint_type": "PRIMARY KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "time_slots",
+    "constraint_name": "uq_time_slots_day_slot",
+    "constraint_type": "UNIQUE",
+    "check_clause": null
+   },
+   {
+    "table_name": "time_slots",
+    "constraint_name": "uq_time_slots_day_start",
+    "constraint_type": "UNIQUE",
+    "check_clause": null
+   },
+   {
+    "table_name": "timetable_entries",
+    "constraint_name": "chk_timetable_entries_section",
+    "constraint_type": "CHECK",
+    "check_clause": "regexp_like(`section`,_utf8mb4\\'^[A-Z]$\\',_utf8mb4\\'c\\')"
+   },
+   {
+    "table_name": "timetable_entries",
+    "constraint_name": "fk_timetable_entries_courses",
+    "constraint_type": "FOREIGN KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "timetable_entries",
+    "constraint_name": "fk_timetable_entries_rooms",
+    "constraint_type": "FOREIGN KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "timetable_entries",
+    "constraint_name": "fk_timetable_entries_time_slots",
+    "constraint_type": "FOREIGN KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "timetable_entries",
+    "constraint_name": "PRIMARY",
+    "constraint_type": "PRIMARY KEY",
+    "check_clause": null
+   },
+   {
+    "table_name": "timetable_entries",
+    "constraint_name": "uq_timetable_entries_room_slot",
+    "constraint_type": "UNIQUE",
+    "check_clause": null
+   },
+   {
+    "table_name": "timetable_entries",
+    "constraint_name": "uq_timetable_entries_slot_section",
+    "constraint_type": "UNIQUE",
+    "check_clause": null
+   }
+  ],
+  "foreign_keys": [
+   {
+    "table_name": "attendance_records",
+    "column_name": "enrollment_id",
+    "constraint_name": "fk_attendance_records_enrollments",
+    "referenced_table_name": "enrollments",
+    "referenced_column_name": "enrollment_id",
+    "update_rule": "CASCADE",
+    "delete_rule": "CASCADE"
+   },
+   {
+    "table_name": "auth_group_permissions",
+    "column_name": "group_id",
+    "constraint_name": "auth_group_permissions_group_id_b120cbf9_fk_auth_group_id",
+    "referenced_table_name": "auth_group",
+    "referenced_column_name": "id",
+    "update_rule": "NO ACTION",
+    "delete_rule": "NO ACTION"
+   },
+   {
+    "table_name": "auth_group_permissions",
+    "column_name": "permission_id",
+    "constraint_name": "auth_group_permissio_permission_id_84c5c92e_fk_auth_perm",
+    "referenced_table_name": "auth_permission",
+    "referenced_column_name": "id",
+    "update_rule": "NO ACTION",
+    "delete_rule": "NO ACTION"
+   },
+   {
+    "table_name": "auth_permission",
+    "column_name": "content_type_id",
+    "constraint_name": "auth_permission_content_type_id_2f476e4b_fk_django_co",
+    "referenced_table_name": "django_content_type",
+    "referenced_column_name": "id",
+    "update_rule": "NO ACTION",
+    "delete_rule": "NO ACTION"
+   },
+   {
+    "table_name": "auth_user_groups",
+    "column_name": "group_id",
+    "constraint_name": "auth_user_groups_group_id_97559544_fk_auth_group_id",
+    "referenced_table_name": "auth_group",
+    "referenced_column_name": "id",
+    "update_rule": "NO ACTION",
+    "delete_rule": "NO ACTION"
+   },
+   {
+    "table_name": "auth_user_groups",
+    "column_name": "user_id",
+    "constraint_name": "auth_user_groups_user_id_6a12ed8b_fk_auth_user_id",
+    "referenced_table_name": "auth_user",
+    "referenced_column_name": "id",
+    "update_rule": "NO ACTION",
+    "delete_rule": "NO ACTION"
+   },
+   {
+    "table_name": "auth_user_user_permissions",
+    "column_name": "user_id",
+    "constraint_name": "auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id",
+    "referenced_table_name": "auth_user",
+    "referenced_column_name": "id",
+    "update_rule": "NO ACTION",
+    "delete_rule": "NO ACTION"
+   },
+   {
+    "table_name": "auth_user_user_permissions",
+    "column_name": "permission_id",
+    "constraint_name": "auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm",
+    "referenced_table_name": "auth_permission",
+    "referenced_column_name": "id",
+    "update_rule": "NO ACTION",
+    "delete_rule": "NO ACTION"
+   },
+   {
+    "table_name": "courses",
+    "column_name": "dept_id",
+    "constraint_name": "fk_courses_departments",
+    "referenced_table_name": "departments",
+    "referenced_column_name": "dept_id",
+    "update_rule": "CASCADE",
+    "delete_rule": "RESTRICT"
+   },
+   {
+    "table_name": "courses",
+    "column_name": "faculty_id",
+    "constraint_name": "fk_courses_faculty",
+    "referenced_table_name": "faculty",
+    "referenced_column_name": "faculty_id",
+    "update_rule": "CASCADE",
+    "delete_rule": "SET NULL"
+   },
+   {
+    "table_name": "django_admin_log",
+    "column_name": "content_type_id",
+    "constraint_name": "django_admin_log_content_type_id_c4bce8eb_fk_django_co",
+    "referenced_table_name": "django_content_type",
+    "referenced_column_name": "id",
+    "update_rule": "NO ACTION",
+    "delete_rule": "NO ACTION"
+   },
+   {
+    "table_name": "django_admin_log",
+    "column_name": "user_id",
+    "constraint_name": "django_admin_log_user_id_c564eba6_fk_auth_user_id",
+    "referenced_table_name": "auth_user",
+    "referenced_column_name": "id",
+    "update_rule": "NO ACTION",
+    "delete_rule": "NO ACTION"
+   },
+   {
+    "table_name": "enrollments",
+    "column_name": "course_id",
+    "constraint_name": "fk_enrollments_courses",
+    "referenced_table_name": "courses",
+    "referenced_column_name": "course_id",
+    "update_rule": "CASCADE",
+    "delete_rule": "RESTRICT"
+   },
+   {
+    "table_name": "enrollments",
+    "column_name": "student_id",
+    "constraint_name": "fk_enrollments_students",
+    "referenced_table_name": "students",
+    "referenced_column_name": "student_id",
+    "update_rule": "CASCADE",
+    "delete_rule": "CASCADE"
+   },
+   {
+    "table_name": "faculty",
+    "column_name": "dept_id",
+    "constraint_name": "fk_faculty_departments",
+    "referenced_table_name": "departments",
+    "referenced_column_name": "dept_id",
+    "update_rule": "CASCADE",
+    "delete_rule": "RESTRICT"
+   },
+   {
+    "table_name": "marks",
+    "column_name": "enrollment_id",
+    "constraint_name": "fk_marks_enrollments",
+    "referenced_table_name": "enrollments",
+    "referenced_column_name": "enrollment_id",
+    "update_rule": "CASCADE",
+    "delete_rule": "CASCADE"
+   },
+   {
+    "table_name": "students",
+    "column_name": "dept_id",
+    "constraint_name": "fk_students_departments",
+    "referenced_table_name": "departments",
+    "referenced_column_name": "dept_id",
+    "update_rule": "CASCADE",
+    "delete_rule": "RESTRICT"
+   },
+   {
+    "table_name": "timetable_entries",
+    "column_name": "course_id",
+    "constraint_name": "fk_timetable_entries_courses",
+    "referenced_table_name": "courses",
+    "referenced_column_name": "course_id",
+    "update_rule": "CASCADE",
+    "delete_rule": "CASCADE"
+   },
+   {
+    "table_name": "timetable_entries",
+    "column_name": "room_id",
+    "constraint_name": "fk_timetable_entries_rooms",
+    "referenced_table_name": "rooms",
+    "referenced_column_name": "room_id",
+    "update_rule": "CASCADE",
+    "delete_rule": "RESTRICT"
+   },
+   {
+    "table_name": "timetable_entries",
+    "column_name": "slot_id",
+    "constraint_name": "fk_timetable_entries_time_slots",
+    "referenced_table_name": "time_slots",
+    "referenced_column_name": "slot_id",
+    "update_rule": "CASCADE",
+    "delete_rule": "RESTRICT"
+   }
+  ],
+  "triggers": [
+   {
+    "trigger_name": "trg_faculty_before_insert",
+    "event_manipulation": "INSERT",
+    "event_object_table": "faculty",
+    "action_timing": "BEFORE"
+   },
+   {
+    "trigger_name": "trg_faculty_before_update",
+    "event_manipulation": "UPDATE",
+    "event_object_table": "faculty",
+    "action_timing": "BEFORE"
+   },
+   {
+    "trigger_name": "trg_marks_after_update",
+    "event_manipulation": "UPDATE",
+    "event_object_table": "marks",
+    "action_timing": "AFTER"
+   },
+   {
+    "trigger_name": "trg_marks_before_insert",
+    "event_manipulation": "INSERT",
+    "event_object_table": "marks",
+    "action_timing": "BEFORE"
+   },
+   {
+    "trigger_name": "trg_marks_before_update",
+    "event_manipulation": "UPDATE",
+    "event_object_table": "marks",
+    "action_timing": "BEFORE"
+   },
+   {
+    "trigger_name": "trg_prevent_timetable_faculty_clash",
+    "event_manipulation": "INSERT",
+    "event_object_table": "timetable_entries",
+    "action_timing": "BEFORE"
+   },
+   {
+    "trigger_name": "trg_prevent_timetable_faculty_clash_update",
+    "event_manipulation": "UPDATE",
+    "event_object_table": "timetable_entries",
+    "action_timing": "BEFORE"
+   },
+   {
+    "trigger_name": "trg_students_before_insert",
+    "event_manipulation": "INSERT",
+    "event_object_table": "students",
+    "action_timing": "BEFORE"
+   },
+   {
+    "trigger_name": "trg_students_before_update",
+    "event_manipulation": "UPDATE",
+    "event_object_table": "students",
+    "action_timing": "BEFORE"
+   }
+  ],
+  "routines": [
+   {
+    "routine_name": "fn_grade_points",
+    "routine_type": "FUNCTION"
+   },
+   {
+    "routine_name": "fn_letter_grade",
+    "routine_type": "FUNCTION"
+   },
+   {
+    "routine_name": "sp_refresh_defaulter_flags",
+    "routine_type": "PROCEDURE"
+   }
+  ],
+  "row_counts": {
+   "attendance_records": 720,
+   "courses": 6,
+   "departments": 2,
+   "enrollments": 60,
+   "faculty": 5,
+   "marks": 60,
+   "marks_audit": 0,
+   "rooms": 5,
+   "students": 10,
+   "time_slots": 20,
+   "timetable_entries": 20,
+   "v_attendance_summary": 60,
+   "v_defaulter_list": 8,
+   "v_marks_audit": 0,
+   "v_student_cgpa_report": 10
+  }
+ },
+ "git": {
+  "commits": [
+   {
+    "hash": "4ae9dc0",
+    "date": "2026-10-15",
+    "subject": "chore: scaffold 4-lab project structure, Maven fat-JAR setup, and CLAUDE.md"
+   },
+   {
+    "hash": "c62e999",
+    "date": "2026-10-16",
+    "subject": "feat(database): add 3NF schema, views, triggers, seed data and init_db.py"
+   },
+   {
+    "hash": "30445ca",
+    "date": "2026-10-31",
+    "subject": "feat(java): add DB config loader and checked exception hierarchy"
+   },
+   {
+    "hash": "c9efb16",
+    "date": "2026-10-31",
+    "subject": "feat(java): add domain models with Person -> Student/Faculty hierarchy"
+   },
+   {
+    "hash": "0b1d670",
+    "date": "2026-10-31",
+    "subject": "feat(java): add DAO interfaces and JDBC implementations"
+   },
+   {
+    "hash": "ecf5b18",
+    "date": "2026-10-31",
+    "subject": "feat(java): add student and report services"
+   },
+   {
+    "hash": "f7aa6bb",
+    "date": "2026-10-31",
+    "subject": "feat(java): add CLI commands with text and --json output"
+   },
+   {
+    "hash": "5937f1f",
+    "date": "2026-10-31",
+    "subject": "docs: document Phase 3 Java engine commands and pitfalls in CLAUDE.md"
+   },
+   {
+    "hash": "2177c9d",
+    "date": "2026-10-31",
+    "subject": "feat(django): create campus_portal project with unmanaged models"
+   },
+   {
+    "hash": "af5e1b5",
+    "date": "2026-10-31",
+    "subject": "feat(django): add login, role routing, demo users and base UI"
+   },
+   {
+    "hash": "9d320e0",
+    "date": "2026-10-31",
+    "subject": "feat(django): add student and faculty portals with DB-backed writes"
+   },
+   {
+    "hash": "fea3450",
+    "date": "2026-10-31",
+    "subject": "feat(django): add admin portal with reports and CRUD"
+   },
+   {
+    "hash": "d523464",
+    "date": "2026-10-31",
+    "subject": "feat(django): add admin-only Java engine bridge page"
+   },
+   {
+    "hash": "8442463",
+    "date": "2026-10-31",
+    "subject": "test(django): add role, bridge and real-database tests"
+   },
+   {
+    "hash": "6f74e2b",
+    "date": "2026-10-31",
+    "subject": "docs: document the Django portal, demo logins and Phase 4 pitfalls"
+   },
+   {
+    "hash": "c96e1f6",
+    "date": "2026-11-01",
+    "subject": "fix(database): make section and dept_code CHECKs case-sensitive"
+   },
+   {
+    "hash": "e586990",
+    "date": "2026-11-01",
+    "subject": "feat(database): add marks audit trail (AFTER trigger) and lab query examples"
+   },
+   {
+    "hash": "d0d4413",
+    "date": "2026-11-01",
+    "subject": "feat(java): add CSV export (file I/O) and an interactive Scanner menu"
+   },
+   {
+    "hash": "eee70ad",
+    "date": "2026-11-01",
+    "subject": "feat(django): complete CRUD, Django admin, audit pages and UX polish"
+   },
+   {
+    "hash": "659f320",
+    "date": "2026-11-01",
+    "subject": "feat(django): harden session/cookie settings and add URL-wide access tests"
+   },
+   {
+    "hash": "dd549b1",
+    "date": "2026-11-01",
+    "subject": "docs: add README and document the Phase 4.5 changes"
+   },
+   {
+    "hash": "6de2bea",
+    "date": "2026-11-01",
+    "subject": "fix(django): give paginated faculty and course lists a stable order"
+   }
+  ],
+  "tracked_files": 162
+ },
+ "loc": {
+  "SQL (database/*.sql)": {
+   "files": 4,
+   "lines": 833
+  },
+  "Python tooling (database/init_db.py)": {
+   "files": 1,
+   "lines": 243
+  },
+  "Java main (java_engine/src/main)": {
+   "files": 60,
+   "lines": 2846
+  },
+  "Java tests (java_engine/src/test)": {
+   "files": 5,
+   "lines": 282
+  },
+  "Django Python (excluding tests)": {
+   "files": 44,
+   "lines": 1564
+  },
+  "Django tests": {
+   "files": 6,
+   "lines": 572
+  },
+  "Templates (HTML)": {
+   "files": 26,
+   "lines": 830
+  },
+  "CSS": {
+   "files": 1,
+   "lines": 155
+  },
+  "java_files_per_package": {
+   "smartcampus": 1,
+   "cli": 11,
+   "config": 2,
+   "dao": 18,
+   "exceptions": 8,
+   "models": 15,
+   "services": 5
+  }
+ }
+}

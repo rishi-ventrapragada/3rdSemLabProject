@@ -1,0 +1,6 @@
+# Tools to rebuild docs/Project_Report.docx (not needed to run the project)
+python-docx~=1.2
+PyMuPDF>=1.26
+playwright~=1.55
+Pillow>=11
+coverage>=7.10

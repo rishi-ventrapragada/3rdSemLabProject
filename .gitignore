@@ -62,3 +62,9 @@ desktop.ini
 
 # ---------- Claude Code (personal settings only) ----------
 .claude/settings.local.json
+
+# ---------- Report build (docs/src) ----------
+# Downloaded tools and the course templates (another team's sample report) stay local.
+docs/src/tools/
+docs/templates/
+docs/src/report/build/
