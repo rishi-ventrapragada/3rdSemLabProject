@@ -37,6 +37,27 @@ if not SECRET_KEY:
 ALLOWED_HOSTS = [h.strip() for h in env("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if h.strip()]
 
 
+# Sessions, cookies and response headers. Several of these equal Django's defaults; they are
+# stated here so the security posture is visible in one place.
+SESSION_COOKIE_AGE = 8 * 60 * 60          # one working day
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_SAMESITE = "Lax"
+X_FRAME_OPTIONS = "DENY"
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = "same-origin"
+
+# HTTPS hardening is opt-in: the lab demo runs on plain http://127.0.0.1, where secure-only
+# cookies and an HTTPS redirect would make the site unusable. Set DJANGO_HTTPS=True behind TLS.
+if env("DJANGO_HTTPS", "False").lower() in ("1", "true", "yes"):
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 60 * 60 * 24 * 365
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",

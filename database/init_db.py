@@ -220,6 +220,7 @@ def print_report(cursor) -> None:
     print(f"  {'object':<24}{'type':<7}{'rows':>6}")
     print(f"  {'-' * 24}{'-' * 7}{'-' * 6}")
     for name, kind in [(t, "table") for t in TABLES] + [(v, "view") for v in VIEWS]:
+        # Identifiers cannot be bound as parameters; `name` comes from the constant TABLES/VIEWS above.
         cursor.execute(f"SELECT COUNT(*) FROM `{name}`")
         print(f"  {name:<24}{kind:<7}{cursor.fetchone()[0]:>6}")
 
