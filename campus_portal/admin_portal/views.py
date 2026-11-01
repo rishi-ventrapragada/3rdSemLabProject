@@ -43,7 +43,10 @@ def students(request):
 
 @role_required(ADMIN)
 def faculty_list(request):
-    rows, search_form = search(request, Faculty.objects.select_related("dept").annotate(course_count=Count("courses")),
+    # Explicit order_by: Django ignores Meta.ordering in GROUP BY (annotate) queries, and pagination
+    # needs a stable order.
+    rows, search_form = search(request, Faculty.objects.select_related("dept").annotate(course_count=Count("courses"))
+                               .order_by("employee_code"),
                                ["employee_code", "full_name", "username", "designation"])
     return render(request, "admin_portal/faculty.html", {"page_obj": paginate(request, rows),
                                                          "search_form": search_form})
@@ -53,7 +56,8 @@ def faculty_list(request):
 def courses(request):
     rows, search_form = search(
         request,
-        Course.objects.select_related("dept", "faculty").annotate(student_count=Count("enrollments")),
+        Course.objects.select_related("dept", "faculty").annotate(student_count=Count("enrollments"))
+        .order_by("course_code"),
         ["course_code", "course_name", "faculty__full_name"])
     return render(request, "admin_portal/courses.html", {"page_obj": paginate(request, rows),
                                                          "search_form": search_form})
