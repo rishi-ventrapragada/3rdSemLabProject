@@ -35,4 +35,24 @@
   </div>
   <button type="submit" class="button">Save marks</button>
 </form>
+
+<h2>Recent changes</h2>
+<p class="muted small">Recorded by the database (<code>trg_marks_after_update</code>) whenever saved marks change.</p>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>When</th><th>Student</th><th class="num">Before</th><th class="num">After</th></tr></thead>
+    <tbody>
+      {% for change in recent_changes %}
+        <tr>
+          <td>{{ change.changed_at|date:"d M Y H:i" }}</td>
+          <td>{{ change.roll_number }} {{ change.full_name }}</td>
+          <td class="num">{{ change.old_total|default:"-" }} ({{ change.old_letter_grade|default:"-" }})</td>
+          <td class="num">{{ change.new_total|default:"-" }} ({{ change.new_letter_grade|default:"-" }})</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="4" class="muted">No saved marks have been changed for this course yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock %}

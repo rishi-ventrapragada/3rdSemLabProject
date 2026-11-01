@@ -65,6 +65,19 @@ code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-
 .main-nav { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-4); flex: 1; }
 .main-nav a { color: #dbe4ff; text-decoration: none; padding: var(--space-1) 0; border-bottom: 2px solid transparent; }
 .main-nav a:hover, .main-nav a:focus { color: #fff; border-bottom-color: #fff; }
+.main-nav a.active { color: #fff; font-weight: 600; border-bottom-color: #93b4ff; }
+.user-link { color: #dbe4ff; font-size: 0.9rem; }
+.user-link.active, .user-link:hover { color: #fff; }
+
+/* Accessibility helpers */
+.skip-link { position: absolute; left: -999px; top: 0; background: #fff; color: var(--color-primary); padding: var(--space-2) var(--space-4); z-index: 10; }
+.skip-link:focus { left: var(--space-4); }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Search bar and pagination */
+.search-bar { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; margin-bottom: var(--space-4); }
+.search-bar input[type="search"] { flex: 1 1 14rem; max-width: 24rem; }
+.pagination { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; justify-content: center; margin: calc(-1 * var(--space-2)) 0 var(--space-6); }
 .user-box { display: flex; align-items: center; gap: var(--space-2); }
 .user-name { font-size: 0.9rem; }
 .inline-form { display: inline; margin: 0; }
@@ -146,6 +159,10 @@ fieldset.radio-row label { font-weight: 400; display: inline-flex; align-items: 
 .button-ghost:hover { background: rgba(255, 255, 255, 0.12); border-color: currentColor; }
 .button-secondary { background: #fff; color: var(--color-primary); }
 .button-secondary:hover { background: var(--color-info-bg); color: var(--color-primary-dark); }
+.button-danger { background: var(--color-error-text); border-color: var(--color-error-text); }
+.button-danger:hover { background: #7a1414; border-color: #7a1414; }
+.danger-link { color: var(--color-error-text); }
+td.actions { white-space: nowrap; }
 
 /* Engine (Java bridge) page */
 .engine-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: var(--space-4); }

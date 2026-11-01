@@ -6,7 +6,8 @@ from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
 
 from core import services
-from core.models import AttendanceRecord, AttendanceSummary, Course, DefaulterRow, Enrollment, Marks, TimetableEntry
+from core.models import (AttendanceRecord, AttendanceSummary, Course, DefaulterRow, Enrollment, Marks,
+                         MarksAuditRow, TimetableEntry)
 from core.roles import FACULTY, get_person, role_required
 
 from .forms import AttendanceSheetForm, MarksSheetForm
@@ -98,7 +99,9 @@ def marks(request, course_code):
         form = MarksSheetForm(initial=initial, enrollments=roster)
 
     rows = [(e, internal, external, saved.get(e.pk)) for e, internal, external in form.rows()]
-    return render(request, "faculty_portal/marks.html", {"course": course, "form": form, "rows": rows})
+    recent_changes = MarksAuditRow.objects.filter(course_code=course.course_code)[:10]
+    return render(request, "faculty_portal/marks.html", {"course": course, "form": form, "rows": rows,
+                                                          "recent_changes": recent_changes})
 
 
 def _date_param(value):

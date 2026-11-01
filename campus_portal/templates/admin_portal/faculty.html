@@ -5,18 +5,22 @@
   <h1>Faculty</h1>
   <a class="button" href="{% url 'admin_portal:faculty_add' %}">Add faculty member</a>
 </div>
+{% include "includes/search_form.html" %}
 <div class="table-wrap">
   <table>
-    <thead><tr><th>Code</th><th>Name</th><th>Username</th><th>Email</th><th>Designation</th><th>Dept</th><th class="num">Courses</th><th></th></tr></thead>
+    <thead><tr><th>Code</th><th>Name</th><th>Username</th><th>Email</th><th>Designation</th><th>Dept</th><th class="num">Courses</th><th>Actions</th></tr></thead>
     <tbody>
-      {% for f in faculty %}
+      {% for f in page_obj %}
         <tr>
           <td>{{ f.employee_code }}</td><td>{{ f.full_name }}</td><td><code>{{ f.username }}</code></td><td>{{ f.email }}</td>
           <td>{{ f.designation }}</td><td>{{ f.dept.dept_code }}</td><td class="num">{{ f.course_count }}</td>
-          <td><a href="{% url 'admin_portal:faculty_edit' f.pk %}">Edit</a></td>
+          <td class="actions"><a href="{% url 'admin_portal:faculty_edit' f.pk %}">Edit</a> <a href="{% url 'admin_portal:faculty_delete' f.pk %}" class="danger-link">Delete</a></td>
         </tr>
+      {% empty %}
+        <tr><td colspan="8" class="muted">{% if search_form.q.value %}No faculty match "{{ search_form.q.value }}".{% else %}No faculty yet. <a href="{% url 'admin_portal:faculty_add' %}">Add one</a>.{% endif %}</td></tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
+{% include "includes/pagination.html" %}
 {% endblock %}

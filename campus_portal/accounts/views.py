@@ -1,7 +1,9 @@
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, PasswordChangeView
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect
+from django.urls import reverse_lazy
 
 from core.roles import ADMIN, FACULTY, STUDENT, get_role
 
@@ -15,6 +17,14 @@ DASHBOARDS = {
 class CampusLoginView(LoginView):
     template_name = "accounts/login.html"
     redirect_authenticated_user = True
+
+
+class CampusPasswordChangeView(SuccessMessageMixin, PasswordChangeView):
+    """Any logged-in user (login_required is built in). Keeps the session valid after the change."""
+
+    template_name = "accounts/password_change.html"
+    success_url = reverse_lazy("accounts:home")
+    success_message = "Your password was changed."
 
 
 @login_required

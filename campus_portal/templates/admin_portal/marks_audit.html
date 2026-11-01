@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Marks audit{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Marks audit</h1></div>
+<p class="muted">Every change to saved marks, recorded by the AFTER UPDATE trigger <code>trg_marks_after_update</code> and read from <code>v_marks_audit</code>. Times are stored in UTC and shown in India Standard Time.</p>
+{% include "includes/search_form.html" %}
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>When</th><th>Roll No</th><th>Student</th><th>Course</th><th class="num">Before</th><th>Grade</th><th class="num">After</th><th>Grade</th></tr></thead>
+    <tbody>
+      {% for row in page_obj %}
+        <tr>
+          <td>{{ row.changed_at|date:"d M Y H:i" }}</td>
+          <td>{{ row.roll_number|default:"(deleted)" }}</td><td>{{ row.full_name|default:"-" }}</td><td>{{ row.course_code|default:"-" }}</td>
+          <td class="num">{{ row.old_internal|default:"-" }} + {{ row.old_external|default:"-" }} = {{ row.old_total|default:"-" }}</td><td>{{ row.old_letter_grade|default:"-" }}</td>
+          <td class="num">{{ row.new_internal|default:"-" }} + {{ row.new_external|default:"-" }} = {{ row.new_total|default:"-" }}</td><td><strong>{{ row.new_letter_grade|default:"-" }}</strong></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="8" class="muted">No marks have been changed since the data was seeded.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% include "includes/pagination.html" %}
+{% endblock %}

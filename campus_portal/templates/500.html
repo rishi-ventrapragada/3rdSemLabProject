@@ -1,0 +1,22 @@
+{% load static %}<!DOCTYPE html>
+{# Standalone on purpose: Django renders 500.html without context processors or a request, #}
+{# and the error may be the database itself, so nothing here may query it. #}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Server error &middot; Smart Campus</title>
+  <link rel="stylesheet" href="{% static 'css/campus.css' %}">
+</head>
+<body>
+  <header class="site-header"><div class="container header-row"><a class="brand" href="/">Smart Campus</a></div></header>
+  <main class="container main">
+    <section class="card narrow">
+      <h1>Something went wrong</h1>
+      <p>The server hit an unexpected error and could not finish your request. Nothing you did caused this.</p>
+      <p class="muted">If it keeps happening, check that MySQL is running and tell the administrator the time it happened.</p>
+      <p><a class="button" href="/">Back to the start page</a></p>
+    </section>
+  </main>
+</body>
+</html>

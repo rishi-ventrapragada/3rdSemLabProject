@@ -1,4 +1,4 @@
-{% load static %}<!DOCTYPE html>
+{% load static campus %}<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -7,30 +7,33 @@
   <link rel="stylesheet" href="{% static 'css/campus.css' %}">
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
     <div class="container header-row">
       <a class="brand" href="{% url 'accounts:home' %}">Smart Campus</a>
       {% if user.is_authenticated %}
         <nav class="main-nav" aria-label="Main">
           {% if campus_role == "student" %}
-            <a href="{% url 'student_portal:dashboard' %}">My dashboard</a>
+            <a class="{% nav_class 'student_portal:dashboard' %}" href="{% url 'student_portal:dashboard' %}">My dashboard</a>
           {% elif campus_role == "faculty" %}
-            <a href="{% url 'faculty_portal:dashboard' %}">My courses</a>
+            <a class="{% nav_class 'faculty_portal:dashboard' %}" href="{% url 'faculty_portal:dashboard' %}">My courses</a>
           {% elif campus_role == "admin" %}
-            <a href="{% url 'admin_portal:dashboard' %}">Dashboard</a>
-            <a href="{% url 'admin_portal:students' %}">Students</a>
-            <a href="{% url 'admin_portal:faculty_list' %}">Faculty</a>
-            <a href="{% url 'admin_portal:courses' %}">Courses</a>
-            <a href="{% url 'admin_portal:enrollments' %}">Enrollments</a>
-            <a href="{% url 'admin_portal:timetable' %}">Timetable</a>
-            <a href="{% url 'admin_portal:defaulters' %}">Defaulters</a>
-            <a href="{% url 'admin_portal:gpa_report' %}">GPA report</a>
-            <a href="{% url 'core:engine' %}">Java engine</a>
+            <a class="{% nav_class 'admin_portal:dashboard' exact=True %}" href="{% url 'admin_portal:dashboard' %}">Dashboard</a>
+            <a class="{% nav_class 'admin_portal:students' %}" href="{% url 'admin_portal:students' %}">Students</a>
+            <a class="{% nav_class 'admin_portal:faculty_list' %}" href="{% url 'admin_portal:faculty_list' %}">Faculty</a>
+            <a class="{% nav_class 'admin_portal:courses' %}" href="{% url 'admin_portal:courses' %}">Courses</a>
+            <a class="{% nav_class 'admin_portal:enrollments' %}" href="{% url 'admin_portal:enrollments' %}">Enrollments</a>
+            <a class="{% nav_class 'admin_portal:timetable' %}" href="{% url 'admin_portal:timetable' %}">Timetable</a>
+            <a class="{% nav_class 'admin_portal:defaulters' %}" href="{% url 'admin_portal:defaulters' %}">Defaulters</a>
+            <a class="{% nav_class 'admin_portal:gpa_report' %}" href="{% url 'admin_portal:gpa_report' %}">GPA report</a>
+            <a class="{% nav_class 'admin_portal:marks_audit' %}" href="{% url 'admin_portal:marks_audit' %}">Marks audit</a>
+            <a class="{% nav_class 'core:engine' %}" href="{% url 'core:engine' %}">Java engine</a>
           {% endif %}
         </nav>
         <div class="user-box">
           <span class="user-name">{{ campus_person.full_name|default:user.get_full_name|default:user.username }}</span>
           {% if campus_role_label %}<span class="badge badge-role">{{ campus_role_label }}</span>{% endif %}
+          <a class="user-link {% nav_class 'accounts:password_change' %}" href="{% url 'accounts:password_change' %}">Password</a>
           <form method="post" action="{% url 'accounts:logout' %}" class="inline-form">
             {% csrf_token %}
             <button type="submit" class="button button-small button-ghost">Log out</button>
@@ -40,7 +43,7 @@
     </div>
   </header>
 
-  <main class="container main">
+  <main id="main" class="container main">
     {% if messages %}
       <ul class="messages" role="status">
         {% for message in messages %}

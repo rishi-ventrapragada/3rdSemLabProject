@@ -1,0 +1,12 @@
+{% load campus %}
+{% if page_obj.paginator.num_pages > 1 %}
+  <nav class="pagination" aria-label="Pages">
+    {% if page_obj.has_previous %}
+      <a class="button button-small button-secondary" href="?{% query_with page=page_obj.previous_page_number %}">&larr; Previous</a>
+    {% endif %}
+    <span class="muted small">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} &middot; {{ page_obj.paginator.count }} rows</span>
+    {% if page_obj.has_next %}
+      <a class="button button-small button-secondary" href="?{% query_with page=page_obj.next_page_number %}">Next &rarr;</a>
+    {% endif %}
+  </nav>
+{% endif %}

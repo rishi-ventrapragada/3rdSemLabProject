@@ -24,6 +24,8 @@
           <td>{{ entry.course.faculty.full_name|default:"-" }}</td>
           <td>{{ entry.room.room_number }}</td>
         </tr>
+      {% empty %}
+        <tr><td colspan="6" class="muted">Nothing is scheduled yet; add the first entry above.</td></tr>
       {% endfor %}
     </tbody>
   </table>

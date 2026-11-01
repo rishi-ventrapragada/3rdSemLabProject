@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Delete {{ kind }}{% endblock %}
+{% block content %}
+<section class="card narrow">
+  <h1>Delete {{ kind }}?</h1>
+  <p><strong>{{ object }}</strong></p>
+  <div class="alert alert-warning">{{ consequence }}</div>
+  <form method="post" class="actions">
+    {% csrf_token %}
+    <button type="submit" class="button button-danger">Delete</button>
+    <a class="button button-secondary" href="{{ back_url }}">Cancel</a>
+  </form>
+</section>
+{% endblock %}

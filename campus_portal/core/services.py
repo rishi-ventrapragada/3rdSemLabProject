@@ -90,6 +90,17 @@ def refresh_defaulter_flags():
     return Student.objects.filter(is_defaulter=True).count()
 
 
+def delete_object(obj):
+    """
+    Deletes one row. The models use DO_NOTHING, so this issues a single DELETE and MySQL's
+    foreign keys decide the rest: CASCADE (a student's enrollments, attendance and marks),
+    SET NULL (a removed teacher's courses) or RESTRICT (a course that still has enrollments,
+    which raises ServiceError with a friendly message).
+    """
+    with db_write():
+        obj.delete()
+
+
 def save_form(form):
     """
     Saves a ModelForm. On a database rejection the friendly message is attached to the form as a

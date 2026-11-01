@@ -1,0 +1,7 @@
+<form method="get" class="search-bar" role="search">
+  {% for name, value in request.GET.items %}{% if name != "q" and name != "page" %}<input type="hidden" name="{{ name }}" value="{{ value }}">{% endif %}{% endfor %}
+  <label for="{{ search_form.q.id_for_label }}" class="visually-hidden">{{ search_form.q.label }}</label>
+  {{ search_form.q }}
+  <button type="submit" class="button button-secondary">Search</button>
+  {% if search_form.q.value %}<a href="?" class="small">Clear</a>{% endif %}
+</form>
