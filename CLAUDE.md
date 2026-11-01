@@ -14,6 +14,12 @@ One codebase that satisfies four 3rd-semester lab courses. Each lab owns a top-l
 - Phase 2: the MySQL schema, views, triggers, seed data, `init_db.py`, and the ER/FD write-up in `docs/database_design.md`.
 - Phase 3: the Java engine (config, models, DAOs, services, exceptions, CLI with `--json`) and its tests.
 - Phase 4: the Django portal (unmanaged models, role-based Student/Faculty/Admin portals, the Java bridge page, `seed_demo_users`) and its tests. See `docs/django_portal.md`.
+- Phase 4.5: review and polish.
+  - Fresh-clone test of the setup steps, and a short root `README.md`.
+  - DBMS: marks audit trail (AFTER trigger) and `queries.sql`.
+  - Java: `export` (CSV file I/O) and `menu` (Scanner).
+  - Django: delete views, Django admin registrations, password change, search/pagination, marks-audit pages, 500 page, session/HTTPS settings, and URL-wide access tests.
+  - Tests: 29 JUnit, 71 Django.
 
 The SE Lab documents (SRS, UML, test plan) are still to come. Update this file when a phase lands.
 
@@ -21,13 +27,15 @@ The SE Lab documents (SRS, UML, test plan) are still to come. Update this file w
 
 ```
 3rdSemLabProject/
+├── README.md               # short overview: labs, 6-command setup, demo logins, page list
 ├── .env.example            # shared DB credentials template → copy to .env (git-ignored)
 ├── requirements.txt        # Python deps for campus_portal
 ├── database/               # DBMS Lab: raw MySQL scripts, run in this order:
-│   ├── schema.sql          #   1. CREATE DATABASE + 10 3NF tables and constraints
+│   ├── schema.sql          #   1. CREATE DATABASE + 11 3NF tables (incl. marks_audit) and constraints
 │   ├── views_triggers.sql  #   2. fn_* functions, v_* views, trg_* triggers, sp_* procedures
 │   ├── seed_data.sql       #   3. demo data: 3rd-sem CSE, 2026-27
-│   └── init_db.py          #   runs 1-3 via PyMySQL using .env, then prints row counts
+│   ├── init_db.py          #   runs 1-3 via PyMySQL using .env, then prints row counts
+│   └── queries.sql         #   manual lab demo queries (joins, subqueries, windows, transactions); not run by init_db
 ├── java_engine/            # Java Lab: Maven project
 │   ├── pom.xml             #   builds target/smart-campus-engine.jar (fat JAR, driver bundled)
 │   ├── mvnw, mvnw.cmd      #   Maven Wrapper; downloads Maven 3.9.16 on first run (.mvn/wrapper/)
@@ -46,7 +54,8 @@ The SE Lab documents (SRS, UML, test plan) are still to come. Update this file w
 │   ├── campus_portal/      #   settings (reads ../.env), urls; __init__.py installs PyMySQL as MySQLdb
 │   ├── core/               #   unmanaged models, roles.py (role_required / RoleRequiredMixin),
 │   │                       #   services.py (all writes), db_errors.py (friendly DB errors),
-│   │                       #   java_bridge.py + /engine/ view, test_runner.py, tests/
+│   │                       #   java_bridge.py + /engine/ view, listing.py (search/paginate),
+│   │                       #   admin.py (Django admin), templatetags/campus.py, test_runner.py, tests/
 │   ├── accounts/           #   login/logout, "/" role redirect, seed_demo_users command
 │   ├── student_portal/     #   /student/        own profile, attendance, marks, CGPA, warning
 │   ├── faculty_portal/     #   /faculty/        own courses, timetable, roster, attendance, marks
@@ -136,6 +145,8 @@ subprocess.run(
 | `enroll <rollNo> <courseCode> [--year YYYY-YY]` | inserts into `enrollments` | `{"enrollment_id",...}`. Default year is the current academic year (it rolls over in July). |
 | `refresh-defaulters` | `CALL sp_refresh_defaulter_flags()` | `{"flagged_students": n}` |
 | `dashboard` | the three views, loaded concurrently | counts, averages, top 3, per-view `tasks` with thread names and timings |
+| `export <gpa-report\|defaulters\|attendance> <file.csv>` | the matching view | `{"report","file","rows"}`. Writes UTF-8 CSV with RFC 4180 quoting and creates parent folders. **Not** on Django's allow-list, since it writes server files. |
+| `menu` | — | Interactive Scanner menu for standalone demos. `--json` is refused, and it is not on Django's allow-list because it reads stdin. |
 | `help` | — | list of `{name, usage, summary}`. `<command> --help` shows one command. |
 
 ## Coding standards
@@ -178,6 +189,7 @@ subprocess.run(
   - Wrap the body in `DELIMITER $$ … $$ DELIMITER ;`.
   - Reject bad data with `SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = '…'`. That reaches Java as `SQLException` and Django as `django.db.utils.OperationalError` (error 1644, verified). CHECK violations are also `OperationalError` (3819); UNIQUE and FK violations are `IntegrityError` (1062 / 1451 / 1452).
   - Use triggers for cross-row rules and audit trails that CHECK constraints can't express.
+  - Use AFTER triggers only for side effects of an accepted change. `trg_marks_after_update` writes `marks_audit`; it compares with `<=>`, NULL-safe equality, so identical re-saves log nothing. Audit tables have no FK to the audited table, so history survives deletes. They store raw values only; a view such as `v_marks_audit` derives the rest.
 - **Seed data** (`seed_data.sql`): insert parents before children with realistic demo data. Login accounts are created through Django, not SQL, because Django hashes passwords.
 
 ### Java Lab (`java_engine/`)
@@ -212,6 +224,9 @@ subprocess.run(
     - Multithreading: `ReportService.dashboard()` uses `CompletableFuture` on a 3-thread pool, with one connection per task.
     - Streams: `groupingBy`, `toMap`, and comparators.
     - Transactions: `JdbcReportDao.refreshDefaulterFlags`.
+    - File I/O: `ReportExporter.writeCsv`, generic and using `BufferedWriter` in try-with-resources, with `IOException` wrapped in `ExportException`.
+    - Console input: `InteractiveMenu`, a `Scanner` loop that dispatches through `Cli.run`.
+    - Enums with behaviour: `ReportExporter.Report.fromName`.
 - **JDBC rules:**
   - Always use `PreparedStatement` with `?` placeholders. Never concatenate values into SQL.
   - Open `Connection`, `PreparedStatement` and `ResultSet` in try-with-resources.
@@ -232,7 +247,11 @@ subprocess.run(
     - Trigger-computed columns (`marks.total_marks/grade_points/letter_grade`) and `students.is_defaulter` are `editable=False`.
     - **Never add a managed model with a ForeignKey to one of them.** `migrate` would create a real FK constraint, and `init_db.py`'s `DROP TABLE` would then fail.
   - *Views:* thin. They handle requests, call an app-level `services.py` for non-trivial logic, and render templates.
-  - *Writes:* every write goes through `core/services.py`, which wraps it in `transaction.atomic()` and turns a database rejection (trigger SIGNAL, UNIQUE, CHECK, FK) into a `ServiceError` with a friendly message from `core/db_errors.py`. For a new named constraint, add its message to `CONSTRAINT_MESSAGES` there. ModelForms save through `services.save_form(form)`, which puts the message on the form.
+  - *Writes:* every write goes through `core/services.py`, which wraps it in `transaction.atomic()` and turns a database rejection (trigger SIGNAL, UNIQUE, CHECK, FK) into a `ServiceError` with a friendly message from `core/db_errors.py`. For a new named constraint, add its message to `CONSTRAINT_MESSAGES` there.
+    - ModelForms save through `services.save_form(form)`, which puts the message on the form.
+    - Deletes go through `services.delete_object(obj)`, via the portal's `AdminDeleteView` (GET shows a confirm page, POST deletes). MySQL's FK actions decide the effect: CASCADE for a student's enrollments, SET NULL for a removed teacher's courses, RESTRICT for a course that has enrollments, which comes back as a friendly message.
+  - *Lists:* long lists use `core.listing.search(request, qs, fields)`, an ORM `icontains`, so it stays parameterized, and `paginate(request, qs)`, which shows 20 per page. Templates include `includes/search_form.html` and `includes/pagination.html`, which keep the other query parameters. Every table has an `{% empty %}` row.
+  - *Django admin* (`core/admin.py`, `/django-admin/`, superusers only) registers every table and view. Views are read-only, trigger-computed columns are read-only, and **deletes are disabled there**, so they go through the portal's friendly path.
   - *No duplicated business logic:* reports read the views (`AttendanceSummary`, `DefaulterRow`, `GpaReportRow`), and "declare defaulters" calls the procedure. Marks writes set only `internal_marks` / `external_marks`. Never compare against 75 or compute grades in Python or templates. To highlight defaulter rows, check membership in `DefaulterRow`.
   - *Templates:* presentation only.
   - All user input goes through Django Forms. Give each app's URLs a namespace (`app_name = "faculty"`) and always use `{% url %}` / `reverse()`, never hard-coded paths.
@@ -244,7 +263,8 @@ subprocess.run(
   - Include `{% csrf_token %}` in every POST form.
 - **Role-based portals:**
   - The role comes from `core.roles.get_role(user)`: superuser, else `students.username`, else `faculty.username`; see "Linking Django logins to people". After login, `/` redirects to the role's dashboard.
-  - Prefixes: `/student/`, `/faculty/`, `/admin-portal/`, `/engine/` (admin-only Java bridge), `/accounts/login/` and `/accounts/logout/` (POST only). Django's built-in admin is a developer tool, not the Admin portal, and lives at `/django-admin/`.
+  - Prefixes: `/student/`, `/faculty/`, `/admin-portal/`, `/engine/` (admin-only Java bridge), `/accounts/login/`, `/accounts/logout/` (POST only) and `/accounts/password/` (any logged-in user). Django's built-in admin is a developer tool, not the Admin portal, and lives at `/django-admin/`.
+  - `core/tests/test_polish.py` walks the whole URL conf. Every route must redirect anonymous users to login, and every role must get 403 outside its own prefix. A new view without a role check fails the suite. A route meant for everyone must be added to `PUBLIC` or `shared` there, deliberately.
   - Enforce access in **every** view with `@role_required(STUDENT|FACULTY|ADMIN)`, or `RoleRequiredMixin` with `allowed_roles` on class-based views, both from `core.roles`. Anonymous users are sent to login; a wrong role raises `PermissionDenied`, which renders the friendly `templates/403.html`. Hiding links in a template is not access control.
   - Students and faculty see only their own records. Filter querysets by `get_person(request.user)`; never trust an ID from the URL or form on its own. Faculty course pages check that `course.faculty` is the logged-in teacher and return 403 otherwise.
 - **Java bridge** (`core/java_bridge.py`, `core/views.py`):
@@ -330,6 +350,8 @@ Order between steps 3 and 5 doesn't matter, and both can be re-run. `init_db.py`
 
 ## Gotchas
 
+- **HTTPS settings are opt-in.** With the plain-HTTP demo setup, `manage.py check --deploy` reports four HTTPS warnings (W004, W008, W012, W016); that is expected. Behind TLS, set `DJANGO_HTTPS=True` (plus `DJANGO_DEBUG=False`, `DJANGO_SECRET_KEY` and `DJANGO_ALLOWED_HOSTS`). Only W021 (HSTS preload) remains, and it is deliberately off because it is effectively irreversible.
+- **Piping into the JAR from Windows PowerShell 5.1 prepends a UTF-8 BOM** to stdin, and Java 17 decodes stdin as Cp1252. `menu` strips it. Any future code that reads stdin should go through `InteractiveMenu.readLine()` or do the same. `cmd` pipes and real keyboards are unaffected.
 - **Stay on Django 5.2 LTS.** Django 6.1 requires MySQL 8.4+, and this project targets MySQL 8.0. 5.2 LTS is supported until April 2028.
 - **`REGEXP` is case-insensitive on our columns.** It follows the column collation, so under `utf8mb4_unicode_ci`, `section REGEXP '^[A-Z]$'` also accepts `a`. Any pattern that must be case-sensitive needs `REGEXP_LIKE(col, pattern, 'c')`. Phase 4 found and fixed this in `chk_students_section`, `chk_timetable_entries_section` and `chk_departments_dept_code`. The regression test is `test_check_constraint_message_for_bad_section`. Equality comparisons and UNIQUE keys are case-insensitive for the same reason: `'a' = 'A'`, which is also why lookups like `student 25cse001` work.
 - **Don't run `startproject` from the repo root.** There, the existing `campus_portal/` folder is importable as a package, and Django refuses the name. The project was created from inside the folder with `django-admin startproject campus_portal .`.
