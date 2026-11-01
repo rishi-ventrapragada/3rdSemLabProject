@@ -11,6 +11,7 @@ import com.smartcampus.models.Person;
 import com.smartcampus.models.SessionHistory;
 import com.smartcampus.models.StudentProfile;
 import com.smartcampus.services.Dashboard;
+import com.smartcampus.services.ReportExporter;
 import com.smartcampus.services.TaskResult;
 
 import java.math.BigDecimal;
@@ -121,6 +122,10 @@ final class TextRenderer {
         return "Enrolled " + receipt.student().getRollNumber() + " (" + receipt.student().getFullName() + ") in "
                 + receipt.course().getCode() + " " + receipt.course().getName() + " for "
                 + receipt.enrollment().getAcademicYear() + " (enrollment_id " + receipt.enrollment().getId() + ")" + NL;
+    }
+
+    static String export(ReportExporter.ExportResult result) {
+        return "Wrote " + result.rows() + " row(s) of " + result.report() + " to " + result.file() + NL;
     }
 
     static String refreshed(int flagged) {

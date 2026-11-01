@@ -11,6 +11,7 @@ import com.smartcampus.dao.JdbcReportDao;
 import com.smartcampus.dao.JdbcStudentDao;
 import com.smartcampus.dao.StudentDao;
 import com.smartcampus.exceptions.ValidationException;
+import com.smartcampus.services.ReportExporter;
 import com.smartcampus.services.ReportService;
 import com.smartcampus.services.StudentService;
 
@@ -22,6 +23,7 @@ final class Engine {
 
     private StudentService studentService;
     private ReportService reportService;
+    private ReportExporter reportExporter;
 
     StudentService students() throws ValidationException {
         wire();
@@ -31,6 +33,11 @@ final class Engine {
     ReportService reports() throws ValidationException {
         wire();
         return reportService;
+    }
+
+    ReportExporter exporter() throws ValidationException {
+        wire();
+        return reportExporter;
     }
 
     private void wire() throws ValidationException {
@@ -44,5 +51,6 @@ final class Engine {
                 new JdbcCourseDao(connections), new JdbcEnrollmentDao(connections), new JdbcMarksDao(connections),
                 new JdbcAttendanceRecordDao(connections), reportDao);
         reportService = new ReportService(reportDao, studentDao);
+        reportExporter = new ReportExporter(reportDao);
     }
 }

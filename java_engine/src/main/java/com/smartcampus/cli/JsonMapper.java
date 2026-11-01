@@ -13,6 +13,7 @@ import com.smartcampus.models.SessionHistory;
 import com.smartcampus.models.Student;
 import com.smartcampus.models.StudentProfile;
 import com.smartcampus.services.Dashboard;
+import com.smartcampus.services.ReportExporter;
 import com.smartcampus.services.TaskResult;
 
 import java.util.LinkedHashMap;
@@ -185,6 +186,14 @@ final class JsonMapper {
         dashboard.tasks().forEach((view, task) -> tasks.put(view, task(task)));
         json.put("tasks", tasks);
         json.put("wall_clock_ms", dashboard.wallClockMillis());
+        return json;
+    }
+
+    static Map<String, Object> export(ReportExporter.ExportResult result) {
+        Map<String, Object> json = new LinkedHashMap<>();
+        json.put("report", result.report());
+        json.put("file", result.file().toString());
+        json.put("rows", result.rows());
         return json;
     }
 

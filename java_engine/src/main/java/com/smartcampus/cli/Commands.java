@@ -8,7 +8,9 @@ import com.smartcampus.models.Person;
 import com.smartcampus.models.SessionHistory;
 import com.smartcampus.models.StudentProfile;
 import com.smartcampus.services.Dashboard;
+import com.smartcampus.services.ReportExporter;
 
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.LinkedHashMap;
@@ -90,6 +92,21 @@ final class Commands {
                 (cmd, engine) -> {
                     Dashboard dashboard = engine.reports().dashboard();
                     return new Command.Result(JsonMapper.dashboard(dashboard), TextRenderer.dashboard(dashboard));
+                }));
+        add(commands, new Command("export", "<gpa-report|defaulters|attendance> <file.csv>",
+                "Write a report view to a CSV file", 2, 2, Set.of(),
+                (cmd, engine) -> {
+                    ReportExporter.ExportResult result = engine.exporter().export(cmd.arg(0), Path.of(cmd.arg(1)));
+                    return new Command.Result(JsonMapper.export(result), TextRenderer.export(result));
+                }));
+        add(commands, new Command("menu", "",
+                "Interactive menu for standalone demos (reads the keyboard; not for Django)", 0, 0, Set.of(),
+                (cmd, engine) -> {
+                    if (cmd.json()) {
+                        throw new UsageException("menu is interactive; --json is not supported");
+                    }
+                    new InteractiveMenu(System.in, System.out, System.err).run();
+                    return new Command.Result(null, "");
                 }));
         return commands;
     }
