@@ -1,0 +1,31 @@
+@startuml d08_activity_defaulters
+!include _style.iuml
+' Figure title: Activity diagram: from attendance to a declared defaulter
+
+start
+:Faculty records a session
+(date + PRESENT/ABSENT per student);
+if (Session date is Monday to Friday?) then (yes)
+  :attendance_records upserted;
+  :v_attendance_summary recomputes
+  total, attended and percentage;
+  if (Any course below 75%?) then (yes)
+    :Row appears in v_defaulter_list;
+    :Student dashboard shows
+    the attendance warning (live);
+  else (no)
+  endif
+else (no)
+  :chk_attendance_records_weekday rejects;
+  :Show "only Monday to Friday";
+  stop
+endif
+:Admin opens Defaulters page;
+:Admin presses "Declare defaulter list now"
+(or runs java -jar ... refresh-defaulters);
+:CALL sp_refresh_defaulter_flags();
+:students.is_defaulter = TRUE for every student
+in v_defaulter_list, FALSE for all others;
+:Show "N student(s) flagged";
+stop
+@enduml

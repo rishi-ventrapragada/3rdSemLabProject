@@ -1,0 +1,17 @@
+@startuml d10_state_defaulter
+!include _style.iuml
+' Figure title: Statechart diagram: attendance status of a student
+
+[*] --> GoodStanding
+state "Good standing" as GoodStanding : every course >= 75%\nis_defaulter = FALSE
+state "Below 75% (live)" as Below : row in v_defaulter_list\nwarning on dashboard
+state "Declared defaulter" as Declared : is_defaulter = TRUE
+state "Recovered, still flagged" as Recovered : no row in v_defaulter_list\nis_defaulter still TRUE
+
+GoodStanding --> Below : absences push a course < 75%
+Below --> GoodStanding : attendance back to >= 75%\n(before declaration)
+Below --> Declared : CALL sp_refresh_defaulter_flags()
+Declared --> Recovered : attendance back to >= 75%
+Recovered --> GoodStanding : CALL sp_refresh_defaulter_flags()
+Declared --> Declared : CALL ... (still below 75%)
+@enduml

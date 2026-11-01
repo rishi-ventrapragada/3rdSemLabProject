@@ -1,0 +1,32 @@
+@startuml d05b_class_exceptions
+!include _style.iuml
+' Figure title: Class diagram: checked exception hierarchy (package com.smartcampus.exceptions)
+
+class Exception <<java.lang>>
+package exceptions {
+  class SmartCampusException {
+    + getType() : String
+  }
+  class DatabaseException {
+    + getErrorCode() : int
+  }
+  class EntityNotFoundException {
+    + getEntity() : String
+    + getKey() : String
+  }
+  class StudentNotFoundException
+  class CourseNotFoundException
+  class DuplicateEnrollmentException
+  class ValidationException
+  class ExportException
+}
+
+Exception <|-- SmartCampusException
+SmartCampusException <|-- DatabaseException
+SmartCampusException <|-- EntityNotFoundException
+EntityNotFoundException <|-- StudentNotFoundException
+EntityNotFoundException <|-- CourseNotFoundException
+SmartCampusException <|-- DuplicateEnrollmentException
+SmartCampusException <|-- ValidationException
+SmartCampusException <|-- ExportException
+@enduml

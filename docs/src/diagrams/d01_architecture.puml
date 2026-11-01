@@ -1,0 +1,44 @@
+@startuml d01_architecture
+!include _style.iuml
+' Figure title: System architecture of the Smart Campus & Academic Suite
+
+actor "Student /\nFaculty / Admin" as user
+actor "Developer /\nlab examiner" as dev
+
+rectangle "Web browser\n(HTML5 + CSS3, no JS framework)" as browser
+
+package "campus_portal (Django 5.2, Python)" as django {
+  component "accounts\n(login, role redirect)" as accounts
+  component "student_portal" as sp
+  component "faculty_portal" as fp
+  component "admin_portal" as ap
+  component "core\n(models, roles, services,\ndb_errors, java_bridge)" as core
+}
+
+package "java_engine (Java 17, JDBC)" as java {
+  component "smart-campus-engine.jar\n(cli, services, dao, models)" as jar
+}
+
+database "MySQL 8.0: smart_campus_db" as db {
+  rectangle "11 tables (3NF)\n4 views, 9 triggers\n2 functions, 1 procedure" as domain
+  rectangle "Django tables\n(auth_*, django_*)" as djt
+}
+
+file ".env (shared DB settings)" as env
+file "database/*.sql\n+ init_db.py" as sql
+
+user --> browser
+browser --> accounts : HTTP + CSRF
+accounts --> core
+sp --> core
+fp --> core
+ap --> core
+core --> domain : ORM\n(unmanaged models)
+accounts --> djt : sessions, auth_user
+core --> jar : subprocess\n(argv list, --json)
+jar --> domain : JDBC\nPreparedStatement
+dev --> jar : CLI / menu
+sql --> domain : DDL, triggers,\nseed
+env ..> django
+env ..> jar
+@enduml

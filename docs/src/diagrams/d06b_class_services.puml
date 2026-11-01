@@ -1,0 +1,54 @@
+@startuml d06b_class_services
+!include _style.iuml
+' Figure title: Class diagram: service and CLI layers of the Java engine
+
+package services {
+  class StudentService {
+    + getProfile(roll) : StudentProfile
+    + findPersonByUsername(u) : Person
+    + enroll(roll, code, year) : EnrollmentReceipt
+  }
+  class ReportService {
+    + defaultersByStudent() : Map
+    + gpaReport() : List<GpaReportRow>
+    + dashboard() : Dashboard
+  }
+  class ReportExporter {
+    + export(report, file) : ExportResult
+    + {static} writeCsv(file, header, rows, cells) : int
+  }
+  class "TaskResult<T> <<record>>" as TaskResult
+}
+
+package cli {
+  class Cli {
+    + {static} run(args, out, err) : int
+  }
+  class CommandLine {
+    + {static} parse(args) : CommandLine
+  }
+  class "Commands (registry)" as Commands
+  class Engine
+  class JsonWriter {
+    + {static} write(value) : String
+  }
+  class "TableFormatter<T>" as TableFormatter
+  class InteractiveMenu
+}
+
+interface "dao interfaces\n(StudentDao, CourseDao,\nEnrollmentDao, ReportDao)" as DaoIf
+
+Cli --> CommandLine
+Cli --> Commands
+Cli --> JsonWriter
+Commands --> Engine
+Commands ..> TableFormatter
+Commands ..> InteractiveMenu
+Engine --> StudentService
+Engine --> ReportService
+Engine --> ReportExporter
+StudentService --> DaoIf
+ReportService --> DaoIf
+ReportExporter --> DaoIf
+ReportService ..> TaskResult
+@enduml

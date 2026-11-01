@@ -1,0 +1,24 @@
+@startuml d13_collaboration
+!include _style.iuml
+' Figure title: Collaboration (communication) diagram: admin enrolls a student
+
+actor ":Admin" as admin
+rectangle ":EnrollmentView\n(admin_portal.views.enrollments)" as view
+rectangle ":EnrollmentForm" as form
+rectangle ":services\n(core.services)" as svc
+rectangle ":Enrollment\n(unmanaged model)" as model
+database ":MySQL\nenrollments + uq_enrollments_student_course" as db
+rectangle ":db_errors" as err
+rectangle ":messages" as msg
+
+admin --> view : 1: POST student, course, academic_year
+view --> form : 2: is_valid()
+view --> svc : 3: enroll_student(student, course, year)
+svc --> svc : 3.1: [course.semester != student.semester]\nraise ServiceError
+svc --> model : 3.2: objects.create(...)
+model --> db : 3.3: INSERT INTO enrollments
+db --> err : 3.4: [error 1062] friendly_db_error()
+err --> svc : 3.5: friendly message
+view --> msg : 4: success("Enrolled ...") or form error
+msg --> admin : 5: redirect and show message
+@enduml

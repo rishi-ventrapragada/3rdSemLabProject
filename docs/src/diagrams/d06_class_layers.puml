@@ -1,0 +1,62 @@
+@startuml d06_class_layers
+!include _style.iuml
+' Figure title: Class diagram: configuration and DAO layer of the Java engine (generic CrudDao, JDBC implementations)
+
+package config {
+  class DatabaseConfig {
+    + {static} load() : DatabaseConfig
+    + jdbcUrl() : String
+  }
+  class ConnectionFactory {
+    + getConnection() : Connection
+  }
+}
+
+package dao {
+  interface "CrudDao<T, ID>" as CrudDao {
+    + findById(id : ID) : Optional<T>
+    + findAll() : List<T>
+    + entityName() : String
+    + <<default>> getById(id : ID) : T
+    + <<default>> existsById(id : ID) : boolean
+  }
+  interface StudentDao {
+    + findByRollNumber(roll) : Optional<Student>
+    + <<default>> getByRollNumber(roll) : Student
+  }
+  interface CourseDao {
+    + findByCode(code) : Optional<Course>
+  }
+  interface EnrollmentDao {
+    + insert(e : Enrollment) : Enrollment
+  }
+  interface ReportDao {
+    + findDefaulters() : List<AttendanceSummary>
+    + findGpaReport() : List<GpaReportRow>
+    + refreshDefaulterFlags() : int
+  }
+  abstract class JdbcDaoSupport {
+    # queryList(sql, StatementBinder, RowMapper<T>)
+    # queryOne(sql, StatementBinder, RowMapper<T>)
+  }
+  class JdbcStudentDao
+  class JdbcCourseDao
+  class JdbcEnrollmentDao
+  class JdbcReportDao
+}
+
+CrudDao <|-- StudentDao
+CrudDao <|-- CourseDao
+CrudDao <|-- EnrollmentDao
+StudentDao <|.. JdbcStudentDao
+CourseDao <|.. JdbcCourseDao
+EnrollmentDao <|.. JdbcEnrollmentDao
+ReportDao <|.. JdbcReportDao
+JdbcDaoSupport <|-- JdbcStudentDao
+JdbcDaoSupport <|-- JdbcCourseDao
+JdbcDaoSupport <|-- JdbcEnrollmentDao
+JdbcDaoSupport <|-- JdbcReportDao
+JdbcReportDao -[hidden]down- ConnectionFactory
+JdbcDaoSupport -down-> ConnectionFactory
+ConnectionFactory --> DatabaseConfig
+@enduml

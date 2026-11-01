@@ -1,0 +1,30 @@
+@startuml d15_deployment
+!include _style.iuml
+' Figure title: Deployment diagram (as run for this project)
+
+node "Client device" as client {
+  artifact "Web browser\n(Chrome / Edge / Firefox)" as browser
+}
+
+node "Lab PC: Windows 11, 64-bit" as pc {
+  node "Python 3.13 virtualenv (.venv)" as venv {
+    artifact "Django 5.2 dev server\n(manage.py runserver :8000)" as django
+    artifact "init_db.py" as init
+  }
+  node "JDK 17 (Microsoft OpenJDK)" as jvm {
+    artifact "smart-campus-engine.jar\n(4.3 MB, driver bundled)" as jar
+  }
+  node "MySQL Server 8.0.42\n(Windows service MySQL80, port 3306)" as mysql {
+    database "smart_campus_db" as db
+  }
+  artifact ".env" as env
+}
+
+browser --> django : HTTP :8000
+django --> db : TCP 3306 (PyMySQL)
+django --> jar : subprocess (local)
+jar --> db : TCP 3306 (JDBC)
+init --> db : TCP 3306
+env ..> django
+env ..> jar
+@enduml

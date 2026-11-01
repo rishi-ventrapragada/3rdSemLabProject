@@ -1,0 +1,95 @@
+@startuml d05_class_domain
+!include _style.iuml
+' Figure title: Class diagram: Java domain model (package com.smartcampus.models)
+
+package models {
+  abstract class Person {
+    - id : int
+    - username : String
+    - fullName : String
+    - email : String
+    - deptCode : String
+    + {abstract} getRole() : String
+    + {abstract} getIdentifier() : String
+    + describe() : String
+    # requireText(value, field) : String
+  }
+  class Student {
+    - rollNumber : String
+    - semester : int
+    - section : char
+    - cgpa : BigDecimal
+    - defaulter : boolean
+    + getRole() : String
+    + getIdentifier() : String
+    + describe() : String
+    + setCgpa(cgpa : BigDecimal)
+    + isDefaulter() : boolean
+  }
+  class Faculty {
+    - employeeCode : String
+    - designation : String
+    + getRole() : String
+    + getIdentifier() : String
+    + describe() : String
+  }
+  class Course {
+    - id : int
+    - code : String
+    - credits : int
+    - type : CourseType
+    - semester : int
+    + getFacultyName() : Optional<String>
+  }
+  class Enrollment {
+    - id : int
+    - studentId : int
+    - courseId : int
+    - academicYear : String
+    + {static} unsaved(...) : Enrollment
+    + withId(id : int) : Enrollment
+    + isSaved() : boolean
+  }
+  class AttendanceRecord {
+    - sessionDate : LocalDate
+    - status : AttendanceStatus
+    + isPresent() : boolean
+  }
+  class Marks {
+    - internalMarks : BigDecimal
+    - externalMarks : BigDecimal
+    - totalMarks : BigDecimal
+    - gradePoints : Integer
+    - letterGrade : String
+    + isGraded() : boolean
+  }
+  enum CourseType {
+    THEORY
+    LAB
+  }
+  enum AttendanceStatus {
+    PRESENT
+    ABSENT
+  }
+  class "AttendanceSummary <<record>>" as AttendanceSummary
+  class "GpaReportRow <<record>>" as GpaReportRow
+  class "StudentProfile <<record>>" as StudentProfile
+  class "CourseStanding <<record>>" as CourseStanding
+}
+
+
+
+Person <|-- Student
+Person <|-- Faculty
+Course --> CourseType
+AttendanceRecord --> AttendanceStatus
+Enrollment "*" --> "1" Student : studentId
+Enrollment "*" --> "1" Course : courseId
+Marks "0..1" --> "1" Enrollment : enrollmentId
+AttendanceRecord "*" --> "1" Enrollment : enrollmentId
+StudentProfile *-- "1" Student
+StudentProfile *-- "*" CourseStanding
+CourseStanding --> AttendanceSummary
+CourseStanding --> Marks
+
+@enduml

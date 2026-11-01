@@ -1,0 +1,31 @@
+@startuml d12_sequence_marks
+!include _style.iuml
+' Figure title: Sequence diagram: faculty saves marks; the database grades and audits them
+
+actor Faculty
+participant "marks view" as V
+participant "MarksSheet\nForm" as F
+participant "services" as S
+database "MySQL: marks" as M
+participant "BEFORE\ntrigger" as TB
+participant "AFTER\ntrigger" as TA
+database "marks_audit" as A
+
+Faculty -> V : POST /faculty/courses/CS301/marks/
+V -> V : role_required(FACULTY),\nown course?
+V -> F : is_valid()
+F --> V : entries {enrollment_id: (internal, external)}
+V -> S : save_marks(course, entries)
+S -> S : transaction.atomic()
+loop each enrollment of the course
+  S -> M : UPDATE marks SET\ninternal, external
+  M -> TB : BEFORE UPDATE
+  TB --> M : total, grade points,\nletter (fn_grade_points)
+  M -> TA : AFTER UPDATE
+  opt marks really changed (<=>)
+    TA -> A : INSERT old/new,\nUTC_TIMESTAMP()
+  end
+end
+S --> V : number saved
+V --> Faculty : 302, then sheet with\ngrades + recent changes
+@enduml

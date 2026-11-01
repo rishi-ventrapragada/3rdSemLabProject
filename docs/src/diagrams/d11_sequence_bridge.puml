@@ -1,0 +1,33 @@
+@startuml d11_sequence_bridge
+!include _style.iuml
+' Figure title: Sequence diagram: Admin runs a Java report from the portal
+
+actor Admin
+participant "Browser" as B
+participant "core.views.engine" as V
+participant "core.java_bridge" as J
+participant "JVM: smart-campus-engine.jar" as E
+database "smart_campus_db" as DB
+
+Admin -> B : press "Defaulters"
+B -> V : GET /engine/?command=defaulters
+V -> V : role_required(ADMIN)
+V -> J : run_engine("defaulters")
+J -> J : allow-list + regex check,\nJAR file exists?
+alt JAR missing
+  J --> V : EngineError(JarMissing, hint)
+else JAR present
+  J -> E : subprocess.run([java, -Dfile.encoding=UTF-8,\n-jar, jar, defaulters, --json],\nshell=False, timeout=30)
+  E -> DB : SELECT ... FROM v_defaulter_list\n(PreparedStatement)
+  DB --> E : 8 rows
+  alt exit code 0
+    E --> J : stdout {"ok":true,"data":{...}}
+    J --> V : EngineResult(data, elapsed_ms)
+  else exit code 1 or 2
+    E --> J : stderr {"ok":false,"error":{type,message}}
+    J --> V : EngineError(type, message, exit_code)
+  end
+end
+V --> B : HTML tables, timing, raw JSON\n(or the error type)
+B --> Admin : result page
+@enduml

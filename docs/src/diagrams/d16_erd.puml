@@ -1,0 +1,116 @@
+@startuml d16_erd
+!include _style.iuml
+hide circle
+skinparam linetype ortho
+' Figure title: Entity relationship diagram (11 tables of smart_campus_db)
+
+entity departments {
+  * dept_id : INT <<PK>>
+  --
+  * dept_code : VARCHAR(10) <<UK>>
+  * dept_name : VARCHAR(100) <<UK>>
+}
+entity rooms {
+  * room_id : INT <<PK>>
+  --
+  * room_number : VARCHAR(20) <<UK>>
+  * capacity : SMALLINT
+  * room_type : ENUM
+}
+entity time_slots {
+  * slot_id : INT <<PK>>
+  --
+  * day_of_week : ENUM
+  * start_time : TIME
+  * end_time : TIME
+  * slot_number : TINYINT
+}
+entity faculty {
+  * faculty_id : INT <<PK>>
+  --
+  * employee_code <<UK>>
+  * username <<UK>>
+  * full_name
+  * email <<UK>>
+  * designation
+  * dept_id : INT <<FK>>
+}
+entity students {
+  * student_id : INT <<PK>>
+  --
+  * roll_number <<UK>>
+  * username <<UK>>
+  * full_name
+  * email <<UK>>
+  * semester : TINYINT
+  * section : CHAR(1)
+  * dept_id : INT <<FK>>
+  * cgpa : DECIMAL(4,2)
+  * is_defaulter : BOOLEAN
+}
+entity courses {
+  * course_id : INT <<PK>>
+  --
+  * course_code <<UK>>
+  * course_name
+  * credits : TINYINT
+  * course_type : ENUM
+  * hours_per_week : TINYINT
+  * semester : TINYINT
+  * dept_id : INT <<FK>>
+  faculty_id : INT <<FK>>
+}
+entity enrollments {
+  * enrollment_id : INT <<PK>>
+  --
+  * student_id : INT <<FK>>
+  * course_id : INT <<FK>>
+  * academic_year : CHAR(7)
+}
+entity attendance_records {
+  * attendance_id : INT <<PK>>
+  --
+  * enrollment_id : INT <<FK>>
+  * session_date : DATE
+  * status : ENUM
+}
+entity marks {
+  * mark_id : INT <<PK>>
+  --
+  * enrollment_id : INT <<FK, UK>>
+  * internal_marks : DECIMAL(5,2)
+  external_marks : DECIMAL(5,2)
+  total_marks : DECIMAL(5,2)
+  grade_points : INT
+  letter_grade : VARCHAR(2)
+}
+entity timetable_entries {
+  * entry_id : INT <<PK>>
+  --
+  * course_id : INT <<FK>>
+  * room_id : INT <<FK>>
+  * slot_id : INT <<FK>>
+  * section : CHAR(1)
+}
+entity marks_audit {
+  * audit_id : INT <<PK>>
+  --
+  * mark_id : INT (no FK)
+  old_internal, new_internal
+  old_external, new_external
+  * changed_at : DATETIME (UTC)
+}
+
+departments ||--o{ faculty
+departments ||--o{ students
+departments ||--o{ courses
+faculty |o--o{ courses
+students ||--o{ enrollments
+courses ||--o{ enrollments
+enrollments ||--o{ attendance_records
+enrollments ||--o| marks
+courses ||--o{ timetable_entries
+rooms ||--o{ timetable_entries
+time_slots ||--o{ timetable_entries
+marks ||..o{ marks_audit
+@enduml

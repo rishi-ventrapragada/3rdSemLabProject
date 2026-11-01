@@ -1,0 +1,45 @@
+@startuml d07_activity_marks
+!include _style.iuml
+' Figure title: Activity diagram: faculty marks entry and grading
+
+start
+:Faculty logs in;
+if (Role = Faculty?) then (yes)
+else (no)
+  :Show 403 page;
+  stop
+endif
+:Open "My courses" and choose a course;
+if (Course assigned to this teacher?) then (yes)
+else (no)
+  :Show 403 page;
+  stop
+endif
+:Open the marks sheet (internal /40, external /60);
+:Enter or change marks and press Save;
+:MarksSheetForm validates ranges and
+"internal before external";
+if (Form valid?) then (yes)
+  :services.save_marks: update_or_create
+  only internal_marks and external_marks
+  (inside one transaction);
+  fork
+    :trg_marks_before_insert / _update
+    sets total, grade points, letter grade;
+  fork again
+    :trg_marks_after_update writes a
+    marks_audit row if the marks changed;
+  end fork
+  if (Database accepted all rows?) then (yes)
+    :Show "Marks saved ... computed by the database";
+    :Re-render sheet with totals, grades
+    and "Recent changes";
+  else (no)
+    :Roll back the transaction;
+    :Show friendly message from db_errors;
+  endif
+else (no)
+  :Show the error next to the row;
+endif
+stop
+@enduml

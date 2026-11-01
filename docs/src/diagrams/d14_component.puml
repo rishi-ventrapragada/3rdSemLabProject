@@ -1,0 +1,76 @@
+@startuml d14_component
+!include _style.iuml
+left to right direction
+' Figure title: Component diagram
+
+package "Django project: campus_portal" {
+  [accounts] as acc
+  [student_portal] as sp
+  [faculty_portal] as fp
+  [admin_portal] as ap
+  package core {
+    [models\n(14 unmanaged)] as models
+    [roles] as roles
+    [services] as services
+    [db_errors] as dberr
+    [java_bridge] as bridge
+    [admin (Django admin)] as dadmin
+    [test_runner + sql_loader] as runner
+  }
+  [templates + campus.css] as ui
+}
+
+package "Java engine: smart-campus-engine.jar" {
+  [cli] as cli
+  [services] as jsvc
+  [dao] as dao
+  [models] as jmodels
+  [config] as cfg
+  [exceptions] as exc
+}
+
+package "database/" {
+  [schema.sql] as schema
+  [views_triggers.sql] as vt
+  [seed_data.sql] as seed
+  [init_db.py] as init
+}
+
+database "MySQL smart_campus_db" as mysql
+interface "HTTP (HTML forms, CSRF)" as HTTP
+interface "argv + JSON (stdout/stderr)" as JSON
+interface "JDBC" as JDBC
+interface "Django ORM / PyMySQL" as ORM
+
+HTTP - acc
+acc ..> roles
+sp ..> roles
+fp ..> roles
+ap ..> roles
+fp ..> services
+ap ..> services
+services ..> dberr
+sp ..> models
+fp ..> models
+ap ..> models
+models - ORM
+ORM ..> mysql
+ap ..> bridge
+bridge - JSON
+JSON ..> cli
+cli ..> jsvc
+jsvc ..> dao
+dao ..> jmodels
+dao ..> cfg
+dao - JDBC
+JDBC ..> mysql
+jsvc ..> exc
+init ..> schema
+init ..> vt
+init ..> seed
+init ..> mysql
+runner ..> init
+sp ..> ui
+fp ..> ui
+ap ..> ui
+@enduml

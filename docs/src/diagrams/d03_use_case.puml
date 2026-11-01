@@ -1,0 +1,59 @@
+@startuml d03_use_case
+!include _style.iuml
+left to right direction
+' Figure title: Use case diagram
+
+actor Student as S
+actor Faculty as F
+actor Admin as A
+actor "MySQL database\n(triggers, procedure)" as DB
+
+rectangle "Smart Campus & Academic Suite" {
+  usecase "Log in / log out" as UC0
+  usecase "Change password" as UC1
+  usecase "View own profile,\nCGPA and GPA" as UC2
+  usecase "View attendance\nand marks per course" as UC3
+  usecase "View timetable" as UC4
+  usecase "See defaulter warning" as UC5
+  usecase "View own courses\nand roster" as UC6
+  usecase "Mark attendance\nfor a date" as UC7
+  usecase "Enter internal /\nexternal marks" as UC8
+  usecase "Compute total\nand grade" as UC9
+  usecase "Record marks change\n(audit)" as UC10
+  usecase "Manage students,\nfaculty, courses (CRUD)" as UC11
+  usecase "Enroll student" as UC12
+  usecase "Add timetable entry" as UC13
+  usecase "Check teacher clash" as UC14
+  usecase "Declare defaulters" as UC15
+  usecase "View GPA report\nand marks audit" as UC16
+  usecase "Run Java engine\nreports" as UC17
+}
+
+S --> UC0
+S --> UC1
+S --> UC2
+S --> UC3
+S --> UC4
+S --> UC5
+F --> UC0
+F --> UC1
+F --> UC4
+F --> UC6
+F --> UC7
+F --> UC8
+A --> UC0
+A --> UC1
+A --> UC11
+A --> UC12
+A --> UC13
+A --> UC15
+A --> UC16
+A --> UC17
+UC8 ..> UC9 : <<include>>
+UC8 ..> UC10 : <<include>>
+UC13 ..> UC14 : <<include>>
+UC9 <-- DB
+UC10 <-- DB
+UC14 <-- DB
+UC15 <-- DB
+@enduml

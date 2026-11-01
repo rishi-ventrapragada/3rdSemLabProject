@@ -1,0 +1,17 @@
+@startuml d17_dfd0
+!include _style.iuml
+left to right direction
+' Figure title: Data flow diagram, level 0 (context diagram)
+
+rectangle "Student" as S
+rectangle "Faculty" as F
+rectangle "Admin" as A
+usecase "0\nSmart Campus &\nAcademic Suite" as P0
+
+S --> P0 : login, password change
+P0 --> S : profile, attendance %, marks,\ngrades, CGPA/GPA, timetable,\ndefaulter warning
+F --> P0 : attendance per session,\ninternal / external marks
+P0 --> F : rosters, timetable,\ncomputed totals and grades,\nrecent mark changes
+A --> P0 : students, faculty, courses,\nenrollments, timetable entries,\n"declare defaulters", report requests
+P0 --> A : dashboards, defaulter list,\nGPA report, marks audit,\nJava engine reports, error messages
+@enduml

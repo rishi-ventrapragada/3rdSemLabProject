@@ -1,0 +1,25 @@
+' Shared look for every report diagram. Rendered with PlantUML's built-in Smetana layout,
+' so Graphviz is not needed. See docs/src/README.md.
+!pragma layout smetana
+skinparam dpi 170
+skinparam defaultFontName "Times New Roman"
+skinparam defaultFontSize 13
+skinparam shadowing false
+skinparam roundCorner 6
+skinparam ArrowColor #1F2933
+skinparam BorderColor #1F2933
+skinparam BackgroundColor white
+skinparam ActorBorderColor #1F2933
+skinparam ActorBackgroundColor #DBE4FF
+skinparam UsecaseBackgroundColor #EEF3FF
+skinparam ClassBackgroundColor #F8FAFF
+skinparam ClassHeaderBackgroundColor #DBE4FF
+skinparam ObjectBackgroundColor #F8FAFF
+skinparam ComponentBackgroundColor #F8FAFF
+skinparam NodeBackgroundColor #F5F6F8
+skinparam DatabaseBackgroundColor #FFF4E0
+skinparam ActivityBackgroundColor #EEF3FF
+skinparam StateBackgroundColor #EEF3FF
+skinparam ParticipantBackgroundColor #EEF3FF
+skinparam NoteBackgroundColor #FFFBE6
+skinparam PackageBackgroundColor #FFFFFF

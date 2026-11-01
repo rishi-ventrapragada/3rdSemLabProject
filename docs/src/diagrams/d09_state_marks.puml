@@ -1,0 +1,20 @@
+@startuml d09_state_marks
+!include _style.iuml
+' Figure title: Statechart diagram: life cycle of a marks record
+
+[*] --> NoMarks
+state "No marks" as NoMarks : no row in marks
+state "Internal only" as Internal : external_marks = NULL\ntotal, grade = NULL
+state "Graded" as Graded : total = internal + external\ngrade set by trigger
+state "Re-graded" as Regraded : new total and grade\naudit row written
+
+NoMarks --> Internal : save internal only
+NoMarks --> Graded : save internal + external
+Internal --> Graded : save external
+Graded --> Regraded : marks changed\n[old <=> new is false]
+Regraded --> Regraded : marks changed again
+Graded --> Graded : re-save same values\n/ no audit row
+Internal --> Internal : change internal
+Graded --> [*] : enrollment deleted\n(ON DELETE CASCADE)
+Regraded --> [*] : enrollment deleted
+@enduml

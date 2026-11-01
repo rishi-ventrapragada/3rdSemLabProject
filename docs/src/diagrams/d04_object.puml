@@ -1,0 +1,61 @@
+@startuml d04_object
+!include _style.iuml
+' Figure title: Object diagram: one defaulter's CS301 record (values read from smart_campus_db)
+
+object "sneha : Student" as s {
+  student_id = 4
+  roll_number = "25CSE004"
+  username = "25cse004"
+  full_name = "Sneha Reddy"
+  semester = 3
+  section = "A"
+  cgpa = 6.85
+  is_defaulter = true
+}
+object "cse : Department" as d {
+  dept_code = "CSE"
+}
+object "cs301 : Course" as c {
+  course_id = 1
+  course_code = "CS301"
+  course_name = "Database Management Systems"
+  credits = 3
+  course_type = THEORY
+}
+object "ananya : Faculty" as f {
+  faculty_id = 1
+  employee_code = "FAC101"
+  username = "ananya.rao"
+  designation = "Professor"
+}
+object "e19 : Enrollment" as e {
+  enrollment_id = 19
+  academic_year = "2026-27"
+}
+object "m19 : Marks" as m {
+  internal_marks = 18.00
+  external_marks = 24.50
+  total_marks = 42.50
+  grade_points = 5
+  letter_grade = "P"
+}
+object "att19 : AttendanceSummary" as a {
+  total_classes = 12
+  classes_attended = 8
+  attendance_percentage = 66.67
+}
+object "tt1 : TimetableEntry" as t {
+  entry_id = 1
+  slot = MON 09:00-10:00
+  room = "CS-101"
+  section = "A"
+}
+
+s --> d
+s --> e
+e --> c
+c --> f
+e --> m
+e --> a
+t --> c
+@enduml

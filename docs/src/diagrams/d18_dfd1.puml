@@ -1,0 +1,43 @@
+@startuml d18_dfd1
+!include _style.iuml
+' Figure title: Data flow diagram, level 1
+
+rectangle "Student" as S
+rectangle "Faculty" as F
+rectangle "Admin" as A
+
+usecase "1.0\nAuthenticate and\nroute by role" as P1
+usecase "2.0\nMaintain academic\nrecords" as P2
+usecase "3.0\nRecord attendance" as P3
+usecase "4.0\nRecord marks\nand grade" as P4
+usecase "5.0\nProduce reports" as P5
+
+database "D1 auth_user, sessions" as D1
+database "D2 students, faculty,\ncourses, departments" as D2
+database "D3 enrollments" as D3
+database "D4 attendance_records" as D4
+database "D5 marks, marks_audit" as D5
+database "D6 timetable_entries,\nrooms, time_slots" as D6
+
+S --> P1 : username, password
+F --> P1 : username, password
+A --> P1 : username, password
+P1 <--> D1 : verify, session
+P1 --> D2 : look up username (role)
+A --> P2 : CRUD, enroll,\ntimetable entry
+P2 <--> D2 : people, courses
+P2 --> D3 : new enrollment
+P2 --> D6 : new entry (clash check)
+F --> P3 : date + PRESENT/ABSENT
+P3 --> D4 : upsert sessions
+D3 --> P3 : roster
+F --> P4 : internal, external
+D3 --> P4 : roster
+P4 <--> D5 : raw marks in,\ntotal/grade/audit out
+D4 --> P5 : v_attendance_summary,\nv_defaulter_list
+D5 --> P5 : v_student_cgpa_report,\nv_marks_audit
+D2 --> P5 : names, credits
+P5 --> S : own profile and warning
+P5 --> F : roster with totals
+P5 --> A : dashboards, reports,\nJava engine output
+@enduml

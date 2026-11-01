@@ -1,0 +1,50 @@
+@startuml d02_high_level
+!include _style.iuml
+' Figure title: High-level design: three tiers and the modules in each
+
+package "Presentation tier" {
+  [Login and role redirect] as L
+  [Student portal pages] as SP
+  [Faculty portal pages] as FP
+  [Admin portal pages] as AP
+  [Java engine page (/engine/)] as EP
+  [Java CLI and Scanner menu] as CLI
+}
+
+package "Application tier" {
+  [core.roles\n(role_required, RoleRequiredMixin)] as R
+  [core.services\n(all writes, transactions)] as S
+  [core.db_errors\n(friendly messages)] as E
+  [core.java_bridge\n(allow-list, subprocess)] as B
+  [Java services\n(StudentService, ReportService,\nReportExporter)] as JS
+  [Java DAO layer\n(CrudDao, Jdbc*Dao, ReportDao)] as JD
+}
+
+package "Data tier (MySQL 8.0)" {
+  [Tables + CHECK / UNIQUE / FK] as T
+  [Views: attendance summary,\ndefaulters, GPA, marks audit] as V
+  [Triggers: grading, clash,\nusername, audit] as TR
+  [Procedure: sp_refresh_defaulter_flags] as P
+}
+
+L --> R
+SP --> R
+FP --> R
+AP --> R
+EP --> R
+FP --> S
+AP --> S
+S --> E
+S --> T
+S --> P
+SP --> V
+AP --> V
+EP --> B
+B --> CLI
+CLI --> JS
+JS --> JD
+JD --> V
+JD --> T
+JD --> P
+T --> TR
+@enduml

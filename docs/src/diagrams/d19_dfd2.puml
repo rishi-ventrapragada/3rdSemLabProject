@@ -1,0 +1,33 @@
+@startuml d19_dfd2
+!include _style.iuml
+' Figure title: Data flow diagram, level 2: process 4.0 "Record marks and grade"
+
+rectangle "Faculty" as F
+usecase "4.1\nCheck role and\ncourse ownership" as P41
+usecase "4.2\nValidate marks form\n(ranges, internal first)" as P42
+usecase "4.3\nUpsert raw marks\n(services.save_marks)" as P43
+usecase "4.4\nCompute total and grade\n(trg_marks_before_*,\nfn_grade_points)" as P44
+usecase "4.5\nLog the change\n(trg_marks_after_update)" as P45
+usecase "4.6\nShow sheet, totals\nand recent changes" as P46
+
+database "D2 courses, faculty" as D2
+database "D3 enrollments" as D3
+database "D5a marks" as D5
+database "D5b marks_audit" as D7
+
+F --> P41 : request for course marks
+D2 --> P41 : course.faculty_id
+P41 --> P42 : allowed request
+D3 --> P42 : roster
+F --> P42 : internal, external per row
+P42 --> F : row errors (invalid input)
+P42 --> P43 : valid entries
+P43 --> D5 : internal_marks,\nexternal_marks
+D5 --> P44 : NEW row (before write)
+P44 --> D5 : total, grade points,\nletter grade
+D5 --> P45 : OLD and NEW values
+P45 --> D7 : audit row (UTC time)
+D5 --> P46 : saved totals, grades
+D7 --> P46 : v_marks_audit rows
+P46 --> F : marks sheet + message
+@enduml
