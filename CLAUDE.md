@@ -15,8 +15,6 @@ One codebase that satisfies four 3rd-semester lab courses. Each lab owns a top-l
 - Phase 3: the Java engine (config, models, DAOs, services, exceptions, CLI with `--json`) and its tests.
 - Phase 4: the Django portal (unmanaged models, role-based Student/Faculty/Admin portals, the Java bridge page, `seed_demo_users`) and its tests. See `docs/django_portal.md`.
 
-**Open item:** a known database bug, case-insensitive `REGEXP` CHECKs; see Gotchas. The fix in `database/` is waiting for approval.
-
 The SE Lab documents (SRS, UML, test plan) are still to come. Update this file when a phase lands.
 
 ## Repository layout
@@ -170,6 +168,7 @@ subprocess.run(
   - An FK column has the same name and type as the PK it references.
   - Constraints are named `pk_<table>`, `fk_<table>_<referenced>`, `uq_<table>_<cols>` and `chk_<table>_<rule>`.
   - Stored functions are `fn_<purpose>`, and procedures are `sp_<purpose>`.
+- **Case-sensitive patterns:** write CHECK patterns that must respect case as `REGEXP_LIKE(col, '^[A-Z]$', 'c')`, never plain `REGEXP`. Our collation is case-insensitive; see Gotchas. A pattern that already allows both cases, such as `[A-Za-z0-9]`, can stay a plain `REGEXP`.
 - **Single-column surrogate PK on every table**, including junction tables. Enforce the natural key with a `UNIQUE` constraint instead. This keeps Django unmanaged models and Java DAOs simple.
 - **Foreign keys:** declare every FK explicitly with `ON DELETE` / `ON UPDATE`. Default to `RESTRICT`. Use `CASCADE` only for rows that cannot exist without their parent.
 - **Views:** `v_<purpose>` (`v_attendance_summary`, `v_defaulter_list`, `v_student_cgpa_report`). They are read-only reporting surfaces for both Django (unmanaged models, one unique column marked `primary_key=True`) and Java DAOs. Reuse a view rather than re-implementing its join in application code.
@@ -332,7 +331,7 @@ Order between steps 3 and 5 doesn't matter, and both can be re-run. `init_db.py`
 ## Gotchas
 
 - **Stay on Django 5.2 LTS.** Django 6.1 requires MySQL 8.4+, and this project targets MySQL 8.0. 5.2 LTS is supported until April 2028.
-- **Known DB bug, fix pending approval: the `REGEXP` CHECKs are case-insensitive.** Under `utf8mb4_unicode_ci`, `section REGEXP '^[A-Z]$'` also accepts `a`. The same applies to `chk_timetable_entries_section` and `chk_departments_dept_code`. The proposed fix is `REGEXP_LIKE(section, '^[A-Z]$', 'c')`. Until then, the Django test `test_check_constraint_message_for_bad_section` is marked as an expected failure.
+- **`REGEXP` is case-insensitive on our columns.** It follows the column collation, so under `utf8mb4_unicode_ci`, `section REGEXP '^[A-Z]$'` also accepts `a`. Any pattern that must be case-sensitive needs `REGEXP_LIKE(col, pattern, 'c')`. Phase 4 found and fixed this in `chk_students_section`, `chk_timetable_entries_section` and `chk_departments_dept_code`. The regression test is `test_check_constraint_message_for_bad_section`. Equality comparisons and UNIQUE keys are case-insensitive for the same reason: `'a' = 'A'`, which is also why lookups like `student 25cse001` work.
 - **Don't run `startproject` from the repo root.** There, the existing `campus_portal/` folder is importable as a package, and Django refuses the name. The project was created from inside the folder with `django-admin startproject campus_portal .`.
 - **Django tests need a MySQL user that can `CREATE DATABASE`** and create functions/triggers (root locally). They build and drop `test_smart_campus_db`. Pass `--noinput`, or Django asks before deleting a leftover test database.
 - **The test runner sets `DEBUG=False`,** so calling `seed_demo_users` from tests needs `force=True`. `CampusTestCase` already does this, and uses the MD5 password hasher so tests stay fast.

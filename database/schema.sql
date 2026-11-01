@@ -44,7 +44,9 @@ CREATE TABLE departments (
     CONSTRAINT pk_departments PRIMARY KEY (dept_id),
     CONSTRAINT uq_departments_dept_code UNIQUE (dept_code),
     CONSTRAINT uq_departments_dept_name UNIQUE (dept_name),
-    CONSTRAINT chk_departments_dept_code CHECK (dept_code REGEXP '^[A-Z]{2,10}$')
+    -- REGEXP_LIKE(..., 'c'): plain REGEXP follows the column's case-insensitive collation,
+    -- so '^[A-Z]' would also accept lower-case letters.
+    CONSTRAINT chk_departments_dept_code CHECK (REGEXP_LIKE(dept_code, '^[A-Z]{2,10}$', 'c'))
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 CREATE TABLE rooms (
@@ -127,7 +129,7 @@ CREATE TABLE students (
     CONSTRAINT chk_students_username CHECK (username REGEXP '^[A-Za-z0-9.@+_-]+$'),
     CONSTRAINT chk_students_email CHECK (email LIKE '_%@_%._%'),
     CONSTRAINT chk_students_semester CHECK (semester BETWEEN 1 AND 8),
-    CONSTRAINT chk_students_section CHECK (section REGEXP '^[A-Z]$'),
+    CONSTRAINT chk_students_section CHECK (REGEXP_LIKE(section, '^[A-Z]$', 'c')),  -- 'c' = case-sensitive
     CONSTRAINT chk_students_cgpa CHECK (cgpa BETWEEN 0.00 AND 10.00)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
@@ -230,5 +232,5 @@ CREATE TABLE timetable_entries (
         REFERENCES rooms (room_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT fk_timetable_entries_time_slots FOREIGN KEY (slot_id)
         REFERENCES time_slots (slot_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT chk_timetable_entries_section CHECK (section REGEXP '^[A-Z]$')
+    CONSTRAINT chk_timetable_entries_section CHECK (REGEXP_LIKE(section, '^[A-Z]$', 'c'))  -- 'c' = case-sensitive
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;

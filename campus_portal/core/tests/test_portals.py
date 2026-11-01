@@ -1,6 +1,5 @@
 """Real-database tests: the views, triggers and procedure in test_<DB_NAME> do the work."""
 
-import unittest
 from datetime import date
 from decimal import Decimal
 
@@ -129,9 +128,9 @@ class AdminPortalTests(CampusTestCase):
         student.refresh_from_db()
         self.assertEqual((student.full_name, student.section), ("Renamed Student", "B"))
 
-    @unittest.expectedFailure  # Known DB bug, awaiting approval to fix database/schema.sql: chk_students_section
-    # uses REGEXP '^[A-Z]$', but under utf8mb4_unicode_ci MySQL's REGEXP is case-insensitive, so 'a' passes.
     def test_check_constraint_message_for_bad_section(self):
+        # Regression test: plain REGEXP followed the case-insensitive collation and let 'a' through;
+        # chk_students_section now uses REGEXP_LIKE(..., 'c').
         response = self.client.post("/admin-portal/students/add/", {
             "roll_number": "25CSE051", "username": "25cse051", "full_name": "Lower Section",
             "email": "25cse051@smartcampus.example", "semester": 3, "section": "a", "dept": 1, "cgpa": "7.00"})
