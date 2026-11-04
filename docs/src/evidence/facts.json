@@ -2632,9 +2632,39 @@
     "hash": "6de2bea",
     "date": "2026-11-01",
     "subject": "fix(django): give paginated faculty and course lists a stable order"
+   },
+   {
+    "hash": "7f90322",
+    "date": "2026-11-01",
+    "subject": "docs(report): add evidence collectors and their real-run results"
+   },
+   {
+    "hash": "e7eec24",
+    "date": "2026-11-01",
+    "subject": "docs(report): add PlantUML sources and rendered diagrams"
+   },
+   {
+    "hash": "ebc6299",
+    "date": "2026-11-01",
+    "subject": "docs(report): add portal and CLI screenshots from the live run"
+   },
+   {
+    "hash": "cac55d6",
+    "date": "2026-11-01",
+    "subject": "docs(report): add the python-docx report builder"
+   },
+   {
+    "hash": "896a2bd",
+    "date": "2026-11-01",
+    "subject": "docs: add the SE Lab project report (Phase 5)"
+   },
+   {
+    "hash": "be5c1de",
+    "date": "2026-11-04",
+    "subject": "docs(report): convert the report sources to a group report"
    }
   ],
-  "tracked_files": 162
+  "tracked_files": 249
  },
  "loc": {
   "SQL (database/*.sql)": {
