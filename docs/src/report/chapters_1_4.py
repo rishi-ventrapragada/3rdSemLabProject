@@ -140,8 +140,8 @@ def chapter1(r):
 def chapter2(r):
     r.chapter(2, "Literature Review")
     r.h2("2.1 Introduction")
-    r.p("Before designing the system I studied published work on relational data modelling, role-based access "
-        "control, and web-based academic and student information systems, and I examined three existing "
+    r.p("Before designing the system we studied published work on relational data modelling, role-based access "
+        "control, and web-based academic and student information systems, and we examined three existing "
         "open-source systems used by schools and colleges. The sources below were located by web search and "
         "their bibliographic details were checked on the publisher or repository page; the full references are "
         "listed in the References section.")
@@ -219,7 +219,7 @@ def chapter2(r):
         ["Cost", "Free (GPL)", "Free / paid", "Free", "Academic", "Academic", "Free (open tools)"],
     ], [1.25, 0.8, 0.8, 0.8, 0.8, 0.8, 1.0], "Comparison of related systems with the proposed system", size=8.5,
         bold_first_col=True)
-    r.p("\"Not stated\" means the feature was not mentioned in the source I reviewed; it does not mean the "
+    r.p("\"Not stated\" means the feature was not mentioned in the source we reviewed; it does not mean the "
         "system lacks it.", size=11)
     r.h2("2.5 Research gaps and limitations")
     r.bullets([
@@ -287,7 +287,7 @@ def chapter3(r):
     r.chapter(3, "Software Requirements Specification (SRS)")
     r.h2("3.1 Introduction")
     r.p("This chapter specifies the requirements of Smart Campus & Academic Suite in the style of IEEE Std 830 "
-        "[18]. It is written for the developer, the internal guide and the lab evaluators. Definitions of "
+        "[18]. It is written for the project team, the internal guide and the lab evaluators. Definitions of "
         "abbreviations are given in the List of Abbreviations; references are listed at the end of the report.")
     r.h3("3.1.1 Product perspective")
     r.p("The product is a new, self-contained system that replaces registers and spreadsheets. It consists of "
@@ -308,7 +308,7 @@ def chapter3(r):
         ["Admin", "Office or department staff responsible for academic records", "Comfortable with web forms"],
         ["Faculty", "Teachers of one or more courses", "Basic web use"],
         ["Student", "Undergraduate students (II year)", "Basic web use, often on a phone"],
-        ["Engine user", "Developer or lab evaluator", "Command line"],
+        ["Engine user", "Team member or lab evaluator", "Command line"],
     ], [1.1, 2.9, 1.8], "User characteristics", bold_first_col=True)
     r.h3("3.1.4 Operating environment")
     r.p("Server side: Windows 10/11, macOS or Linux with MySQL Server 8.0.16 or newer, JDK 17 or newer and "
@@ -483,7 +483,7 @@ def chapter3(r):
         ["Development tools: VS Code, Git, PlantUML, LibreOffice, Playwright", "Free"],
         ["Hardware", "Existing personal laptop (no purchase)"],
         ["Hosting", "Not needed: runs on localhost for the lab"],
-        ["Developer effort", "One student, during the lab hours of the semester"],
+        ["Team effort", "Four students, during the lab hours of the semester"],
     ], [4.0, 1.8], "Cost estimate", bold_first_col=False)
     r.p("No licence or hardware cost is involved, so the project is economically feasible.")
     r.h3("Operational feasibility")
@@ -495,8 +495,7 @@ def chapter3(r):
     r.h3("Schedule feasibility")
     commits = FACTS["git"]["commits"]
     r.p(f"The work was planned in five phases and completed between {commits[0]['date']} (first commit) and "
-        f"{commits[-1]['date']} ({len(commits)} commits before this report), as recorded in the Git history "
-        "(Appendix A).")
+        f"{commits[-1]['date']} ({len(commits)} commits, listed in Appendix A).")
     r.table(["Phase", "Work", "Completed (commit date)"], [
         ["1", "Scaffolding and build configuration", "2026-10-15"],
         ["2", "MySQL schema, views, triggers, seed data, init_db.py", "2026-10-16"],
@@ -504,6 +503,7 @@ def chapter3(r):
         ["4", "Django portal: three role portals, Java bridge, tests", "2026-10-31"],
         ["4.5", "Review and polish: audit trail, CSV export, menu, CRUD, security settings", "2026-11-01"],
         ["5", "Software Engineering documentation and this report", "2026-11-01"],
+        ["5.1", "Report converted to a group report", commits[-1]["date"]],
     ], [0.6, 3.6, 1.6], "Project schedule (from the Git history)")
     r.p("All phases fitted within the semester's lab schedule, so the project is feasible in time.")
 

@@ -2,7 +2,7 @@
 
 from collections import OrderedDict, defaultdict
 
-from content_common import (CASES, FACTS, LIVE, MACHINE, TESTS, VERSIONS, case_table, count_status, diagram,
+from content_common import (CASES, FACTS, LIVE, MACHINE, TEAM, TESTS, VERSIONS, case_table, count_status, diagram,
                             screen, snippet)
 
 
@@ -107,6 +107,11 @@ def chapter5(r):
     for title, text in modules:
         r.h3(title)
         r.p(text)
+    r.h3("5.7.7 Team contributions")
+    r.p("The system was designed, implemented, tested and documented jointly by the four members of the "
+        "project team; the work is held in one repository (Appendix A).")
+    r.table(["S.No", "Name", "Roll number"], [[i, name, roll] for i, (name, roll) in enumerate(TEAM, 1)],
+            [0.7, 3.0, 2.0], "Project team", size=10)
     r.h2("5.8 Algorithm or pseudocode")
     r.h3("5.8.1 Grading (database trigger)")
     r.code("BEFORE INSERT/UPDATE ON marks:\n"
@@ -352,7 +357,7 @@ def chapter6(r):
     case_table(r, [c for c in CASES["black_box"] if c["technique"] == "Error guessing"],
                "Security test cases (error guessing)")
     r.h2("6.10 User Acceptance Testing (UAT)")
-    r.p("UAT was carried out as a developer walk-through: each scenario below was performed on the running "
+    r.p("UAT was carried out as a team walk-through: each scenario below was performed on the running "
         "system with the demo accounts, following the use cases of Section 3.9. No external users took part, "
         "so this is not a formal UAT with real staff and students; that remains future work (Section 8.7).")
     r.table(["ID", "Role", "Scenario", "Acceptance criterion", "Evidence", "Result"], [
@@ -615,7 +620,7 @@ def chapter8(r):
         "Demo accounts share one password.",
         "Each engine call starts a new JVM (about 0.7 s).",
         "No bulk import of students or marks from spreadsheets.",
-        "Acceptance testing was done by the developer, not by real staff and students.",
+        "Acceptance testing was done by the project team, not by real staff and students.",
     ])
     r.h2("8.8 Future enhancements")
     r.bullets([
@@ -629,11 +634,11 @@ def chapter8(r):
     r.h2("8.9 Maintenance plan")
     r.table(["Activity", "Frequency", "Responsibility"], [
         ["Back up smart_campus_db (mysqldump)", "Daily during the semester", "Admin"],
-        ["Run both test suites", "Before every commit", "Developer"],
-        ["Apply Django / MySQL security releases", "Monthly", "Developer"],
+        ["Run both test suites", "Before every commit", "Project team"],
+        ["Apply Django / MySQL security releases", "Monthly", "Project team"],
         ["Review marks_audit", "End of each assessment", "Admin"],
         ["Declare defaulters", "At each attendance cut-off", "Admin"],
-        ["Review risks (Appendix B)", "Each semester", "Developer and guide"],
+        ["Review risks (Appendix B)", "Each semester", "Project team and guide"],
     ], [2.6, 1.7, 1.5], "Maintenance plan", size=9.5)
 
 
@@ -743,6 +748,9 @@ def chapter10(r):
         "Requirements, UML, DFD and ER design; 78 documented test cases and 100 automated tests, all passing.",
     ])
     r.h2("10.3 Contribution of the project")
+    r.p("The project is the joint work of a four-member team (Section 5.7.7), which together built the database, "
+        "the Java engine, the Django portal and the Software Engineering documentation. Its main contributions "
+        "are:")
     r.bullets([
         "Shows how one database can serve two applications in different languages with identical rules.",
         "Provides an automatic, tamper-evident history of marks changes.",
@@ -838,9 +846,12 @@ def appendix_a(r):
     r.h2("A.2 Version control")
     r.p(f"The repository is managed with Git and hosted on GitHub; all work is on the `main` branch. Commit "
         "messages follow the Conventional Commits style (`feat`, `fix`, `docs`, `test`, `chore` with a scope "
-        f"such as `database`, `java` or `django`). The history up to this report contains {len(commits)} "
-        f"commits and {FACTS['git']['tracked_files']} tracked files; the commits that generate this report "
-        "follow them.")
+        f"such as `database`, `java` or `django`). Table A.2 lists all {len(commits)} commits up to the "
+        f"conversion of this report into a group report ({FACTS['git']['tracked_files']} tracked files at that "
+        "point); only the commit that stores the regenerated document itself comes after it.")
+    r.p("The repository (`rishi-ventrapragada/3rdSemLabProject`) is hosted on V. Sai Rishi's GitHub account, and "
+        "every commit in the history was made from that account; the team's work was integrated through this "
+        "single repository.")
     r.table(["Commit", "Date", "Message"], [[c["hash"], c["date"], c["subject"]] for c in commits],
             [0.75, 0.95, 4.1], "Git history of the project", size=8.5)
     r.h2("A.3 Baselines")
@@ -850,6 +861,7 @@ def appendix_a(r):
         ["Phase 3: Java engine", "5937f1f", "Config, models, DAOs, services, CLI, tests, docs"],
         ["Phase 4: Django portal", "6f74e2b", "Three portals, bridge, tests, docs"],
         ["Phase 4.5: polish", "6de2bea", "Audit trail, CSV export, menu, CRUD, security, fixes"],
+        ["Phase 5: SE report", "896a2bd", "Evidence scripts, diagrams, screenshots, report builder, report"],
     ], [1.6, 0.8, 3.4], "Baselines", size=9.5)
     r.h2("A.4 Change control")
     r.bullets([
@@ -859,7 +871,7 @@ def appendix_a(r):
         "diagram.",
         "The change is made with a test that fails before and passes after.",
         "Both suites are run; then a secret scan checks that no `.env` content or password is staged.",
-        "The commit is pushed only after the scan is clean; database fixes were approved by the developer "
+        "The commit is pushed only after the scan is clean; database fixes were approved by the team "
         "before `database/` was touched.",
     ], numbered=True)
     r.h2("A.5 Build and release management")

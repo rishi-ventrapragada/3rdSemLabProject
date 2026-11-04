@@ -22,6 +22,7 @@ from pathlib import Path
 import docx
 import pymupdf
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Inches, Pt
 from docx.text.paragraph import Paragraph
@@ -30,7 +31,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import chapters_1_4  # noqa: E402
 import chapters_5_10  # noqa: E402
-from content_common import REPO  # noqa: E402
+from content_common import REPO, TEAM  # noqa: E402
 from docx_helpers import (Report, add_field, page_numbering, rebuild_paragraph, remove_paragraph,  # noqa: E402
                           normalize_order, report_margins, set_table_widths, style_run)
 
@@ -38,8 +39,6 @@ TEMPLATE = REPO / "docs" / "templates" / "LAB_COVERPAGE_FORMAT.docx"
 OUTPUT = REPO / "docs" / "Project_Report.docx"
 BUILD = REPO / "docs" / "src" / "report" / "build"
 
-STUDENT = "Sai Rishi Ventrapragada"
-ROLL = "25911A67B7"
 TITLE = "Smart Campus & Academic Suite"
 GUIDE = "Ms. M. Prasanna Kumari"
 
@@ -106,60 +105,97 @@ def set_run_text(paragraph, index, text):
     paragraph.runs[index].text = text
 
 
+def clone_after(paragraph):
+    """A copy of a template paragraph inserted right after it (keeps its formatting)."""
+    element = copy.deepcopy(paragraph._p)
+    paragraph._p.addnext(element)
+    return Paragraph(element, paragraph._parent)
+
+
+def column_break_before_text(paragraph):
+    run = paragraph.runs[0]._r
+    br = OxmlElement("w:br")
+    br.set(qn("w:type"), "column")
+    first_text = run.find(qn("w:t"))
+    first_text.addprevious(br)
+
+
+def signature_block(paragraph, name_index, tab_index, roll_index, tab_at):
+    """Four 'Name<TAB>(Roll)' lines in one template paragraph, separated by line breaks."""
+    segments = []
+    for i, (name, roll) in enumerate(TEAM):
+        last = i == len(TEAM) - 1
+        segments += [(name, name_index), ("\t", tab_index), (f"({roll})" + ("" if last else "\n"), roll_index)]
+    rebuild_paragraph(paragraph, segments)
+    # Replace the template's single tab stop (placed for its two-names-per-line layout).
+    tabs = paragraph._p.pPr.find(qn("w:tabs"))
+    if tabs is not None:
+        paragraph._p.pPr.remove(tabs)
+    paragraph.paragraph_format.tab_stops.add_tab_stop(Inches(tab_at))
+
+
 def edit_front_matter(doc):
     p = list(doc.paragraphs)                      # p[n - 1] is template paragraph Pnnn
-    # Cover page
+    names = ", ".join(name for name, _ in TEAM[:-1]) + " and " + TEAM[-1][0]
+    rolls = ", ".join(roll for _, roll in TEAM[:-1]) + " and " + TEAM[-1][1]
+    with_rolls = ", ".join(f"{name} ({roll})" for name, roll in TEAM)
+    # Cover page: names in the left column, roll numbers in the right, as in the template
     rebuild_paragraph(p[2], [(TITLE, 0)])
-    rebuild_paragraph(p[12], [("                         " + STUDENT, 0)])
-    clear(p[13]), clear(p[14])
-    rebuild_paragraph(p[15], [(ROLL, 1)])
-    clear(p[16]), clear(p[17])
+    name_paragraphs = [p[12], p[13], p[14], clone_after(p[14])]
+    for paragraph, (name, _) in zip(name_paragraphs, TEAM):
+        rebuild_paragraph(paragraph, [("                         " + name, 0)])
+    roll_paragraphs = [p[15], p[16], p[17], clone_after(p[17])]
+    rebuild_paragraph(roll_paragraphs[0], [(TEAM[0][1], 1)])
+    for paragraph, (_, roll) in zip(roll_paragraphs[1:], TEAM[1:]):
+        rebuild_paragraph(paragraph, [(roll, 0)])
+    column_break_before_text(roll_paragraphs[0])
+    for paragraph in roll_paragraphs:             # same spacing as the names, so each row lines up
+        paragraph.paragraph_format.space_before = p[12].paragraph_format.space_before
+        paragraph.paragraph_format.line_spacing = p[12].paragraph_format.line_spacing
     rebuild_paragraph(p[24], [(GUIDE.upper().replace("MS.", "Ms."), 0)])
-    # Certificate (wording: "carried out by him under my guidance and supervision")
+    # Certificate (plural, as in the template: "carried out by them under my guidance and supervision")
     runs = p[40].runs
     opening, closing = runs[0].text, runs[2].text[-1]
     rebuild_paragraph(p[40], [
         (opening, 0), (TITLE + closing, 1), (" is being submitted by ", 4),
-        (f"Mr. {STUDENT} ({ROLL})", 5), (".", 16), (" In partial fulfillment for the award of the Degree of "
-                                                     "Bachelor of Technology in ", 18),
+        (with_rolls, 5), (".", 16), (" In partial fulfillment for the award of the Degree of "
+                                      "Bachelor of Technology in ", 18),
         ("Computer Science & Engineering (Data Science)", 19),
-        (", is a record of Bonafide work carried out by him under my guidance and supervision. These results "
+        (", is a record of Bonafide work carried out by them under my guidance and supervision. These results "
          "embodied in this project report have not been submitted to any other University or Institute for the "
          "award of any degree.", 20)])
     rebuild_paragraph(p[55], [(GUIDE, 2)])
-    # Declaration (singular; date left blank, place Hyderabad as in the template)
+    # Declaration (plural; date left blank, place Hyderabad as in the template)
     runs = p[61].runs
     open_q, close_q = runs[15].text, runs[17].text
     rebuild_paragraph(p[61], [
-        ("I, ", 0), (f"Mr. {STUDENT}", 1), (", ", 0), ("bearing Roll Number ", 9), (ROLL, 10),
+        ("We, ", 0), (names, 1), (", ", 0), ("bearing Roll Numbers ", 9), (rolls, 10),
         (" hereby declare that the project entitled,", 14), (open_q, 15), (TITLE, 16), (close_q, 17),
         ("submitted for the degree of Bachelor of Technology in ", 18),
         ("Computer Science and Engineering (Data Science)", 19),
-        (" is original and has been done by me and this work is not copied and submitted anywhere for the award "
+        (" is original and has been done by us and this work is not copied and submitted anywhere for the award "
          "of any degree.", 20)])
-    rebuild_paragraph(p[70], [(STUDENT, 1), ("\t", 3), (f"({ROLL})", 4)])
+    signature_block(p[70], 1, 3, 4, tab_at=2.0)
+    column_break_before_text(p[70])               # the template's column break was in the removed run 0
     clear(p[72]), clear(p[73])
-    # Acknowledgement (singular; guide line added before the HOD line)
+    # Acknowledgement (plural; guide line added before the HOD line)
     guide = copy.deepcopy(p[78]._p)
     p[78]._p.addprevious(guide)
     guide_paragraph = Paragraph(guide, p[78]._parent)
     rebuild_paragraph(guide_paragraph, [
-        ("I express my sincere gratitude to my internal guide ", 0), (GUIDE, 1),
+        ("We express our sincere gratitude to our internal guide ", 0), (GUIDE, 1),
         (", Assistant Professor, Department of Computer Science and Engineering (Data Science), Vidya Jyothi "
          "Institute of Technology, for the valuable guidance, encouragement and constant support given throughout "
          "this project.", 5)])
-    set_run_text(p[78], 0, "I am grateful to ")
-    for run in p[78].runs:
-        run.text = run.text.replace("made us learn", "made me learn")
-    set_run_text(p[79], 0, "I whole-heartedly convey my gratitude to Dean of Accreditations ")
-    set_run_text(p[80], 0, "I would like to take this opportunity to express my gratitude to our ")
-    set_run_text(p[81], 0, "I would like to thank my ")
-    for run in p[81].runs:
-        run.text = run.text.replace("to our progress", "to my progress")
-    rebuild_paragraph(p[84], [(STUDENT, 0), ("\t", 2), (f"({ROLL})", 3)])
+    set_run_text(p[78], 0, "We are grateful to ")
+    set_run_text(p[79], 0, "We whole-heartedly convey our gratitude to Dean of Accreditations ")
+    set_run_text(p[80], 0, "We would like to take this opportunity to express our gratitude to our ")
+    set_run_text(p[81], 0, "We would like to thank our ")
+    signature_block(p[84], 0, 2, 3, tab_at=4.2)   # tab stops count from the margin; the block is indented 2.34"
+    p[84].paragraph_format.line_spacing = 1.3
     clear(p[85])
-    for paragraph in p[78:82] + [guide_paragraph]:
-        assert not re.search(r"\b(We|we|our progress|us)\b", paragraph.text), paragraph.text
+    for paragraph in p[78:82] + [guide_paragraph, p[61]]:
+        assert not re.search(r"\b(I|my|me|Mr\.)\b", paragraph.text), paragraph.text
 
     # Abstract: first template paragraph keeps its style; extra ones are copies of it
     body = p[89]
@@ -295,7 +331,8 @@ def build(pages):
             if not part.is_linked_to_previous:
                 normalize_order(part._element)
     doc.core_properties.title = TITLE
-    doc.core_properties.author = STUDENT
+    doc.core_properties.author = "; ".join(name for name, _ in TEAM)
+    doc.core_properties.last_modified_by = doc.core_properties.author   # the template carries its own name here
     doc.core_properties.subject = "Software Engineering Lab project report"
     doc.save(str(OUTPUT))
     return r

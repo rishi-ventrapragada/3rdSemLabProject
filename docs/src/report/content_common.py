@@ -10,6 +10,14 @@ EVIDENCE = SRC / "evidence"
 DIAGRAMS = SRC / "figures" / "diagrams"
 SCREENS = SRC / "figures" / "screens"
 
+# The project team, in the order used everywhere in the report.
+TEAM = [
+    ("V. Sai Rishi", "25911A67B7"),
+    ("Mummadisetty Advyth", "25911A67A3"),
+    ("P.V.S Sebareesh", "25911A67C4"),
+    ("K. Bharath Reddy", "25911A6784"),
+]
+
 DOMAIN_TABLES = ["departments", "faculty", "students", "courses", "enrollments", "attendance_records", "marks",
                  "marks_audit", "rooms", "time_slots", "timetable_entries"]
 
